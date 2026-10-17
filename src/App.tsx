@@ -106,15 +106,15 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "dorze-gabi",
-    src: assetUrl("images/dorze_male.jpg"),
-    backSrc: assetUrl("images/dorze_female.jpg"),
-    alt: "Dorze & Gamo Master-Woven Gabi - Heavy cotton with black-and-white chevron patterns",
-    label: "Dorze Master-Woven Gabi",
-    amharic: "የዶርዜ ጥበብ ጋቢ",
-    region: "Gamo Highlands / Chencha",
-    description: "Crafted by the renowned master weavers of Chencha and Dorze. Features stark geometric chevron weaves and red accent stripes on thick, soft 4-layer cotton Gabi blankets and tunic suits.",
-    fabrics: ["Heavy Carded Cotton", "4-Ply Handspun Thread", "Natural Dyes"],
-    accessories: ["Woven Shoulder Gabi", "Carved Wooden Staff", "Woven Hat"]
+    src: assetUrl("images/dorze_female.jpg"),
+    backSrc: assetUrl("images/dorze_male.jpg"),
+    alt: "Dorze & Gamo Master-Woven Cultural Attire - Celebratory woven patterns and traditional regalia",
+    label: "Dorze & Gamo Traditional Attire",
+    amharic: "የዶርዜ ባህላዊ ልብስ",
+    region: "Gamo Highlands / Dorze / Chencha",
+    description: "Renowned across Ethiopia for master weaving heritage. Features vibrant striped shawls, hand-spun cotton garments, knitted tricolor hats, and ceremonial leopard patterns worn with pride.",
+    fabrics: ["Hand-spun Cotton", "Dorze Woven Stripes", "Ceremonial Regalia"],
+    accessories: ["Dorze Woven Hat", "Striped Shoulder Shawl", "Cultural Staff"]
   },
   {
     id: "mens-kaba",
