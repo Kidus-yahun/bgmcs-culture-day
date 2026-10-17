@@ -1,0 +1,10 @@
+{
+  "description": "Allows senior students to register their names, emails, and Ethiopian cultural clothing choices, then randomly assigns unique outfits for Culture Day celebrations.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
