@@ -36,11 +36,18 @@ type CulturalLook = {
   accessories: string[];
 };
 
+const assetUrl = (path: string) => {
+  const b = import.meta.env.BASE_URL || './';
+  const cleanBase = b.endsWith('/') ? b : `${b}/`;
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${cleanBase}${cleanPath}`;
+};
+
 const showcaseImages: CulturalLook[] = [
   {
     id: "habesha-kemis",
-    src: "/images/habesha_female.jpg",
-    backSrc: "/images/habesha_male.jpg",
+    src: assetUrl("images/habesha_female.jpg"),
+    backSrc: assetUrl("images/habesha_male.jpg"),
     alt: "Habesha Kemis & Netela - Handwoven white Shemma with gold Tibeb embroidery",
     label: "Habesha Kemis & Netela",
     amharic: "የሀበሻ ቀሚስና ነጠላ",
@@ -51,8 +58,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "oromo-wandabo",
-    src: "/images/oromo_female.jpg",
-    backSrc: "/images/oromo_male.jpg",
+    src: assetUrl("images/oromo_female.jpg"),
+    backSrc: assetUrl("images/oromo_male.jpg"),
     alt: "Oromo Wandabo & Caaccuu - Bold red, black, and yellow geometric stripes with cowrie shells",
     label: "Oromo Wandabo & Caaccuu",
     amharic: "የኦሮሞ ወንዳቦና ጫጩ",
@@ -63,8 +70,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "tigray-tilfi",
-    src: "/images/tigray_female.jpg",
-    backSrc: "/images/tigray_male.jpg",
+    src: assetUrl("images/tigray_female.jpg"),
+    backSrc: assetUrl("images/tigray_male.jpg"),
     alt: "Tigray Tilfi & Zurya - Royal cream Shemma gown with dense gold and burgundy Tilfi chain embroidery",
     label: "Tigray Tilfi & Zurya",
     amharic: "የትግራይ ጥላፍና ዙርያ",
@@ -75,8 +82,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "wollo-kemis",
-    src: "/images/wollo_female.jpg",
-    backSrc: "/images/wollo_male.jpg",
+    src: assetUrl("images/wollo_female.jpg"),
+    backSrc: assetUrl("images/wollo_male.jpg"),
     alt: "Wollo Rich Festive Dress - Deep burgundy cotton with vibrant ribbon patchwork bands",
     label: "Wollo Festive Kemis",
     amharic: "የወሎ ባህላዊ ልብስ",
@@ -87,8 +94,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "harari-jet",
-    src: "/images/harari_female.jpg",
-    backSrc: "/images/harari_male.jpg",
+    src: assetUrl("images/harari_female.jpg"),
+    backSrc: assetUrl("images/harari_male.jpg"),
     alt: "Harari Ashrafi & Velvet Tunic - Royal emerald-teal velvet loose tunic with gold brocade",
     label: "Harari Ashrafi Velvet",
     amharic: "የሐረሪ ባህላዊ ልብስ",
@@ -99,8 +106,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "dorze-gabi",
-    src: "/images/dorze_male.jpg",
-    backSrc: "/images/dorze_female.jpg",
+    src: assetUrl("images/dorze_male.jpg"),
+    backSrc: assetUrl("images/dorze_female.jpg"),
     alt: "Dorze & Gamo Master-Woven Gabi - Heavy cotton with black-and-white chevron patterns",
     label: "Dorze Master-Woven Gabi",
     amharic: "የዶርዜ ጥበብ ጋቢ",
@@ -111,8 +118,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "mens-kaba",
-    src: "/images/habesha_male.jpg",
-    backSrc: "/images/habesha_female.jpg",
+    src: assetUrl("images/habesha_male.jpg"),
+    backSrc: assetUrl("images/habesha_female.jpg"),
     alt: "Men's Royal Tunic & Velvet Kaba - Tailored white Shemma tunic with ceremonial velvet Kaba cape",
     label: "Royal Kaba Cloak & Tunic",
     amharic: "የወንዶች ካባና ልብስ",
@@ -123,8 +130,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "welayta-striped",
-    src: "/images/welayta_female.jpg",
-    backSrc: "/images/welayta_male.jpg",
+    src: assetUrl("images/welayta_female.jpg"),
+    backSrc: assetUrl("images/welayta_male.jpg"),
     alt: "Welayta Traditional Weave - Signature triple-band stripes of red, yellow, and black on white cotton",
     label: "Welayta Traditional Weave",
     amharic: "የወላይታ ባህላዊ ልብስ",
@@ -135,8 +142,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "sidama-attire",
-    src: "/images/sidama_female.jpg",
-    backSrc: "/images/sidama_male.jpg",
+    src: assetUrl("images/sidama_female.jpg"),
+    backSrc: assetUrl("images/sidama_male.jpg"),
     alt: "Sidama Fichee-Chambalaalla Dress - Woven cotton with red, green, and yellow celebratory bands",
     label: "Sidama Celebration Dress",
     amharic: "የሲዳማ ባህላዊ ልብስ",
@@ -147,8 +154,8 @@ const showcaseImages: CulturalLook[] = [
   },
   {
     id: "afar-sanafil",
-    src: "/images/afar_male.jpg",
-    backSrc: "/images/afar_female.jpg",
+    src: assetUrl("images/afar_male.jpg"),
+    backSrc: assetUrl("images/afar_female.jpg"),
     alt: "Afar Traditional Sanafil & Shawl - Iconic wrap-around skirt with indigo and crimson borders",
     label: "Afar Sanafil & Shawl",
     amharic: "የአፋር ባህላዊ ሳናፊል",
@@ -165,7 +172,7 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
     name: "Selamawit Tadesse",
     email: "selam.tadesse@school.edu.et",
     outfit: "Habesha Kemis & Netela",
-    image: "/images/habesha_female.jpg",
+    image: assetUrl("images/habesha_female.jpg"),
     date: "May 18"
   },
   {
@@ -173,7 +180,7 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
     name: "Dawit Yohannes",
     email: "dawit.y@school.edu.et",
     outfit: "Men's tunic suit & royal Kaba cloak",
-    image: "/images/habesha_male.jpg",
+    image: assetUrl("images/habesha_male.jpg"),
     date: "May 19"
   },
   {
@@ -181,7 +188,7 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
     name: "Chaltu Bekele",
     email: "chaltu.b@school.edu.et",
     outfit: "Oromo traditional attire (Wandabo & Caaccuu)",
-    image: "/images/oromo_female.jpg",
+    image: assetUrl("images/oromo_female.jpg"),
     date: "May 20"
   },
   {
@@ -189,7 +196,7 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
     name: "Kalkidan Berhe",
     email: "kalkidan.b@school.edu.et",
     outfit: "Tigrayan traditional attire (Zurya & Tilfi)",
-    image: "/images/tigray_female.jpg",
+    image: assetUrl("images/tigray_female.jpg"),
     date: "May 21"
   },
   {
@@ -197,7 +204,7 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
     name: "Yonas Mekonnen",
     email: "yonas.m@school.edu.et",
     outfit: "Dorze & Gamo master-woven attire",
-    image: "/images/dorze_male.jpg",
+    image: assetUrl("images/dorze_male.jpg"),
     date: "May 22"
   },
   {
@@ -205,7 +212,7 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
     name: "Muna Ahmed",
     email: "muna.ahmed@school.edu.et",
     outfit: "Harari traditional attire (Ashrafi & Velvet)",
-    image: "/images/harari_female.jpg",
+    image: assetUrl("images/harari_female.jpg"),
     date: "May 23"
   }
 ];
@@ -747,10 +754,10 @@ function App() {
             >
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <img
-                  src={student.image || "/images/habesha_female.jpg"}
+                  src={student.image || assetUrl("images/habesha_female.jpg")}
                   alt={student.name}
                   style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--forest)" }}
-                  onError={(e) => { (e.target as HTMLImageElement).src = "/images/habesha_female.jpg"; }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = assetUrl("images/habesha_female.jpg"); }}
                 />
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <strong style={{ display: "block", fontSize: "14px", color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

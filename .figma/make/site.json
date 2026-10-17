@@ -1,7 +1,8 @@
 {
-  "description": "Allows senior students to register their names, emails, and Ethiopian cultural clothing choices, then randomly assigns unique outfits for Culture Day celebrations.",
+  "title": "Ethiopian Culture Day - Senior Batch 2026",
+  "description": "Senior batch portal for Ethiopian Culture Day celebration: authentic cultural attire showcase, student registration, conflict resolution random lucky wheel, and live senior roster.",
   "robots": {
-    "index": false
+    "index": true
   },
   "accessibility": {
     "addBypassLinks": false,
