@@ -529,30 +529,6 @@ function App() {
               →
             </button>
           </div>
-
-          {/* Quick Cultural Selector Pills */}
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "6px", marginTop: "14px", maxWidth: "420px" }}>
-            {showcaseImages.map((look, idx) => (
-              <button
-                key={look.id}
-                type="button"
-                onClick={() => setActiveLook(idx)}
-                style={{
-                  padding: "4px 10px",
-                  borderRadius: "14px",
-                  fontSize: "11px",
-                  fontWeight: activeLook === idx ? 700 : 500,
-                  cursor: "pointer",
-                  background: activeLook === idx ? "var(--forest)" : "rgba(255,255,255,0.6)",
-                  color: activeLook === idx ? "#fff" : "#4a5568",
-                  border: activeLook === idx ? "1px solid var(--forest)" : "1px solid rgba(0,0,0,0.08)",
-                  transition: "all 0.15s"
-                }}
-              >
-                {look.label.split("&")[0].trim()}
-              </button>
-            ))}
-          </div>
         </div>
       </section>
 
