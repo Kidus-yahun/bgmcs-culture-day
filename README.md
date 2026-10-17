@@ -1,6 +1,6 @@
-# 🇪🇹 Ethiopian Senior Culture Day 2026 Celebration Portal
+# 🇪🇹 BGMCS Culture Day 2026 Celebration Portal
 
-A modern web application designed for school senior batch students celebrating **Culture Day** wearing authentic Ethiopian traditional clothes.
+A modern web application designed for school senior batch students celebrating **BGMCS Culture Day** wearing authentic Ethiopian traditional clothes.
 
 Built with **React 19**, **Tailwind CSS v4**, **Vite**, and styled with authentic Ethiopian cultural aesthetics.
 

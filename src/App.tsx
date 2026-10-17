@@ -386,7 +386,7 @@ function App() {
             <i />
           </span>
           <span>
-            <strong>Culture Day</strong>
+            <strong>BGMCS Culture Day</strong>
             <small>Senior Batch ’26</small>
           </span>
         </a>
@@ -411,7 +411,7 @@ function App() {
             Wear your <em>heritage</em> with pride.
           </h1>
           <p>
-            Senior Culture Day is our chance to honour Ethiopia’s rich textile traditions,
+            BGMCS Senior Culture Day is our chance to honour Ethiopia’s rich textile traditions,
             celebrate every region from Tigray to Oromia, and create a memory our batch will carry forever.
           </p>
           <div className="hero-actions">
@@ -636,7 +636,7 @@ function App() {
             <form onSubmit={handleSubmit}>
               <div className="form-top">
                 <div>
-                  <span>Culture Day ’26</span>
+                  <span>BGMCS Culture Day ’26</span>
                   <h2>Register your choice</h2>
                 </div>
                 <span className="form-count">{registrations.length + 28} joined</span>
@@ -761,7 +761,7 @@ function App() {
       <footer>
         <a className="brand footer-brand" href="#top">
           <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
-          <span><strong>Culture Day</strong><small>Senior Batch ’26</small></span>
+          <span><strong>BGMCS Culture Day</strong><small>Senior Batch ’26</small></span>
         </a>
         <p>Made with pride for every story in our senior batch.</p>
         <a href="#register">Join the celebration ↑</a>
