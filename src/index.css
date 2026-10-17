@@ -472,6 +472,21 @@ h1 em {
   color: var(--ink);
 }
 
+.look-controls .choose-look-btn {
+  background: #d4a024;
+  border: 1px solid #c49420;
+  color: #12281c;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 0 16px;
+  letter-spacing: 0.2px;
+}
+
+.look-controls .choose-look-btn:hover {
+  background: #e5b230;
+  color: #0c1c13;
+}
+
 .process-section {
   background: var(--cream);
   padding: 110px clamp(24px, 7vw, 110px) 120px;

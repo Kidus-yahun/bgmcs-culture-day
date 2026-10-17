@@ -376,6 +376,25 @@ function App() {
     }
   }
 
+  function handleChooseLook(look: CulturalLook) {
+    const found = outfitOptions.find(opt => 
+      opt.toLowerCase().includes(look.label.toLowerCase().slice(0, 5)) ||
+      look.label.toLowerCase().includes(opt.toLowerCase().slice(0, 5)) ||
+      (look.id === "mens-kaba" && opt.includes("Kaba")) ||
+      (look.id === "wollo-kemis" && opt.includes("Wollo")) ||
+      (look.id === "dorze-gabi" && opt.includes("Dorze")) ||
+      (look.id === "sidama-attire" && opt.includes("Sidama")) ||
+      (look.id === "welayta-striped" && opt.includes("Welayta")) ||
+      (look.id === "afar-sanafil" && opt.includes("Afar"))
+    ) || look.label;
+
+    setSelectedOutfitInForm(found);
+    const regSection = document.getElementById("register");
+    if (regSection) {
+      regSection.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   return (
     <main>
       <header className="site-header">
@@ -520,6 +539,13 @@ function App() {
             </button>
             <button type="button" onClick={() => setIsPaused((value) => !value)}>
               {isPaused ? "Play 360°" : "Pause 360°"}
+            </button>
+            <button
+              type="button"
+              className="choose-look-btn"
+              onClick={() => handleChooseLook(selectedLook)}
+            >
+              Choose this look
             </button>
             <button
               type="button"
