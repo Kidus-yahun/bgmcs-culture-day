@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type Registration = {
   id: number;
@@ -322,6 +322,26 @@ function App() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState<CulturalLook>(culturalLooks[0]);
   const [selectedOutfitInForm, setSelectedOutfitInForm] = useState("");
+  const touchStartX = useRef<number | null>(null);
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        // Swiped right -> previous look
+        setActiveLook((current) => (current - 1 + culturalLooks.length) % culturalLooks.length);
+      } else {
+        // Swiped left -> next look
+        setActiveLook((current) => (current + 1) % culturalLooks.length);
+      }
+    }
+    touchStartX.current = null;
+  }
 
   // Admin Dashboard States
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -657,7 +677,7 @@ function App() {
           <a href="#announcements">Announcements</a>
           <a href="#roster">Senior roster</a>
         </nav>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div className="header-actions">
           <button
             type="button"
             className="admin-nav-btn"
@@ -665,10 +685,10 @@ function App() {
             aria-label="Open Admin Dashboard"
           >
             <Icon name="shield" />
-            Admin Portal
+            <span>Admin<span className="admin-portal-text"> Portal</span></span>
           </button>
           <a className="nav-cta" href="#register">
-            Register now <Icon name="arrow" />
+            <span>Register<span className="cta-now-text"> now</span></span> <Icon name="arrow" />
           </a>
         </div>
       </header>
@@ -741,7 +761,11 @@ function App() {
             </button>
           </div>
 
-          <div className="outfit-stage">
+          <div
+            className="outfit-stage"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className="orbit orbit-one" />
             <div className="orbit orbit-two" />
             <button
@@ -770,6 +794,7 @@ function App() {
           <div className="look-controls">
             <button
               type="button"
+              className="ctrl-prev"
               onClick={() =>
                 setActiveLook((current) => (current - 1 + culturalLooks.length) % culturalLooks.length)
               }
@@ -780,6 +805,7 @@ function App() {
             </button>
             <button
               type="button"
+              className="ctrl-360"
               onClick={() => setIsSpinning360((value) => !value)}
               title={isSpinning360 ? "Pause 360° rotation" : "Play 360° rotation"}
             >
@@ -795,6 +821,7 @@ function App() {
             </button>
             <button
               type="button"
+              className="ctrl-next"
               onClick={() => setActiveLook((current) => (current + 1) % culturalLooks.length)}
               aria-label="Next cultural look"
               title="Next cultural look"
@@ -1249,7 +1276,7 @@ function App() {
                       </div>
 
                       {/* Action Bar */}
-                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "12px", marginBottom: "20px" }}>
+                      <div className="admin-action-bar" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "12px", marginBottom: "20px" }}>
                         <div style={{ display: "flex", gap: "10px", flex: 1, minWidth: "260px" }}>
                           <input
                             type="text"
@@ -1462,7 +1489,7 @@ function App() {
                         <h4 style={{ margin: "0 0 14px", color: "#0b2a20", fontSize: "16px" }}>
                           👗 Add New Cultural Cloth to 3D Showcase Display
                         </h4>
-                        <form onSubmit={handleAddCustomCloth} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                        <form onSubmit={handleAddCustomCloth} className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                           <div>
                             <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
                               Outfit Name / Label *
