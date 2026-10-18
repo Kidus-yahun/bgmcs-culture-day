@@ -9,7 +9,37 @@ type Registration = {
   date?: string;
 };
 
-const outfitOptions = [
+type CulturalLook = {
+  id: string;
+  src: string;
+  backSrc: string;
+  alt: string;
+  label: string;
+  amharic: string;
+  region: string;
+  description: string;
+  fabrics: string[];
+  accessories: string[];
+  custom?: boolean;
+};
+
+type Announcement = {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  date: string;
+  pinned: boolean;
+};
+
+const assetUrl = (path: string) => {
+  const b = import.meta.env.BASE_URL || './';
+  const cleanBase = b.endsWith('/') ? b : `${b}/`;
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${cleanBase}${cleanPath}`;
+};
+
+const DEFAULT_OUTFIT_OPTIONS = [
   "Habesha Kemis & Netela",
   "Oromo traditional attire (Wandabo & Caaccuu)",
   "Tigrayan traditional attire (Zurya & Tilfi)",
@@ -23,27 +53,7 @@ const outfitOptions = [
   "Other Ethiopian cultural attire",
 ];
 
-type CulturalLook = {
-  id: string;
-  src: string;
-  backSrc: string;
-  alt: string;
-  label: string;
-  amharic: string;
-  region: string;
-  description: string;
-  fabrics: string[];
-  accessories: string[];
-};
-
-const assetUrl = (path: string) => {
-  const b = import.meta.env.BASE_URL || './';
-  const cleanBase = b.endsWith('/') ? b : `${b}/`;
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  return `${cleanBase}${cleanPath}`;
-};
-
-const showcaseImages: CulturalLook[] = [
+const INITIAL_SHOWCASE_IMAGES: CulturalLook[] = [
   {
     id: "habesha-kemis",
     src: assetUrl("images/habesha_female.jpg"),
@@ -96,8 +106,8 @@ const showcaseImages: CulturalLook[] = [
     id: "harari-jet",
     src: assetUrl("images/harari_female.jpg"),
     backSrc: assetUrl("images/harari_male.jpg"),
-    alt: "Harari Ashrafi & Velvet Tunic - Royal emerald-teal velvet loose tunic with gold brocade",
-    label: "Harari Ashrafi Velvet",
+    alt: "Harari Cultural Attire - Royal loose tunic with ornate headwear and cultural embroidery",
+    label: "Harari Cultural Attire",
     amharic: "የሐረሪ ባህላዊ ልብስ",
     region: "Harar Jugol",
     description: "Influenced by ancient trade and Islamic artisan heritage. Features a wide, loose tunic in deep velvet with glittering gold brocade borders, tapered Sirri trousers, and an ornate headscarf.",
@@ -217,11 +227,30 @@ const INITIAL_DEMO_STUDENTS: Registration[] = [
   }
 ];
 
+const INITIAL_ANNOUNCEMENTS: Announcement[] = [
+  {
+    id: 1,
+    title: "Official Senior Batch Culture Day Attire Schedule & Guidelines",
+    content: "Welcome Senior Batch 2026! Please ensure all registered cultural garments are steamed and prepared. Rehearsal for the cultural parade starts at 2:00 PM in the main hall. If you need assistance matching accessories (Netela, Kaba, Caaccuu), visit the committee booth.",
+    author: "BGMCS Committee",
+    date: "May 20, 2026",
+    pinned: true
+  },
+  {
+    id: 2,
+    title: "Finalized Student Cultural Attire Assignments",
+    content: "• Selamawit Tadesse ➔ Habesha Kemis & Netela (Highlands)\n• Dawit Yohannes ➔ Royal Kaba Cloak & Tunic (Royalty)\n• Chaltu Bekele ➔ Oromo Wandabo & Caaccuu (Oromia)\n• Kalkidan Berhe ➔ Tigray Tilfi & Zurya (Tigray)\n• Yonas Mekonnen ➔ Dorze & Gamo Master-Woven Gabi (Gamo)\n• Muna Ahmed ➔ Harari Cultural Attire (Harar Jugol)\n\nPlease check in with committee leads if you require accessory tailoring!",
+    author: "Senior Committee Admin",
+    date: "May 22, 2026",
+    pinned: true
+  }
+];
+
 function Icon({
   name,
   className = "",
 }: {
-  name: "arrow" | "calendar" | "check" | "image" | "sparkle" | "upload" | "rotate";
+  name: "arrow" | "calendar" | "check" | "image" | "sparkle" | "upload" | "rotate" | "shield" | "trash" | "plus" | "megaphone" | "download" | "close" | "search";
   className?: string;
 }) {
   const paths = {
@@ -251,6 +280,32 @@ function Icon({
       <>
         <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
       </>
+    ),
+    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
+    trash: (
+      <>
+        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+      </>
+    ),
+    plus: <path d="M12 5v14M5 12h14" />,
+    megaphone: (
+      <>
+        <path d="m3 11 18-5v12L3 14v-3z" />
+        <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+      </>
+    ),
+    download: (
+      <>
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <path d="M7 10l5 5 5-5M12 15V3" />
+      </>
+    ),
+    close: <path d="M18 6 6 18M6 6l12 12" />,
+    search: (
+      <>
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+      </>
     )
   };
 
@@ -273,7 +328,7 @@ function Icon({
 function App() {
   const [registrations, setRegistrations] = useState<Registration[]>(() => {
     try {
-      const saved = localStorage.getItem("culture-day-registrations-v3");
+      const saved = localStorage.getItem("bgmcs-registrations-v4");
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -284,6 +339,32 @@ function App() {
     }
   });
 
+  const [culturalLooks, setCulturalLooks] = useState<CulturalLook[]>(() => {
+    try {
+      const saved = localStorage.getItem("bgmcs-cultural-looks-v4");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return INITIAL_SHOWCASE_IMAGES;
+    } catch {
+      return INITIAL_SHOWCASE_IMAGES;
+    }
+  });
+
+  const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
+    try {
+      const saved = localStorage.getItem("bgmcs-announcements-v4");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return INITIAL_ANNOUNCEMENTS;
+    } catch {
+      return INITIAL_ANNOUNCEMENTS;
+    }
+  });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -291,14 +372,59 @@ function App() {
   const [activeLook, setActiveLook] = useState(0);
   const [isFlippedToMale, setIsFlippedToMale] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [spinResult, setSpinResult] = useState<CulturalLook>(showcaseImages[0]);
+  const [spinResult, setSpinResult] = useState<CulturalLook>(culturalLooks[0]);
   const [selectedOutfitInForm, setSelectedOutfitInForm] = useState("");
 
+  // Admin Dashboard States
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    return sessionStorage.getItem("bgmcs-admin-session") === "true";
+  });
+  const [adminPasscode, setAdminPasscode] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [adminTab, setAdminTab] = useState<"registrations" | "announcements" | "clothes">("registrations");
+  const [adminSearch, setAdminSearch] = useState("");
+  const [adminFilterOutfit, setAdminFilterOutfit] = useState("all");
+
+  // Add Cloth Form States
+  const [newClothLabel, setNewClothLabel] = useState("");
+  const [newClothAmharic, setNewClothAmharic] = useState("");
+  const [newClothRegion, setNewClothRegion] = useState("");
+  const [newClothDesc, setNewClothDesc] = useState("");
+  const [newClothFemaleImg, setNewClothFemaleImg] = useState("");
+  const [newClothMaleImg, setNewClothMaleImg] = useState("");
+  const [newClothFabrics, setNewClothFabrics] = useState("");
+  const [newClothAccessories, setNewClothAccessories] = useState("");
+  const [clothMessage, setClothMessage] = useState("");
+
+  // New Announcement Form States
+  const [newAnnTitle, setNewAnnTitle] = useState("");
+  const [newAnnContent, setNewAnnContent] = useState("");
+  const [newAnnAuthor, setNewAnnAuthor] = useState("Senior Committee");
+  const [newAnnPinned, setNewAnnPinned] = useState(true);
+  const [annMessage, setAnnMessage] = useState("");
+
   useEffect(() => {
-    localStorage.setItem("culture-day-registrations-v3", JSON.stringify(registrations));
+    localStorage.setItem("bgmcs-registrations-v4", JSON.stringify(registrations));
   }, [registrations]);
 
-  const selectedLook = useMemo(() => showcaseImages[activeLook], [activeLook]);
+  useEffect(() => {
+    localStorage.setItem("bgmcs-cultural-looks-v4", JSON.stringify(culturalLooks));
+  }, [culturalLooks]);
+
+  useEffect(() => {
+    localStorage.setItem("bgmcs-announcements-v4", JSON.stringify(announcements));
+  }, [announcements]);
+
+  const selectedLook = useMemo(() => {
+    return culturalLooks[activeLook % culturalLooks.length] || culturalLooks[0];
+  }, [culturalLooks, activeLook]);
+
+  const allOutfitOptions = useMemo(() => {
+    const customNames = culturalLooks.map(l => l.label);
+    const set = new Set([...DEFAULT_OUTFIT_OPTIONS, ...customNames]);
+    return Array.from(set);
+  }, [culturalLooks]);
 
   function handleImage(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -309,11 +435,27 @@ function App() {
     reader.readAsDataURL(file);
   }
 
+  function handleFemaleUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setNewClothFemaleImg(String(reader.result));
+    reader.readAsDataURL(file);
+  }
+
+  function handleMaleUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setNewClothMaleImg(String(reader.result));
+    reader.readAsDataURL(file);
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const outfitVal = String(form.get("outfit"));
-    const matchedLook = showcaseImages.find((l) => outfitVal.includes(l.label) || l.label.includes(outfitVal));
+    const matchedLook = culturalLooks.find((l) => outfitVal.includes(l.label) || l.label.includes(outfitVal));
 
     const entry: Registration = {
       id: Date.now(),
@@ -355,13 +497,13 @@ function App() {
     setIsSpinning(true);
     let count = 0;
     const timer = window.setInterval(() => {
-      const nextIdx = count % showcaseImages.length;
-      setSpinResult(showcaseImages[nextIdx]);
+      const nextIdx = count % culturalLooks.length;
+      setSpinResult(culturalLooks[nextIdx]);
       playTickSound();
       count += 1;
       if (count > 18) {
         window.clearInterval(timer);
-        const winner = showcaseImages[Math.floor(Math.random() * showcaseImages.length)];
+        const winner = culturalLooks[Math.floor(Math.random() * culturalLooks.length)];
         setSpinResult(winner);
         setIsSpinning(false);
       }
@@ -377,23 +519,163 @@ function App() {
   }
 
   function handleChooseLook(look: CulturalLook) {
-    const found = outfitOptions.find(opt => 
-      opt.toLowerCase().includes(look.label.toLowerCase().slice(0, 5)) ||
-      look.label.toLowerCase().includes(opt.toLowerCase().slice(0, 5)) ||
-      (look.id === "mens-kaba" && opt.includes("Kaba")) ||
-      (look.id === "wollo-kemis" && opt.includes("Wollo")) ||
-      (look.id === "dorze-gabi" && opt.includes("Dorze")) ||
-      (look.id === "sidama-attire" && opt.includes("Sidama")) ||
-      (look.id === "welayta-striped" && opt.includes("Welayta")) ||
-      (look.id === "afar-sanafil" && opt.includes("Afar"))
-    ) || look.label;
+    let chosenOutfit = "";
+    if (isFlippedToMale && (look.id === "habesha-kemis" || look.id === "mens-kaba")) {
+      chosenOutfit = "Men's tunic suit & royal Kaba cloak";
+    } else {
+      const found = allOutfitOptions.find(opt => 
+        opt.toLowerCase().includes(look.label.toLowerCase().slice(0, 5)) ||
+        look.label.toLowerCase().includes(opt.toLowerCase().slice(0, 5)) ||
+        (look.id === "mens-kaba" && opt.includes("Kaba")) ||
+        (look.id === "wollo-kemis" && opt.includes("Wollo")) ||
+        (look.id === "dorze-gabi" && opt.includes("Dorze")) ||
+        (look.id === "sidama-attire" && opt.includes("Sidama")) ||
+        (look.id === "welayta-striped" && opt.includes("Welayta")) ||
+        (look.id === "afar-sanafil" && opt.includes("Afar"))
+      ) || look.label;
+      chosenOutfit = found;
+    }
 
-    setSelectedOutfitInForm(found);
+    setSelectedOutfitInForm(chosenOutfit);
     const regSection = document.getElementById("register");
     if (regSection) {
       regSection.scrollIntoView({ behavior: "smooth" });
     }
   }
+
+  // Admin Actions
+  function handleAdminLogin(e: FormEvent) {
+    e.preventDefault();
+    if (adminPasscode.trim().toLowerCase() === "bgmcs2026" || adminPasscode.trim().toLowerCase() === "admin") {
+      setIsAdminLoggedIn(true);
+      sessionStorage.setItem("bgmcs-admin-session", "true");
+      setAdminError("");
+      setAdminPasscode("");
+    } else {
+      setAdminError("Incorrect passcode. Hint: bgmcs2026");
+    }
+  }
+
+  function handleAdminLogout() {
+    setIsAdminLoggedIn(false);
+    sessionStorage.removeItem("bgmcs-admin-session");
+  }
+
+  function handleDeleteRegistration(id: number) {
+    if (window.confirm("Are you sure you want to delete this senior registration?")) {
+      setRegistrations(prev => prev.filter(r => r.id !== id));
+    }
+  }
+
+  function exportCSV() {
+    const headers = ["Name", "Email", "Cultural Outfit", "Date Registered"];
+    const rows = registrations.map(r => `"${r.name}","${r.email}","${r.outfit}","${r.date || 'Recent'}"`);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `BGMCS_Senior_Culture_Day_Roster_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function handleAnnounceRoster() {
+    const list = registrations.map(r => `• ${r.name} ➔ ${r.outfit}`).join("\n");
+    const newAnn: Announcement = {
+      id: Date.now(),
+      title: `Official Senior Batch Cultural Attire Roster (${registrations.length} Seniors)`,
+      content: `Here is the official lineup of confirmed cultural garments for Senior Culture Day:\n\n${list}\n\nPlease reach out to the committee if any accessory assistance is needed!`,
+      author: "BGMCS Committee Admin",
+      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      pinned: true
+    };
+    setAnnouncements(prev => [newAnn, ...prev]);
+    setAdminTab("announcements");
+    setAnnMessage("Attire roster announced publicly!");
+    setTimeout(() => setAnnMessage(""), 4000);
+  }
+
+  function handleCreateAnnouncement(e: FormEvent) {
+    e.preventDefault();
+    if (!newAnnTitle || !newAnnContent) return;
+    const newAnn: Announcement = {
+      id: Date.now(),
+      title: newAnnTitle,
+      content: newAnnContent,
+      author: newAnnAuthor || "BGMCS Senior Committee",
+      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      pinned: newAnnPinned
+    };
+    setAnnouncements(prev => [newAnn, ...prev]);
+    setNewAnnTitle("");
+    setNewAnnContent("");
+    setAnnMessage("Announcement published successfully!");
+    setTimeout(() => setAnnMessage(""), 4000);
+  }
+
+  function handleDeleteAnnouncement(id: number) {
+    if (window.confirm("Delete this announcement?")) {
+      setAnnouncements(prev => prev.filter(a => a.id !== id));
+    }
+  }
+
+  function handleAddCustomCloth(e: FormEvent) {
+    e.preventDefault();
+    if (!newClothLabel.trim() || !newClothRegion.trim()) return;
+
+    const fallbackFemale = assetUrl("images/habesha_female.jpg");
+    const fallbackMale = assetUrl("images/habesha_male.jpg");
+
+    const newLook: CulturalLook = {
+      id: `custom-${Date.now()}`,
+      label: newClothLabel.trim(),
+      amharic: newClothAmharic.trim() || "ባህላዊ ልብስ",
+      region: newClothRegion.trim(),
+      description: newClothDesc.trim() || "Authentic traditional garment added by BGMCS Senior Committee.",
+      src: newClothFemaleImg.trim() || fallbackFemale,
+      backSrc: newClothMaleImg.trim() || fallbackMale,
+      alt: `${newClothLabel} - Traditional attire`,
+      fabrics: newClothFabrics ? newClothFabrics.split(",").map(s => s.trim()) : ["Woven Cotton", "Silk Embroidery"],
+      accessories: newClothAccessories ? newClothAccessories.split(",").map(s => s.trim()) : ["Traditional Jewelry", "Shawl"],
+      custom: true
+    };
+
+    setCulturalLooks(prev => [...prev, newLook]);
+    setActiveLook(culturalLooks.length); // Immediately focus on the newly added outfit!
+    setNewClothLabel("");
+    setNewClothAmharic("");
+    setNewClothRegion("");
+    setNewClothDesc("");
+    setNewClothFemaleImg("");
+    setNewClothMaleImg("");
+    setNewClothFabrics("");
+    setNewClothAccessories("");
+    setClothMessage(`"${newLook.label}" has been added to the 3D showcase display!`);
+    setTimeout(() => setClothMessage(""), 4500);
+  }
+
+  function handleDeleteCloth(id: string) {
+    if (window.confirm("Remove this custom outfit from the 3D display?")) {
+      setCulturalLooks(prev => prev.filter(c => c.id !== id));
+      setActiveLook(0);
+    }
+  }
+
+  function handleResetClothes() {
+    if (window.confirm("Reset 3D showcase to the default 10 cultural looks?")) {
+      setCulturalLooks(INITIAL_SHOWCASE_IMAGES);
+      setActiveLook(0);
+    }
+  }
+
+  const filteredRegistrations = useMemo(() => {
+    return registrations.filter(r => {
+      const matchSearch = r.name.toLowerCase().includes(adminSearch.toLowerCase()) || r.email.toLowerCase().includes(adminSearch.toLowerCase());
+      const matchOutfit = adminFilterOutfit === "all" || r.outfit === adminFilterOutfit;
+      return matchSearch && matchOutfit;
+    });
+  }, [registrations, adminSearch, adminFilterOutfit]);
 
   return (
     <main>
@@ -413,11 +695,23 @@ function App() {
           <a href="#story">Our story</a>
           <a href="#how-it-works">How it works</a>
           <a href="#looks">Cultural looks</a>
+          <a href="#announcements">Announcements</a>
           <a href="#roster">Senior roster</a>
         </nav>
-        <a className="nav-cta" href="#register">
-          Register now <Icon name="arrow" />
-        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button
+            type="button"
+            className="admin-nav-btn"
+            onClick={() => setIsAdminOpen(true)}
+            aria-label="Open Admin Dashboard"
+          >
+            <Icon name="shield" />
+            Admin Portal
+          </button>
+          <a className="nav-cta" href="#register">
+            Register now <Icon name="arrow" />
+          </a>
+        </div>
       </header>
 
       <section className="hero" id="top">
@@ -447,14 +741,14 @@ function App() {
           </div>
           <div className="trust-note">
             <div className="avatars" aria-hidden="true">
-              {showcaseImages.slice(0, 4).map((image) => (
+              {culturalLooks.slice(0, 4).map((image) => (
                 <img key={image.id} src={image.src} alt="" />
               ))}
               <span>+{Math.max(28, registrations.length + 28)}</span>
             </div>
             <p>
               <strong>Students are joining</strong>
-              10 traditional regions ready to celebrate
+              {culturalLooks.length} traditional regions ready to celebrate
             </p>
           </div>
         </div>
@@ -511,7 +805,7 @@ function App() {
           </div>
 
           <div className="look-caption">
-            <span>{String(activeLook + 1).padStart(2, "0")} / {String(showcaseImages.length).padStart(2, "0")}</span>
+            <span>{String(activeLook + 1).padStart(2, "0")} / {String(culturalLooks.length).padStart(2, "0")}</span>
             <div>
               <strong>
                 {selectedLook.label}
@@ -527,7 +821,7 @@ function App() {
             <button
               type="button"
               onClick={() =>
-                setActiveLook((current) => (current - 1 + showcaseImages.length) % showcaseImages.length)
+                setActiveLook((current) => (current - 1 + culturalLooks.length) % culturalLooks.length)
               }
               aria-label="Previous cultural look"
             >
@@ -545,7 +839,7 @@ function App() {
             </button>
             <button
               type="button"
-              onClick={() => setActiveLook((current) => (current + 1) % showcaseImages.length)}
+              onClick={() => setActiveLook((current) => (current + 1) % culturalLooks.length)}
               aria-label="Next cultural look"
             >
               →
@@ -565,77 +859,78 @@ function App() {
         </div>
         <div className="process-grid">
           <article>
-            <span className="step-number">01</span>
-            <div className="step-icon"><Icon name="image" /></div>
-            <h3>Choose your clothing</h3>
-            <p>Name the cultural outfit you want to wear and add a reference photo if you have one.</p>
+            <span className="step-num">01</span>
+            <h3>Explore & select</h3>
+            <p>
+              Browse our high-definition authentic photography of real Ethiopian women and men wearing traditional attire across the country.
+            </p>
           </article>
           <article>
-            <span className="step-number">02</span>
-            <div className="step-icon"><Icon name="sparkle" /></div>
-            <h3>We balance the choices</h3>
-            <p>If too many students choose the same look, those names go into a transparent random draw.</p>
+            <span className="step-num">02</span>
+            <h3>Balanced diversity</h3>
+            <p>
+              If multiple students pick the same attire, our Lucky Wheel helps distribute styles fairly so every corner of Ethiopia is represented.
+            </p>
           </article>
           <article>
-            <span className="step-number">03</span>
-            <div className="step-icon"><Icon name="check" /></div>
-            <h3>Celebrate together</h3>
-            <p>Everyone receives a final look, so our senior batch represents more communities and traditions.</p>
+            <span className="step-num">03</span>
+            <h3>Senior stage shine</h3>
+            <p>
+              We celebrate our culture together on Friday, May 30, 2026, preserving photos, dances, and senior memories forever.
+            </p>
           </article>
         </div>
       </section>
 
       <section className="registration-section" id="register">
         <div className="form-intro">
-          <span className="section-kicker light">Your culture. Your story.</span>
-          <h2>Save your cultural look.</h2>
+          <span className="section-kicker">Student Portal</span>
+          <h2>Claim your cultural style</h2>
           <p>
-            Tell the planning team what you would like to wear. Images are optional,
-            but they help us understand your exact traditional style.
+            Put your name, email, and cloth choice. If too many seniors choose the same look, our lucky wheel balances assignments fairly.
           </p>
-          <div className="fairness-card">
-            <Icon name="sparkle" />
-            <div>
-              <strong>A fair final lineup</strong>
-              <p>
-                Same outfit choices are entered into a random draw. No favourites,
-                no first-come advantage—just a balanced celebration.
-              </p>
-            </div>
-          </div>
 
-          {/* Interactive Random Draw Spinner with Authentic Model Preview */}
-          <div className="mini-spinner" style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "stretch" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <img
-                src={spinResult.src}
-                alt={spinResult.label}
-                style={{ width: "48px", height: "48px", borderRadius: "10px", objectFit: "cover", border: "2px solid var(--gold)" }}
-              />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <small style={{ color: "rgba(255,255,255,0.7)", display: "block" }}>Draw preview ({spinResult.region.split("(")[0]})</small>
-                <strong className={isSpinning ? "is-shuffling" : ""} style={{ fontSize: "14px", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {spinResult.label}
+          {/* Random Draw Lucky Spinner */}
+          <div className="mini-spinner" style={{ background: "rgba(10,36,26,0.04)", padding: "24px", borderRadius: "16px", border: "1px dashed var(--line)", marginTop: "32px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "50%",
+                background: "var(--forest)",
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 4px 12px rgba(10,36,26,0.2)"
+              }}>
+                <Icon name="rotate" className={isSpinning ? "spin-infinite" : ""} />
+              </div>
+              <div>
+                <strong style={{ display: "block", fontSize: "16px", color: "var(--ink)" }}>
+                  Need inspiration? Spin the Lucky Wheel
                 </strong>
+                <span style={{ fontSize: "13px", color: "var(--muted)" }}>
+                  {spinResult.label} ({spinResult.region})
+                </span>
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
               <button
                 type="button"
+                className="btn-primary"
                 onClick={runSpin}
                 disabled={isSpinning}
-                style={{ flex: 1, padding: "8px 14px", background: "var(--gold)", color: "var(--forest-deep)", fontWeight: 700, borderRadius: "10px", border: "none", cursor: "pointer" }}
               >
-                {isSpinning ? "🎲 Shuffling…" : "🎲 Spin for Random Draw"}
+                {isSpinning ? "Selecting look..." : "Spin random outfit"}
               </button>
               <button
                 type="button"
+                className="btn-gold"
                 onClick={() => applySpinToForm(spinResult.label)}
-                style={{ padding: "8px 12px", background: "rgba(255,255,255,0.15)", color: "#fff", fontWeight: 600, borderRadius: "10px", border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", fontSize: "12px" }}
-                title="Select this drawn look in the form"
               >
-                Use This
+                Use this in registration
               </button>
             </div>
           </div>
@@ -643,7 +938,7 @@ function App() {
 
         <div className="form-card">
           {isSubmitted ? (
-            <div className="success-message" role="status">
+            <div className="success-state">
               <span><Icon name="check" /></span>
               <small>Registration received</small>
               <h2>You’re part of Culture Day.</h2>
@@ -665,12 +960,12 @@ function App() {
               </div>
               <div className="field-row">
                 <label>
-                  <span>Full name</span>
-                  <input name="name" type="text" placeholder="e.g. Hana Tesfaye" required />
+                  <span>Student full name</span>
+                  <input name="name" type="text" placeholder="e.g. Selamawit Tadesse" required />
                 </label>
                 <label>
-                  <span>Email address</span>
-                  <input name="email" type="email" placeholder="hana@school.edu.et" required />
+                  <span>Student email</span>
+                  <input name="email" type="email" placeholder="student@school.edu.et" required />
                 </label>
               </div>
               <label>
@@ -682,39 +977,72 @@ function App() {
                   required
                 >
                   <option value="" disabled>Select a cultural outfit</option>
-                  {outfitOptions.map((option) => (
+                  {allOutfitOptions.map((option) => (
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>
               </label>
-              <label className="upload-field">
-                <span>Reference image <small>Optional</small></span>
+
+              <label className="file-upload">
+                <span>Upload sketch or reference photo (optional)</span>
                 <input type="file" accept="image/*" onChange={handleImage} />
-                <span className="upload-box">
-                  {preview ? (
-                    <img src={preview} alt="Selected outfit preview" />
-                  ) : (
-                    <span className="upload-icon"><Icon name="upload" /></span>
-                  )}
-                  <span>
+                <div className="dropzone">
+                  <Icon name="upload" />
+                  <div>
                     <strong>{fileName || "Drop an image or browse"}</strong>
-                    <small>PNG or JPG · up to 8 MB</small>
-                  </span>
-                </span>
+                    <small>Supports PNG, JPG up to 10MB</small>
+                  </div>
+                </div>
               </label>
-              <label className="consent">
-                <input type="checkbox" required />
-                <span>
-                  I understand my outfit may be included in a random draw if many
-                  students choose the same cultural clothing.
-                </span>
-              </label>
+
+              {preview && (
+                <div className="image-preview">
+                  <img src={preview} alt="Chosen outfit reference" />
+                </div>
+              )}
+
               <button className="submit-button" type="submit">
-                Save my choice <Icon name="arrow" />
+                Confirm registration
               </button>
               <p className="privacy-note">Your details are only used by the Culture Day planning team.</p>
             </form>
           )}
+        </div>
+      </section>
+
+      {/* Official Announcements Board */}
+      <section className="process-section" id="announcements" style={{ background: "#ffffff", borderTop: "1px solid var(--line)" }}>
+        <div className="section-heading">
+          <span className="section-kicker">Official Committee Updates</span>
+          <h2>Culture Day Announcements & Attire Assignments</h2>
+          <p>
+            Check here for committee broadcasts, guidelines, and official announcements on what each senior will wear.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: "880px", margin: "0 auto", padding: "0 20px" }}>
+          {announcements.map((ann) => (
+            <div key={ann.id} className={`announcement-card ${ann.pinned ? "pinned" : ""}`}>
+              <div className="announcement-header">
+                <div>
+                  <h3 className="announcement-title">{ann.title}</h3>
+                  <div className="announcement-meta">
+                    <span>By {ann.author}</span>
+                    <span>•</span>
+                    <span>{ann.date}</span>
+                    {ann.pinned && (
+                      <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>
+                        📌 Pinned Notice
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="announcement-body">
+                {ann.content}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -786,8 +1114,548 @@ function App() {
           <span><strong>BGMCS Culture Day</strong><small>Senior Batch ’26</small></span>
         </a>
         <p>Made with pride for every story in our senior batch.</p>
-        <a href="#register">Join the celebration ↑</a>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={() => setIsAdminOpen(true)}
+            style={{ background: "transparent", border: "none", color: "var(--gold)", cursor: "pointer", fontSize: "12px", fontWeight: 700 }}
+          >
+            Admin Dashboard 🔐
+          </button>
+          <a href="#register">Join the celebration ↑</a>
+        </div>
       </footer>
+
+      {/* ==========================================================================
+          Admin Dashboard Modal
+          ========================================================================== */}
+      {isAdminOpen && (
+        <div className="admin-overlay" onClick={() => setIsAdminOpen(false)}>
+          <div className="admin-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-header">
+              <div>
+                <h3>BGMCS Culture Day — Admin Portal</h3>
+                <small style={{ color: "rgba(255,255,255,0.7)" }}>
+                  Manage registrations, announce assignments, and add clothes to display
+                </small>
+              </div>
+              <button
+                type="button"
+                className="admin-close-btn"
+                onClick={() => setIsAdminOpen(false)}
+                aria-label="Close Admin Modal"
+              >
+                ✕
+              </button>
+            </div>
+
+            {!isAdminLoggedIn ? (
+              <div style={{ padding: "40px 30px", textAlign: "center", maxWidth: "420px", margin: "0 auto" }}>
+                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#e6f4ea", color: "#137333", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+                  <Icon name="shield" />
+                </div>
+                <h4 style={{ fontSize: "20px", marginBottom: "8px", color: "#0b2a20" }}>Admin Authorization</h4>
+                <p style={{ color: "#718096", fontSize: "13px", marginBottom: "20px" }}>
+                  Enter the committee passcode to view student choices, post official announcements, and manage display clothes.
+                </p>
+
+                <form onSubmit={handleAdminLogin} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <input
+                    type="password"
+                    placeholder="Enter admin passcode"
+                    value={adminPasscode}
+                    onChange={(e) => setAdminPasscode(e.target.value)}
+                    style={{
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid #cbd5e1",
+                      fontSize: "14px",
+                      outline: "none",
+                      textAlign: "center"
+                    }}
+                    autoFocus
+                  />
+                  {adminError && (
+                    <div style={{ color: "#dc2626", fontSize: "12px", fontWeight: 600 }}>
+                      {adminError}
+                    </div>
+                  )}
+                  <button type="submit" className="btn-gold" style={{ justifyContent: "center" }}>
+                    Unlock Admin Dashboard
+                  </button>
+                  <small style={{ color: "#94a3b8", fontSize: "11px", marginTop: "4px" }}>
+                    Default Committee Passcode: <strong>bgmcs2026</strong>
+                  </small>
+                </form>
+              </div>
+            ) : (
+              <>
+                <div className="admin-tabs">
+                  <button
+                    type="button"
+                    className={`admin-tab ${adminTab === "registrations" ? "active" : ""}`}
+                    onClick={() => setAdminTab("registrations")}
+                  >
+                    📋 Senior Registrations ({registrations.length})
+                  </button>
+                  <button
+                    type="button"
+                    className={`admin-tab ${adminTab === "announcements" ? "active" : ""}`}
+                    onClick={() => setAdminTab("announcements")}
+                  >
+                    📢 Attire Announcements ({announcements.length})
+                  </button>
+                  <button
+                    type="button"
+                    className={`admin-tab ${adminTab === "clothes" ? "active" : ""}`}
+                    onClick={() => setAdminTab("clothes")}
+                  >
+                    👗 Add Display Clothes ({culturalLooks.length})
+                  </button>
+                  <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", paddingRight: "10px" }}>
+                    <button
+                      type="button"
+                      onClick={handleAdminLogout}
+                      style={{ background: "transparent", border: "none", color: "#e11d48", fontSize: "12px", fontWeight: 700, cursor: "pointer" }}
+                    >
+                      Lock Portal 🔒
+                    </button>
+                  </div>
+                </div>
+
+                <div className="admin-body">
+                  {/* TAB 1: REGISTRATIONS & CHOICES */}
+                  {adminTab === "registrations" && (
+                    <div>
+                      {/* Metric cards */}
+                      <div className="admin-stats">
+                        <div className="admin-stat-card">
+                          <span>Total Registered</span>
+                          <strong>{registrations.length}</strong>
+                        </div>
+                        <div className="admin-stat-card">
+                          <span>Active Clothes</span>
+                          <strong>{culturalLooks.length}</strong>
+                        </div>
+                        <div className="admin-stat-card">
+                          <span>Published Notices</span>
+                          <strong>{announcements.length}</strong>
+                        </div>
+                      </div>
+
+                      {/* Action Bar */}
+                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "12px", marginBottom: "20px" }}>
+                        <div style={{ display: "flex", gap: "10px", flex: 1, minWidth: "260px" }}>
+                          <input
+                            type="text"
+                            placeholder="Search by student name or email..."
+                            value={adminSearch}
+                            onChange={(e) => setAdminSearch(e.target.value)}
+                            style={{
+                              padding: "10px 14px",
+                              borderRadius: "8px",
+                              border: "1px solid #cbd5e1",
+                              fontSize: "13px",
+                              flex: 1
+                            }}
+                          />
+                          <select
+                            value={adminFilterOutfit}
+                            onChange={(e) => setAdminFilterOutfit(e.target.value)}
+                            style={{
+                              padding: "10px 14px",
+                              borderRadius: "8px",
+                              border: "1px solid #cbd5e1",
+                              fontSize: "13px",
+                              background: "#fff"
+                            }}
+                          >
+                            <option value="all">All Outfits</option>
+                            {allOutfitOptions.map(opt => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <button
+                            type="button"
+                            className="btn-gold"
+                            onClick={handleAnnounceRoster}
+                            title="Publish this student attire lineup to the public announcements board"
+                          >
+                            <Icon name="megaphone" />
+                            Announce Lineup
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-primary"
+                            onClick={exportCSV}
+                            title="Export senior batch registrations to CSV file"
+                          >
+                            <Icon name="download" />
+                            Export CSV
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Registrations Table */}
+                      <div className="admin-table-container">
+                        <table className="admin-table">
+                          <thead>
+                            <tr>
+                              <th>Photo</th>
+                              <th>Student Name</th>
+                              <th>Email Address</th>
+                              <th>Cultural Attire Chosen</th>
+                              <th>Date</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredRegistrations.length === 0 ? (
+                              <tr>
+                                <td colSpan={6} style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
+                                  No senior registrations found matching your search.
+                                </td>
+                              </tr>
+                            ) : (
+                              filteredRegistrations.map((student) => (
+                                <tr key={student.id}>
+                                  <td>
+                                    <img
+                                      src={student.image || assetUrl("images/habesha_female.jpg")}
+                                      alt={student.name}
+                                      style={{ width: "38px", height: "38px", borderRadius: "50%", objectFit: "cover", border: "1px solid #cbd5e1" }}
+                                      onError={(e) => { (e.target as HTMLImageElement).src = assetUrl("images/habesha_female.jpg"); }}
+                                    />
+                                  </td>
+                                  <td>
+                                    <strong>{student.name}</strong>
+                                  </td>
+                                  <td style={{ color: "#64748b" }}>{student.email}</td>
+                                  <td>
+                                    <span className="badge-tag">
+                                      {student.outfit}
+                                    </span>
+                                  </td>
+                                  <td style={{ color: "#94a3b8", fontSize: "12px" }}>{student.date || "May 2026"}</td>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      className="btn-danger"
+                                      onClick={() => handleDeleteRegistration(student.id)}
+                                      title="Delete registration"
+                                    >
+                                      Remove
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: ANNOUNCEMENTS & ATTIRE BROADCASTS */}
+                  {adminTab === "announcements" && (
+                    <div>
+                      {annMessage && (
+                        <div style={{ background: "#dcfce7", color: "#166534", padding: "12px 16px", borderRadius: "8px", marginBottom: "20px", fontWeight: 600, fontSize: "13px" }}>
+                          ✓ {annMessage}
+                        </div>
+                      )}
+
+                      <div style={{ background: "#f8faf9", padding: "20px", borderRadius: "14px", border: "1px solid #e2e8f0", marginBottom: "28px" }}>
+                        <h4 style={{ margin: "0 0 14px", color: "#0b2a20", fontSize: "16px" }}>
+                          📢 Broadcast New Attire Announcement
+                        </h4>
+                        <form onSubmit={handleCreateAnnouncement} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                          <input
+                            type="text"
+                            placeholder="Announcement title (e.g., Final Cultural Attire Assignment for Seniors)"
+                            value={newAnnTitle}
+                            onChange={(e) => setNewAnnTitle(e.target.value)}
+                            required
+                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                          />
+                          <textarea
+                            placeholder="Write message, who wears what, guidelines, or schedule..."
+                            value={newAnnContent}
+                            onChange={(e) => setNewAnnContent(e.target.value)}
+                            required
+                            rows={4}
+                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px", resize: "vertical" }}
+                          />
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                            <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                              <input
+                                type="text"
+                                placeholder="Author / Signature"
+                                value={newAnnAuthor}
+                                onChange={(e) => setNewAnnAuthor(e.target.value)}
+                                style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px", width: "180px" }}
+                              />
+                              <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", cursor: "pointer" }}>
+                                <input
+                                  type="checkbox"
+                                  checked={newAnnPinned}
+                                  onChange={(e) => setNewAnnPinned(e.target.checked)}
+                                />
+                                📌 Pin this notice to top
+                              </label>
+                            </div>
+                            <button type="submit" className="btn-gold">
+                              Publish to Board
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+
+                      <h4 style={{ margin: "0 0 14px", color: "#0b2a20" }}>Active Announcements ({announcements.length})</h4>
+                      <div>
+                        {announcements.map((ann) => (
+                          <div key={ann.id} style={{ background: "#ffffff", border: "1px solid #e2e8f0", padding: "16px", borderRadius: "12px", marginBottom: "12px", display: "flex", justifyContent: "space-between", gap: "16px" }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                                <strong style={{ fontSize: "15px", color: "#0b2a20" }}>{ann.title}</strong>
+                                {ann.pinned && <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>Pinned</span>}
+                              </div>
+                              <small style={{ color: "#64748b", display: "block", marginBottom: "8px" }}>
+                                By {ann.author} • {ann.date}
+                              </small>
+                              <p style={{ margin: 0, fontSize: "13px", color: "#334155", whiteSpace: "pre-line" }}>
+                                {ann.content}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              className="btn-danger"
+                              onClick={() => handleDeleteAnnouncement(ann.id)}
+                              style={{ alignSelf: "flex-start" }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 3: ADD CLOTHES TO 3D DISPLAY */}
+                  {adminTab === "clothes" && (
+                    <div>
+                      {clothMessage && (
+                        <div style={{ background: "#dcfce7", color: "#166534", padding: "12px 16px", borderRadius: "8px", marginBottom: "20px", fontWeight: 600, fontSize: "13px" }}>
+                          ✓ {clothMessage}
+                        </div>
+                      )}
+
+                      <div style={{ background: "#f8faf9", padding: "20px", borderRadius: "14px", border: "1px solid #e2e8f0", marginBottom: "28px" }}>
+                        <h4 style={{ margin: "0 0 14px", color: "#0b2a20", fontSize: "16px" }}>
+                          👗 Add New Cultural Cloth to 3D Showcase Display
+                        </h4>
+                        <form onSubmit={handleAddCustomCloth} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
+                              Outfit Name / Label *
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Gurage Cultural Kemis"
+                              value={newClothLabel}
+                              onChange={(e) => setNewClothLabel(e.target.value)}
+                              required
+                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
+                              Amharic Name
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. የጉራጌ ባህላዊ ልብስ"
+                              value={newClothAmharic}
+                              onChange={(e) => setNewClothAmharic(e.target.value)}
+                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
+                              Ethiopian Region *
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Gurage / Southern Ethiopia"
+                              value={newClothRegion}
+                              onChange={(e) => setNewClothRegion(e.target.value)}
+                              required
+                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                            />
+                          </div>
+
+                          <div>
+                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
+                              Fabrics (comma separated)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Fine Cotton, Silk Border"
+                              value={newClothFabrics}
+                              onChange={(e) => setNewClothFabrics(e.target.value)}
+                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                            />
+                          </div>
+
+                          <div style={{ gridColumn: "1 / -1" }}>
+                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
+                              Garment Description & Heritage Story
+                            </label>
+                            <textarea
+                              placeholder="Describe the cultural attire, weaving style, and celebration history..."
+                              value={newClothDesc}
+                              onChange={(e) => setNewClothDesc(e.target.value)}
+                              rows={2}
+                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                            />
+                          </div>
+
+                          {/* Female photo upload or URL */}
+                          <div style={{ background: "#ffffff", padding: "12px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
+                            <strong style={{ display: "block", fontSize: "13px", color: "#0b2a20", marginBottom: "6px" }}>
+                              👩 Female Look Photo
+                            </strong>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFemaleUpload}
+                              style={{ fontSize: "12px", marginBottom: "8px" }}
+                            />
+                            <input
+                              type="url"
+                              placeholder="Or paste Female Image URL..."
+                              value={newClothFemaleImg.startsWith("data:") ? "" : newClothFemaleImg}
+                              onChange={(e) => setNewClothFemaleImg(e.target.value)}
+                              style={{ width: "100%", padding: "6px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px" }}
+                            />
+                            {newClothFemaleImg && (
+                              <img
+                                src={newClothFemaleImg}
+                                alt="Female preview"
+                                style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", marginTop: "8px", border: "1px solid #cbd5e1" }}
+                              />
+                            )}
+                          </div>
+
+                          {/* Male photo upload or URL */}
+                          <div style={{ background: "#ffffff", padding: "12px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
+                            <strong style={{ display: "block", fontSize: "13px", color: "#0b2a20", marginBottom: "6px" }}>
+                              👨 Male Look Photo
+                            </strong>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleMaleUpload}
+                              style={{ fontSize: "12px", marginBottom: "8px" }}
+                            />
+                            <input
+                              type="url"
+                              placeholder="Or paste Male Image URL..."
+                              value={newClothMaleImg.startsWith("data:") ? "" : newClothMaleImg}
+                              onChange={(e) => setNewClothMaleImg(e.target.value)}
+                              style={{ width: "100%", padding: "6px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px" }}
+                            />
+                            {newClothMaleImg && (
+                              <img
+                                src={newClothMaleImg}
+                                alt="Male preview"
+                                style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", marginTop: "8px", border: "1px solid #cbd5e1" }}
+                              />
+                            )}
+                          </div>
+
+                          <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", marginTop: "6px" }}>
+                            <button type="submit" className="btn-gold">
+                              <Icon name="plus" />
+                              Add to 3D Showcase Display
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+
+                      {/* Current Display Clothes */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                        <h4 style={{ margin: 0, color: "#0b2a20" }}>Current Outfits in 3D Showcase ({culturalLooks.length})</h4>
+                        <button
+                          type="button"
+                          onClick={handleResetClothes}
+                          style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "12px", cursor: "pointer", textDecoration: "underline" }}
+                        >
+                          Reset Outfits to Default 10
+                        </button>
+                      </div>
+
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "14px" }}>
+                        {culturalLooks.map((cloth, idx) => (
+                          <div
+                            key={cloth.id}
+                            style={{
+                              background: "#ffffff",
+                              borderRadius: "12px",
+                              border: "1px solid #e2e8f0",
+                              overflow: "hidden",
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
+                            }}
+                          >
+                            <div style={{ position: "relative", height: "140px", background: "#f1f5f9" }}>
+                              <img
+                                src={cloth.src}
+                                alt={cloth.label}
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              />
+                              <span style={{ position: "absolute", top: "8px", left: "8px", background: "rgba(0,0,0,0.65)", color: "#fff", fontSize: "10px", padding: "2px 6px", borderRadius: "4px" }}>
+                                #{idx + 1}
+                              </span>
+                              {cloth.custom && (
+                                <span style={{ position: "absolute", top: "8px", right: "8px", background: "#d4a024", color: "#0b2a20", fontSize: "10px", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
+                                  Custom
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ padding: "10px 12px" }}>
+                              <strong style={{ display: "block", fontSize: "13px", color: "#0b2a20", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {cloth.label}
+                              </strong>
+                              <small style={{ color: "#64748b", display: "block", fontSize: "11px", marginBottom: "8px" }}>
+                                {cloth.region}
+                              </small>
+                              {cloth.custom && (
+                                <button
+                                  type="button"
+                                  className="btn-danger"
+                                  onClick={() => handleDeleteCloth(cloth.id)}
+                                  style={{ width: "100%", padding: "4px 8px", fontSize: "11px" }}
+                                >
+                                  Remove Outfit
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
