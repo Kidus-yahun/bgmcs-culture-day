@@ -546,13 +546,15 @@ function App() {
   // Admin Actions
   function handleAdminLogin(e: FormEvent) {
     e.preventDefault();
-    if (adminPasscode.trim().toLowerCase() === "bgmcs2026" || adminPasscode.trim().toLowerCase() === "admin") {
+    const storedPass = localStorage.getItem("bgmcs-admin-passcode") || "bgmcs2026";
+    const inputPass = adminPasscode.trim().toLowerCase();
+    if (inputPass === storedPass.toLowerCase() || inputPass === "admin") {
       setIsAdminLoggedIn(true);
       sessionStorage.setItem("bgmcs-admin-session", "true");
       setAdminError("");
       setAdminPasscode("");
     } else {
-      setAdminError("Incorrect passcode. Hint: bgmcs2026");
+      setAdminError("Incorrect passcode. Access restricted to authorized committee members.");
     }
   }
 
@@ -1184,7 +1186,7 @@ function App() {
                     Unlock Admin Dashboard
                   </button>
                   <small style={{ color: "#94a3b8", fontSize: "11px", marginTop: "4px" }}>
-                    Default Committee Passcode: <strong>bgmcs2026</strong>
+                    🔒 Authorized BGMCS Committee Members Only
                   </small>
                 </form>
               </div>
