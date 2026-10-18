@@ -176,72 +176,15 @@ const INITIAL_SHOWCASE_IMAGES: CulturalLook[] = [
   }
 ];
 
-const INITIAL_DEMO_STUDENTS: Registration[] = [
-  {
-    id: 1,
-    name: "Selamawit Tadesse",
-    email: "selam.tadesse@school.edu.et",
-    outfit: "Habesha Kemis & Netela",
-    image: assetUrl("images/habesha_female.jpg"),
-    date: "May 18"
-  },
-  {
-    id: 2,
-    name: "Dawit Yohannes",
-    email: "dawit.y@school.edu.et",
-    outfit: "Men's tunic suit & royal Kaba cloak",
-    image: assetUrl("images/habesha_male.jpg"),
-    date: "May 19"
-  },
-  {
-    id: 3,
-    name: "Chaltu Bekele",
-    email: "chaltu.b@school.edu.et",
-    outfit: "Oromo traditional attire (Wandabo & Caaccuu)",
-    image: assetUrl("images/oromo_female.jpg"),
-    date: "May 20"
-  },
-  {
-    id: 4,
-    name: "Kalkidan Berhe",
-    email: "kalkidan.b@school.edu.et",
-    outfit: "Tigrayan traditional attire (Zurya & Tilfi)",
-    image: assetUrl("images/tigray_female.jpg"),
-    date: "May 21"
-  },
-  {
-    id: 5,
-    name: "Yonas Mekonnen",
-    email: "yonas.m@school.edu.et",
-    outfit: "Dorze & Gamo master-woven attire",
-    image: assetUrl("images/dorze_male.jpg"),
-    date: "May 22"
-  },
-  {
-    id: 6,
-    name: "Muna Ahmed",
-    email: "muna.ahmed@school.edu.et",
-    outfit: "Harari traditional attire (Ashrafi & Velvet)",
-    image: assetUrl("images/harari_female.jpg"),
-    date: "May 23"
-  }
-];
+const INITIAL_DEMO_STUDENTS: Registration[] = [];
 
 const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   {
     id: 1,
-    title: "Official Senior Batch Culture Day Attire Schedule & Guidelines",
-    content: "Welcome Senior Batch 2026! Please ensure all registered cultural garments are steamed and prepared. Rehearsal for the cultural parade starts at 2:00 PM in the main hall. If you need assistance matching accessories (Netela, Kaba, Caaccuu), visit the committee booth.",
-    author: "BGMCS Committee",
-    date: "May 20, 2026",
-    pinned: true
-  },
-  {
-    id: 2,
-    title: "Finalized Student Cultural Attire Assignments",
-    content: "• Selamawit Tadesse ➔ Habesha Kemis & Netela (Highlands)\n• Dawit Yohannes ➔ Royal Kaba Cloak & Tunic (Royalty)\n• Chaltu Bekele ➔ Oromo Wandabo & Caaccuu (Oromia)\n• Kalkidan Berhe ➔ Tigray Tilfi & Zurya (Tigray)\n• Yonas Mekonnen ➔ Dorze & Gamo Master-Woven Gabi (Gamo)\n• Muna Ahmed ➔ Harari Cultural Attire (Harar Jugol)\n\nPlease check in with committee leads if you require accessory tailoring!",
-    author: "Senior Committee Admin",
-    date: "May 22, 2026",
+    title: "Welcome BGMCS Senior Batch ’26 to Culture Day!",
+    content: "Senior Culture Day is officially here! Explore our authentic cultural attire collections from across Ethiopia, select your favorite traditional look, or test your fortune on the lucky spin wheel to claim your cultural style. The committee will publish official attire schedules and stage lineups right here.",
+    author: "BGMCS Senior Committee",
+    date: "Culture Day 2026",
     pinned: true
   }
 ];
@@ -328,14 +271,16 @@ function Icon({
 function App() {
   const [registrations, setRegistrations] = useState<Registration[]>(() => {
     try {
-      const saved = localStorage.getItem("bgmcs-registrations-v4");
+      const saved = localStorage.getItem("bgmcs-registrations-v5");
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed.filter(p => !p.name?.includes("Selamawit") && !p.name?.includes("Dawit"));
+        }
       }
-      return INITIAL_DEMO_STUDENTS;
+      return [];
     } catch {
-      return INITIAL_DEMO_STUDENTS;
+      return [];
     }
   });
 
@@ -354,10 +299,13 @@ function App() {
 
   const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
     try {
-      const saved = localStorage.getItem("bgmcs-announcements-v4");
+      const saved = localStorage.getItem("bgmcs-announcements-v5");
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          const clean = parsed.filter(a => !a.content?.includes("Selamawit") && !a.title?.includes("Finalized Student Cultural Attire Assignments"));
+          if (clean.length > 0) return clean;
+        }
       }
       return INITIAL_ANNOUNCEMENTS;
     } catch {
@@ -405,7 +353,7 @@ function App() {
   const [annMessage, setAnnMessage] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("bgmcs-registrations-v4", JSON.stringify(registrations));
+    localStorage.setItem("bgmcs-registrations-v5", JSON.stringify(registrations));
   }, [registrations]);
 
   useEffect(() => {
@@ -413,8 +361,17 @@ function App() {
   }, [culturalLooks]);
 
   useEffect(() => {
-    localStorage.setItem("bgmcs-announcements-v4", JSON.stringify(announcements));
+    localStorage.setItem("bgmcs-announcements-v5", JSON.stringify(announcements));
   }, [announcements]);
+
+  useEffect(() => {
+    try {
+      localStorage.removeItem("bgmcs-registrations-v4");
+      localStorage.removeItem("bgmcs-announcements-v4");
+      localStorage.removeItem("bgmcs-registrations-v3");
+      localStorage.removeItem("bgmcs-announcements-v3");
+    } catch {}
+  }, []);
 
   const selectedLook = useMemo(() => {
     return culturalLooks[activeLook % culturalLooks.length] || culturalLooks[0];
@@ -746,10 +703,10 @@ function App() {
               {culturalLooks.slice(0, 4).map((image) => (
                 <img key={image.id} src={image.src} alt="" />
               ))}
-              <span>+{Math.max(28, registrations.length + 28)}</span>
+              <span>{culturalLooks.length}</span>
             </div>
             <p>
-              <strong>Students are joining</strong>
+              <strong>Ethiopian Heritage Collection</strong>
               {culturalLooks.length} traditional regions ready to celebrate
             </p>
           </div>
@@ -956,16 +913,18 @@ function App() {
                   <span>BGMCS Culture Day ’26</span>
                   <h2>Register your choice</h2>
                 </div>
-                <span className="form-count">{registrations.length + 28} joined</span>
+                <span className="form-count">
+                  {registrations.length === 1 ? "1 senior registered" : `${registrations.length} seniors registered`}
+                </span>
               </div>
               <div className="field-row">
                 <label>
                   <span>Student full name</span>
-                  <input name="name" type="text" placeholder="e.g. Selamawit Tadesse" required />
+                  <input name="name" type="text" placeholder="Enter your full name" required />
                 </label>
                 <label>
                   <span>Student email</span>
-                  <input name="email" type="email" placeholder="student@school.edu.et" required />
+                  <input name="email" type="email" placeholder="student@example.com" required />
                 </label>
               </div>
               <label>
@@ -1021,28 +980,47 @@ function App() {
         </div>
 
         <div style={{ maxWidth: "880px", margin: "0 auto", padding: "0 20px" }}>
-          {announcements.map((ann) => (
-            <div key={ann.id} className={`announcement-card ${ann.pinned ? "pinned" : ""}`}>
-              <div className="announcement-header">
-                <div>
-                  <h3 className="announcement-title">{ann.title}</h3>
-                  <div className="announcement-meta">
-                    <span>By {ann.author}</span>
-                    <span>•</span>
-                    <span>{ann.date}</span>
-                    {ann.pinned && (
-                      <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>
-                        📌 Pinned Notice
-                      </span>
-                    )}
+          {announcements.length === 0 ? (
+            <div style={{
+              textAlign: "center",
+              padding: "48px 24px",
+              background: "#ffffff",
+              borderRadius: "16px",
+              border: "1px dashed var(--line)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.02)"
+            }}>
+              <div style={{ fontSize: "36px", marginBottom: "12px" }}>📢</div>
+              <h4 style={{ margin: "0 0 8px", color: "var(--forest)", fontSize: "18px", fontWeight: 700 }}>
+                No Public Announcements Yet
+              </h4>
+              <p style={{ margin: 0, color: "var(--muted)", fontSize: "14px", maxWidth: "480px", marginInline: "auto" }}>
+                The senior committee will broadcast attire guidelines, rehearsal timings, and confirmed lineups here.
+              </p>
+            </div>
+          ) : (
+            announcements.map((ann) => (
+              <div key={ann.id} className={`announcement-card ${ann.pinned ? "pinned" : ""}`}>
+                <div className="announcement-header">
+                  <div>
+                    <h3 className="announcement-title">{ann.title}</h3>
+                    <div className="announcement-meta">
+                      <span>By {ann.author}</span>
+                      <span>•</span>
+                      <span>{ann.date}</span>
+                      {ann.pinned && (
+                        <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>
+                          📌 Pinned Notice
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
+                <div className="announcement-body">
+                  {ann.content}
+                </div>
               </div>
-              <div className="announcement-body">
-                {ann.content}
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
@@ -1064,47 +1042,74 @@ function App() {
           margin: "0 auto",
           padding: "0 24px"
         }}>
-          {registrations.map((student) => (
-            <div
-              key={student.id}
-              style={{
-                background: "#fff",
-                borderRadius: "16px",
-                padding: "16px",
-                border: "1px solid var(--line)",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px"
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <img
-                  src={student.image || assetUrl("images/habesha_female.jpg")}
-                  alt={student.name}
-                  style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--forest)" }}
-                  onError={(e) => { (e.target as HTMLImageElement).src = assetUrl("images/habesha_female.jpg"); }}
-                />
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <strong style={{ display: "block", fontSize: "14px", color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {student.name}
+          {registrations.length === 0 ? (
+            <div style={{
+              gridColumn: "1 / -1",
+              textAlign: "center",
+              padding: "54px 24px",
+              background: "#ffffff",
+              borderRadius: "16px",
+              border: "1px dashed var(--line)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.02)"
+            }}>
+              <div style={{ fontSize: "38px", marginBottom: "12px" }}>🎓</div>
+              <h4 style={{ margin: "0 0 8px", color: "var(--forest)", fontSize: "18px", fontWeight: 700 }}>
+                Senior Batch Registration Is Open!
+              </h4>
+              <p style={{ margin: 0, color: "var(--muted)", fontSize: "14px", maxWidth: "520px", marginInline: "auto", lineHeight: 1.6 }}>
+                No seniors have registered yet. Be the first to claim your traditional look above! Once registered, your attire and batch card will appear here.
+              </p>
+              <a
+                href="#register"
+                className="btn-gold"
+                style={{ display: "inline-flex", marginTop: "18px", padding: "10px 24px", textDecoration: "none" }}
+              >
+                Register Your Look
+              </a>
+            </div>
+          ) : (
+            registrations.map((student) => (
+              <div
+                key={student.id}
+                style={{
+                  background: "#fff",
+                  borderRadius: "16px",
+                  padding: "16px",
+                  border: "1px solid var(--line)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px"
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <img
+                    src={student.image || assetUrl("images/habesha_female.jpg")}
+                    alt={student.name}
+                    style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--forest)" }}
+                    onError={(e) => { (e.target as HTMLImageElement).src = assetUrl("images/habesha_female.jpg"); }}
+                  />
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <strong style={{ display: "block", fontSize: "14px", color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {student.name}
+                    </strong>
+                    <small style={{ color: "var(--muted)", fontSize: "11px", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {student.email}
+                    </small>
+                  </div>
+                </div>
+
+                <div style={{ background: "var(--paper)", padding: "10px", borderRadius: "10px", border: "1px solid var(--line)" }}>
+                  <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", display: "block" }}>
+                    Selected Attire
+                  </span>
+                  <strong style={{ fontSize: "13px", color: "var(--forest)", display: "block", marginTop: "2px" }}>
+                    {student.outfit}
                   </strong>
-                  <small style={{ color: "var(--muted)", fontSize: "11px", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {student.email}
-                  </small>
                 </div>
               </div>
-
-              <div style={{ background: "var(--paper)", padding: "10px", borderRadius: "10px", border: "1px solid var(--line)" }}>
-                <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", display: "block" }}>
-                  Selected Attire
-                </span>
-                <strong style={{ fontSize: "13px", color: "var(--forest)", display: "block", marginTop: "2px" }}>
-                  {student.outfit}
-                </strong>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
