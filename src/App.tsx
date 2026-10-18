@@ -287,7 +287,7 @@ function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
-  const [isPaused, setIsPaused] = useState(false);
+  const [isSpinning360, setIsSpinning360] = useState(false);
   const [activeLook, setActiveLook] = useState(0);
   const [isFlippedToMale, setIsFlippedToMale] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -463,58 +463,49 @@ function App() {
           <div className="hero-pattern" />
           
           {/* Top Gender Switcher on 360 Card */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "16px", zIndex: 10 }}>
+          <div className="gender-switcher">
             <button
               type="button"
-              onClick={() => setIsFlippedToMale(false)}
-              style={{
-                padding: "6px 14px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                fontWeight: 700,
-                cursor: "pointer",
-                background: !isFlippedToMale ? "var(--forest)" : "rgba(255,255,255,0.7)",
-                color: !isFlippedToMale ? "#fff" : "var(--ink)",
-                border: "1px solid var(--line)",
-                transition: "all 0.2s"
+              className={`gender-btn ${!isFlippedToMale ? "active" : ""}`}
+              onClick={() => {
+                setIsFlippedToMale(false);
+                setIsSpinning360(false);
               }}
+              aria-pressed={!isFlippedToMale}
             >
               👩 Female Look
             </button>
             <button
               type="button"
-              onClick={() => setIsFlippedToMale(true)}
-              style={{
-                padding: "6px 14px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                fontWeight: 700,
-                cursor: "pointer",
-                background: isFlippedToMale ? "var(--forest)" : "rgba(255,255,255,0.7)",
-                color: isFlippedToMale ? "#fff" : "var(--ink)",
-                border: "1px solid var(--line)",
-                transition: "all 0.2s"
+              className={`gender-btn ${isFlippedToMale ? "active" : ""}`}
+              onClick={() => {
+                setIsFlippedToMale(true);
+                setIsSpinning360(false);
               }}
+              aria-pressed={isFlippedToMale}
             >
               👨 Male Look
             </button>
           </div>
 
-          <div className={`outfit-stage ${isPaused ? "is-paused" : ""}`}>
+          <div className="outfit-stage">
             <div className="orbit orbit-one" />
             <div className="orbit orbit-two" />
             <button
-              className="outfit-card"
+              className={`outfit-card ${isFlippedToMale ? "flipped" : ""} ${isSpinning360 ? "spinning" : ""}`}
               type="button"
-              onClick={() => setIsPaused((value) => !value)}
-              aria-label={isPaused ? "Resume outfit rotation" : "Pause outfit rotation"}
-              title="Click to play or pause 360° spin"
+              onClick={() => {
+                setIsSpinning360(false);
+                setIsFlippedToMale((val) => !val);
+              }}
+              aria-label="Click to flip outfit between female and male looks"
+              title="Click to flip between Female and Male look"
             >
               <span className="outfit-face outfit-front">
-                <img src={isFlippedToMale ? selectedLook.backSrc : selectedLook.src} alt={selectedLook.alt} />
+                <img src={selectedLook.src} alt={`${selectedLook.label} - Female Look`} />
               </span>
               <span className="outfit-face outfit-back">
-                <img src={isFlippedToMale ? selectedLook.src : selectedLook.backSrc} alt={selectedLook.label} />
+                <img src={selectedLook.backSrc} alt={`${selectedLook.label} - Male Look`} />
               </span>
             </button>
           </div>
@@ -522,7 +513,12 @@ function App() {
           <div className="look-caption">
             <span>{String(activeLook + 1).padStart(2, "0")} / {String(showcaseImages.length).padStart(2, "0")}</span>
             <div>
-              <strong>{selectedLook.label}</strong>
+              <strong>
+                {selectedLook.label}
+                <span style={{ fontSize: "12px", marginLeft: "8px", opacity: 0.85, fontWeight: 500 }}>
+                  ({isFlippedToMale ? "Male Look" : "Female Look"})
+                </span>
+              </strong>
               <small>{selectedLook.region} · {selectedLook.amharic}</small>
             </div>
           </div>
@@ -537,8 +533,8 @@ function App() {
             >
               ←
             </button>
-            <button type="button" onClick={() => setIsPaused((value) => !value)}>
-              {isPaused ? "Play 360°" : "Pause 360°"}
+            <button type="button" onClick={() => setIsSpinning360((value) => !value)}>
+              {isSpinning360 ? "Pause 360°" : "Play 360°"}
             </button>
             <button
               type="button"
