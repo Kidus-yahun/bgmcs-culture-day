@@ -473,72 +473,80 @@ h1 em {
 
 .look-caption {
   align-items: center;
-  bottom: 40px;
-  color: white;
+  bottom: 34px;
   display: flex;
-  gap: 20px;
-  left: 42px;
+  left: 36px;
   position: absolute;
+  z-index: 10;
 }
 
-.look-caption > span {
+.look-caption .look-counter {
   color: var(--gold);
   font-family: "Playfair Display", serif;
   font-size: 14px;
-}
-
-.look-caption div {
-  border-left: 1px solid rgba(255, 255, 255, 0.35);
-  display: flex;
-  flex-direction: column;
-  padding-left: 20px;
-}
-
-.look-caption strong {
-  font-family: "Playfair Display", serif;
-  font-size: 18px;
-}
-
-.look-caption small {
-  color: rgba(255, 255, 255, 0.65);
-  margin-top: 2px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(10, 36, 26, 0.65);
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .look-controls {
-  bottom: 37px;
+  bottom: 34px;
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   position: absolute;
-  right: 38px;
+  right: 36px;
+  z-index: 10;
 }
 
 .look-controls button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(10, 36, 26, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
   color: white;
   cursor: pointer;
-  min-height: 38px;
-  padding: 0 12px;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .look-controls button:hover {
   background: white;
   color: var(--ink);
+  border-color: white;
+  transform: translateY(-1px);
 }
 
 .look-controls .choose-look-btn {
   background: #d4a024;
   border: 1px solid #c49420;
+  border-radius: 8px;
   color: #12281c;
   font-weight: 700;
   font-size: 13px;
-  padding: 0 16px;
+  padding: 0 18px;
   letter-spacing: 0.2px;
+  box-shadow: 0 4px 14px rgba(212, 160, 36, 0.35);
 }
 
 .look-controls .choose-look-btn:hover {
   background: #e5b230;
   color: #0c1c13;
+  border-color: #e5b230;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(212, 160, 36, 0.5);
 }
 
 .process-section {
@@ -1036,8 +1044,8 @@ footer > a:last-child {
   .hero-visual { min-height: 600px; }
   .outfit-stage { inset: 4% 2% 18%; }
   .outfit-card { left: 12%; width: 76%; }
-  .look-caption { bottom: 78px; left: 22px; }
-  .look-controls { bottom: 25px; left: 22px; right: auto; }
+  .look-caption { bottom: 76px; left: 18px; }
+  .look-controls { bottom: 20px; left: 18px; right: 18px; flex-wrap: wrap; gap: 8px; }
   .process-section { padding: 80px 20px; }
   .process-grid article { padding: 32px 25px; }
   .registration-section { padding: 80px 18px; }

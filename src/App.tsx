@@ -807,16 +807,7 @@ function App() {
           </div>
 
           <div className="look-caption">
-            <span>{String(activeLook + 1).padStart(2, "0")} / {String(culturalLooks.length).padStart(2, "0")}</span>
-            <div>
-              <strong>
-                {selectedLook.label}
-                <span style={{ fontSize: "12px", marginLeft: "8px", opacity: 0.85, fontWeight: 500 }}>
-                  ({isFlippedToMale ? "Male Look" : "Female Look"})
-                </span>
-              </strong>
-              <small>{selectedLook.region} · {selectedLook.amharic}</small>
-            </div>
+            <span className="look-counter">{String(activeLook + 1).padStart(2, "0")} / {String(culturalLooks.length).padStart(2, "0")}</span>
           </div>
 
           <div className="look-controls">
@@ -826,16 +817,22 @@ function App() {
                 setActiveLook((current) => (current - 1 + culturalLooks.length) % culturalLooks.length)
               }
               aria-label="Previous cultural look"
+              title="Previous cultural look"
             >
               ←
             </button>
-            <button type="button" onClick={() => setIsSpinning360((value) => !value)}>
+            <button
+              type="button"
+              onClick={() => setIsSpinning360((value) => !value)}
+              title={isSpinning360 ? "Pause 360° rotation" : "Play 360° rotation"}
+            >
               {isSpinning360 ? "Pause 360°" : "Play 360°"}
             </button>
             <button
               type="button"
               className="choose-look-btn"
               onClick={() => handleChooseLook(selectedLook)}
+              title={`Select ${selectedLook.label}`}
             >
               Choose this look
             </button>
@@ -843,6 +840,7 @@ function App() {
               type="button"
               onClick={() => setActiveLook((current) => (current + 1) % culturalLooks.length)}
               aria-label="Next cultural look"
+              title="Next cultural look"
             >
               →
             </button>
