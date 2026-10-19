@@ -1,4 +1,7 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+const CLOUD_REGISTRATIONS_URL = "https://extendsclass.com/api/json-storage/bin/bfceaaf";
+const CLOUD_ANNOUNCEMENTS_URL = "https://extendsclass.com/api/json-storage/bin/afabdcd";
 
 type Registration = {
   id: number;
@@ -314,6 +317,12 @@ function App() {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [celebrationNotice, setCelebrationNotice] = useState<string | null>(null);
+  const [highlightedId, setHighlightedId] = useState<number | null>(null);
+  const [isRefreshingCloud, setIsRefreshingCloud] = useState(false);
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
   const [isSpinning360, setIsSpinning360] = useState(false);
@@ -323,6 +332,64 @@ function App() {
   const [spinResult, setSpinResult] = useState<CulturalLook>(culturalLooks[0]);
   const [selectedOutfitInForm, setSelectedOutfitInForm] = useState("");
   const touchStartX = useRef<number | null>(null);
+
+  const refreshCloudRegistrations = useCallback(async (showIndicator = false) => {
+    if (showIndicator) setIsRefreshingCloud(true);
+    try {
+      const res = await fetch(CLOUD_REGISTRATIONS_URL, { cache: "no-store" });
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (Array.isArray(cloudData)) {
+          setRegistrations((prevLocal) => {
+            const map = new Map<number | string, Registration>();
+            cloudData.forEach((item: Registration) => {
+              if (item && item.id && item.name) {
+                map.set(item.id, item);
+              }
+            });
+            prevLocal.forEach((localItem) => {
+              if (localItem && localItem.id && localItem.name && !map.has(localItem.id)) {
+                map.set(localItem.id, localItem);
+              }
+            });
+            const merged = Array.from(map.values()).sort((a, b) => (b.id || 0) - (a.id || 0));
+            localStorage.setItem("bgmcs-registrations-v5", JSON.stringify(merged));
+            return merged;
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch cloud registrations:", err);
+    } finally {
+      if (showIndicator) {
+        setTimeout(() => setIsRefreshingCloud(false), 600);
+      }
+    }
+  }, []);
+
+  const refreshCloudAnnouncements = useCallback(async () => {
+    try {
+      const res = await fetch(CLOUD_ANNOUNCEMENTS_URL, { cache: "no-store" });
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (Array.isArray(cloudData) && cloudData.length > 0) {
+          setAnnouncements(cloudData);
+          localStorage.setItem("bgmcs-announcements-v5", JSON.stringify(cloudData));
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch cloud announcements:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshCloudRegistrations();
+    refreshCloudAnnouncements();
+    const interval = setInterval(() => {
+      refreshCloudRegistrations();
+    }, 25000);
+    return () => clearInterval(interval);
+  }, [refreshCloudRegistrations, refreshCloudAnnouncements]);
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
@@ -428,26 +495,69 @@ function App() {
     reader.readAsDataURL(file);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const outfitVal = String(form.get("outfit"));
+    if (!formName.trim() || !formEmail.trim() || !selectedOutfitInForm) return;
+
+    setIsSubmitting(true);
+    const outfitVal = selectedOutfitInForm;
     const matchedLook = culturalLooks.find((l) => outfitVal.includes(l.label) || l.label.includes(outfitVal));
 
+    const newId = Date.now();
+    const studentName = formName.trim();
     const entry: Registration = {
-      id: Date.now(),
-      name: String(form.get("name")),
-      email: String(form.get("email")),
+      id: newId,
+      name: studentName,
+      email: formEmail.trim(),
       outfit: outfitVal,
-      image: preview || (matchedLook ? matchedLook.src : undefined),
-      date: "Just now"
+      image: (preview && preview.length < 150000) ? preview : (matchedLook ? matchedLook.src : assetUrl("images/habesha_female.jpg")),
+      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
     };
 
-    setRegistrations((current) => [entry, ...current]);
+    // 1. Immediately update local state & storage
+    const updatedLocal = [entry, ...registrations.filter(r => r.id !== entry.id)];
+    setRegistrations(updatedLocal);
+    localStorage.setItem("bgmcs-registrations-v5", JSON.stringify(updatedLocal));
+
+    // 2. Clear inputs & set visual celebration banner and card highlight
+    setHighlightedId(newId);
+    setCelebrationNotice(`🎉 Welcome, ${studentName}! Your choice of "${outfitVal}" is confirmed and live on the roster!`);
     setIsSubmitted(true);
+    setFormName("");
+    setFormEmail("");
     setFileName("");
     setPreview("");
-    event.currentTarget.reset();
+
+    // 3. Sync to Cloud backend
+    try {
+      let currentCloud: Registration[] = [];
+      try {
+        const checkRes = await fetch(CLOUD_REGISTRATIONS_URL, { cache: "no-store" });
+        if (checkRes.ok) {
+          const fetched = await checkRes.json();
+          if (Array.isArray(fetched)) currentCloud = fetched;
+        }
+      } catch {}
+
+      const mergedCloud = [entry, ...currentCloud.filter(c => c.id !== entry.id && c.name?.toLowerCase() !== entry.name.toLowerCase())];
+      await fetch(CLOUD_REGISTRATIONS_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(mergedCloud)
+      });
+    } catch (err) {
+      console.warn("Could not sync registration to cloud:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+
+    // 4. Smoothly scroll directly down to the Senior Roster so the student sees their name immediately!
+    setTimeout(() => {
+      const rosterEl = document.getElementById("roster");
+      if (rosterEl) {
+        rosterEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 120);
   }
 
   function playTickSound() {
@@ -540,9 +650,20 @@ function App() {
     sessionStorage.removeItem("bgmcs-admin-session");
   }
 
-  function handleDeleteRegistration(id: number) {
+  async function handleDeleteRegistration(id: number) {
     if (window.confirm("Are you sure you want to delete this senior registration?")) {
-      setRegistrations(prev => prev.filter(r => r.id !== id));
+      const updated = registrations.filter(r => r.id !== id);
+      setRegistrations(updated);
+      localStorage.setItem("bgmcs-registrations-v5", JSON.stringify(updated));
+      try {
+        await fetch(CLOUD_REGISTRATIONS_URL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
+        });
+      } catch (e) {
+        console.warn("Cloud delete failed", e);
+      }
     }
   }
 
@@ -559,7 +680,7 @@ function App() {
     document.body.removeChild(link);
   }
 
-  function handleAnnounceRoster() {
+  async function handleAnnounceRoster() {
     const list = registrations.map(r => `• ${r.name} ➔ ${r.outfit}`).join("\n");
     const newAnn: Announcement = {
       id: Date.now(),
@@ -569,13 +690,21 @@ function App() {
       date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
       pinned: true
     };
-    setAnnouncements(prev => [newAnn, ...prev]);
+    const updated = [newAnn, ...announcements];
+    setAnnouncements(updated);
     setAdminTab("announcements");
     setAnnMessage("Attire roster announced publicly!");
     setTimeout(() => setAnnMessage(""), 4000);
+    try {
+      await fetch(CLOUD_ANNOUNCEMENTS_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+    } catch {}
   }
 
-  function handleCreateAnnouncement(e: FormEvent) {
+  async function handleCreateAnnouncement(e: FormEvent) {
     e.preventDefault();
     if (!newAnnTitle || !newAnnContent) return;
     const newAnn: Announcement = {
@@ -586,16 +715,32 @@ function App() {
       date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
       pinned: newAnnPinned
     };
-    setAnnouncements(prev => [newAnn, ...prev]);
+    const updated = [newAnn, ...announcements];
+    setAnnouncements(updated);
     setNewAnnTitle("");
     setNewAnnContent("");
     setAnnMessage("Announcement published successfully!");
     setTimeout(() => setAnnMessage(""), 4000);
+    try {
+      await fetch(CLOUD_ANNOUNCEMENTS_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+    } catch {}
   }
 
-  function handleDeleteAnnouncement(id: number) {
+  async function handleDeleteAnnouncement(id: number) {
     if (window.confirm("Delete this announcement?")) {
-      setAnnouncements(prev => prev.filter(a => a.id !== id));
+      const updated = announcements.filter(a => a.id !== id);
+      setAnnouncements(updated);
+      try {
+        await fetch(CLOUD_ANNOUNCEMENTS_URL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
+        });
+      } catch {}
     }
   }
 
@@ -921,78 +1066,111 @@ function App() {
         </div>
 
         <div className="form-card">
-          {isSubmitted ? (
-            <div className="success-state">
-              <span><Icon name="check" /></span>
-              <small>Registration received</small>
-              <h2>You’re part of Culture Day.</h2>
-              <p>
-                Your choice has been saved in our senior roster on this device.
-              </p>
-              <button type="button" onClick={() => setIsSubmitted(false)}>
-                Add another student
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="form-top">
-                <div>
-                  <span>BGMCS Culture Day ’26</span>
-                  <h2>Register your choice</h2>
-                </div>
-                <span className="form-count">
-                  {registrations.length === 1 ? "1 senior registered" : `${registrations.length} seniors registered`}
+          {isSubmitted && (
+            <div style={{
+              background: "#ecfdf5",
+              border: "1px solid #10b981",
+              borderRadius: "12px",
+              padding: "14px 16px",
+              marginBottom: "16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "10px"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ color: "#059669", fontSize: "18px" }}>✓</span>
+                <span style={{ fontSize: "13px", fontWeight: 600, color: "#065f46" }}>
+                  Registration saved! Your name is appearing on the Senior Roster below.
                 </span>
               </div>
-              <div className="field-row">
-                <label>
-                  <span>Student full name</span>
-                  <input name="name" type="text" placeholder="Enter your full name" required />
-                </label>
-                <label>
-                  <span>Student email</span>
-                  <input name="email" type="email" placeholder="student@example.com" required />
-                </label>
-              </div>
-              <label>
-                <span>Cultural clothing</span>
-                <select
-                  name="outfit"
-                  value={selectedOutfitInForm}
-                  onChange={(e) => setSelectedOutfitInForm(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>Select a cultural outfit</option>
-                  {allOutfitOptions.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="file-upload">
-                <span>Upload sketch or reference photo (optional)</span>
-                <input type="file" accept="image/*" onChange={handleImage} />
-                <div className="dropzone">
-                  <Icon name="upload" />
-                  <div>
-                    <strong>{fileName || "Drop an image or browse"}</strong>
-                    <small>Supports PNG, JPG up to 10MB</small>
-                  </div>
-                </div>
-              </label>
-
-              {preview && (
-                <div className="image-preview">
-                  <img src={preview} alt="Chosen outfit reference" />
-                </div>
-              )}
-
-              <button className="submit-button" type="submit">
-                Confirm registration
-              </button>
-              <p className="privacy-note">Your details are only used by the Culture Day planning team.</p>
-            </form>
+              <a
+                href="#roster"
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "#059669",
+                  textDecoration: "underline",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                View on Roster ↓
+              </a>
+            </div>
           )}
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-top">
+              <div>
+                <span>BGMCS Culture Day ’26</span>
+                <h2>Register your choice</h2>
+              </div>
+              <span className="form-count">
+                {registrations.length === 1 ? "1 senior registered" : `${registrations.length} seniors registered`}
+              </span>
+            </div>
+            <div className="field-row">
+              <label>
+                <span>Student full name</span>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                <span>Student email</span>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="student@example.com"
+                  value={formEmail}
+                  onChange={(e) => setFormEmail(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+            <label>
+              <span>Cultural clothing</span>
+              <select
+                name="outfit"
+                value={selectedOutfitInForm}
+                onChange={(e) => setSelectedOutfitInForm(e.target.value)}
+                required
+              >
+                <option value="" disabled>Select a cultural outfit</option>
+                {allOutfitOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </label>
+
+            <label className="file-upload">
+              <span>Upload sketch or reference photo (optional)</span>
+              <input type="file" accept="image/*" onChange={handleImage} />
+              <div className="dropzone">
+                <Icon name="upload" />
+                <div>
+                  <strong>{fileName || "Drop an image or browse"}</strong>
+                  <small>Supports PNG, JPG up to 10MB</small>
+                </div>
+              </div>
+            </label>
+
+            {preview && (
+              <div className="image-preview">
+                <img src={preview} alt="Chosen outfit reference" />
+              </div>
+            )}
+
+            <button className="submit-button" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Registering & Syncing to Cloud..." : "Confirm registration"}
+            </button>
+            <p className="privacy-note">Synchronized in real-time across the Senior Batch committee & class.</p>
+          </form>
         </div>
       </section>
 
@@ -1054,12 +1232,59 @@ function App() {
       {/* Senior Batch Roster Gallery */}
       <section className="process-section" id="roster" style={{ background: "var(--cream)", borderTop: "1px solid var(--line)" }}>
         <div className="section-heading">
-          <span className="section-kicker">Senior Batch Community</span>
+          <span className="section-kicker">Senior Batch Community • Live Cloud Sync</span>
           <h2>Registered Seniors Roster</h2>
           <p>
-            See who has joined and what cultural attire they plan to celebrate with.
+            See who has joined and what cultural attire they plan to celebrate with. Synchronized live across all devices!
           </p>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px", marginTop: "14px", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              onClick={() => refreshCloudRegistrations(true)}
+              disabled={isRefreshingCloud}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "#ffffff",
+                border: "1px solid var(--line)",
+                borderRadius: "20px",
+                padding: "6px 16px",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "var(--forest)",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
+              }}
+            >
+              <span style={{ display: "inline-block", transform: isRefreshingCloud ? "rotate(360deg)" : "none", transition: "transform 0.6s ease" }}>
+                🔄
+              </span>
+              {isRefreshingCloud ? "Refreshing live roster..." : "Refresh live roster"}
+            </button>
+            <span style={{ fontSize: "12px", color: "var(--muted)", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
+              Live ({registrations.length} registered)
+            </span>
+          </div>
         </div>
+
+        {celebrationNotice && (
+          <div style={{
+            maxWidth: "880px",
+            margin: "0 auto 24px",
+            padding: "16px 20px",
+            background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+            border: "2px solid #f59e0b",
+            borderRadius: "14px",
+            boxShadow: "0 8px 24px rgba(245,158,11,0.2)",
+            textAlign: "center"
+          }}>
+            <p style={{ margin: 0, color: "#78350f", fontSize: "15px", fontWeight: 700 }}>
+              {celebrationNotice}
+            </p>
+          </div>
+        )}
 
         <div style={{
           display: "grid",
@@ -1084,7 +1309,7 @@ function App() {
                 Senior Batch Registration Is Open!
               </h4>
               <p style={{ margin: 0, color: "var(--muted)", fontSize: "14px", maxWidth: "520px", marginInline: "auto", lineHeight: 1.6 }}>
-                No seniors have registered yet. Be the first to claim your traditional look above! Once registered, your attire and batch card will appear here.
+                No seniors have registered yet. Be the first to claim your traditional look above! Once registered, your attire and batch card will appear here instantly.
               </p>
               <a
                 href="#register"
@@ -1095,47 +1320,59 @@ function App() {
               </a>
             </div>
           ) : (
-            registrations.map((student) => (
-              <div
-                key={student.id}
-                style={{
-                  background: "#fff",
-                  borderRadius: "16px",
-                  padding: "16px",
-                  border: "1px solid var(--line)",
-                  boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px"
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <img
-                    src={student.image || assetUrl("images/habesha_female.jpg")}
-                    alt={student.name}
-                    style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--forest)" }}
-                    onError={(e) => { (e.target as HTMLImageElement).src = assetUrl("images/habesha_female.jpg"); }}
-                  />
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <strong style={{ display: "block", fontSize: "14px", color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {student.name}
+            registrations.map((student) => {
+              const isNewlyAdded = student.id === highlightedId;
+              return (
+                <div
+                  key={student.id}
+                  style={{
+                    background: isNewlyAdded ? "#fffbeb" : "#fff",
+                    borderRadius: "16px",
+                    padding: "16px",
+                    border: isNewlyAdded ? "2px solid #f59e0b" : "1px solid var(--line)",
+                    boxShadow: isNewlyAdded ? "0 8px 28px rgba(245, 158, 11, 0.35)" : "0 4px 16px rgba(0,0,0,0.04)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                    transform: isNewlyAdded ? "scale(1.02)" : "scale(1)",
+                    transition: "all 0.3s ease"
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <img
+                      src={student.image || assetUrl("images/habesha_female.jpg")}
+                      alt={student.name}
+                      style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: isNewlyAdded ? "2px solid #f59e0b" : "2px solid var(--forest)" }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = assetUrl("images/habesha_female.jpg"); }}
+                    />
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <strong style={{ fontSize: "14px", color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {student.name}
+                        </strong>
+                        {isNewlyAdded && (
+                          <span style={{ fontSize: "10px", padding: "1px 6px", background: "#f59e0b", color: "#fff", borderRadius: "8px", fontWeight: 700 }}>
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                      <small style={{ color: "var(--muted)", fontSize: "11px", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {student.email}
+                      </small>
+                    </div>
+                  </div>
+
+                  <div style={{ background: isNewlyAdded ? "#fef3c7" : "var(--paper)", padding: "10px", borderRadius: "10px", border: "1px solid var(--line)" }}>
+                    <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", display: "block" }}>
+                      Selected Attire
+                    </span>
+                    <strong style={{ fontSize: "13px", color: "var(--forest)", display: "block", marginTop: "2px" }}>
+                      {student.outfit}
                     </strong>
-                    <small style={{ color: "var(--muted)", fontSize: "11px", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {student.email}
-                    </small>
                   </div>
                 </div>
-
-                <div style={{ background: "var(--paper)", padding: "10px", borderRadius: "10px", border: "1px solid var(--line)" }}>
-                  <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", display: "block" }}>
-                    Selected Attire
-                  </span>
-                  <strong style={{ fontSize: "13px", color: "var(--forest)", display: "block", marginTop: "2px" }}>
-                    {student.outfit}
-                  </strong>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </section>
