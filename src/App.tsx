@@ -1671,41 +1671,55 @@ function App() {
           </span>
         </a>
 
-        <nav aria-label="Main navigation">
+        <nav className="header-nav-dock" aria-label="Main navigation">
           <button
             type="button"
+            className={`nav-dock-btn ${activeDay === "home" ? "active" : ""}`}
             onClick={() => navigateToDay("home")}
-            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: activeDay === "home" ? 700 : 600, color: activeDay === "home" ? "var(--forest)" : "#53655d" }}
+            aria-label="Senior Hub"
           >
-            🎓 Senior Hub
+            <span className="dock-icon">🎓</span>
+            <span className="dock-label">Senior Hub</span>
           </button>
+
           <button
             type="button"
+            className={`nav-dock-btn ${activeDay === "culture" ? "active" : ""}`}
             onClick={() => navigateToDay("culture")}
-            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: activeDay === "culture" ? 700 : 600, color: activeDay === "culture" ? "var(--forest)" : "#53655d" }}
+            aria-label="Culture Day"
           >
-            🇪🇹 Culture Day
+            <span className="dock-icon">🇪🇹</span>
+            <span className="dock-label">Culture Day</span>
           </button>
+
           <button
             type="button"
+            className={`nav-dock-btn ${activeDay === "gabi" ? "active" : ""}`}
             onClick={() => navigateToDay("gabi")}
-            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: activeDay === "gabi" ? 700 : 600, color: activeDay === "gabi" ? "var(--forest)" : "#53655d" }}
+            aria-label="Gabi Day"
           >
-            🧣 Gabi Day
+            <span className="dock-icon">🧣</span>
+            <span className="dock-label">Gabi Day</span>
           </button>
+
           <button
             type="button"
+            className={`nav-dock-btn ${activeDay === "jacket" ? "active" : ""}`}
             onClick={() => navigateToDay("jacket")}
-            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: activeDay === "jacket" ? 700 : 600, color: activeDay === "jacket" ? "var(--forest)" : "#53655d" }}
+            aria-label="Welcome / Jacket Day"
           >
-            🧥 Welcome / Jacket
+            <span className="dock-icon">🧥</span>
+            <span className="dock-label">Jacket Day</span>
           </button>
+
           <button
             type="button"
+            className={`nav-dock-btn ${activeDay === "payment" ? "active" : ""}`}
             onClick={() => navigateToDay("payment")}
-            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: activeDay === "payment" ? 700 : 600, color: activeDay === "payment" ? "#d97706" : "#53655d" }}
+            aria-label="Pay on Account & Receipts"
           >
-            💳 Pay / Receipts
+            <span className="dock-icon">💳</span>
+            <span className="dock-label">Pay / Receipts</span>
           </button>
         </nav>
 
