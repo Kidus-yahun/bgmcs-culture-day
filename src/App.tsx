@@ -827,7 +827,39 @@ function SeniorJacketVisualizer({
 // -------------------------------------------------------------
 // Main Application Component
 // -------------------------------------------------------------
+type ThemeMode = "light" | "dark";
+
 function App() {
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    try {
+      const saved = localStorage.getItem("bgmcs-theme") as ThemeMode | null;
+      if (saved === "light" || saved === "dark") return saved;
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark";
+      }
+    } catch {}
+    return "light";
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    if (theme === "dark") {
+      root.classList.add("dark");
+      root.style.colorScheme = "dark";
+    } else {
+      root.classList.remove("dark");
+      root.style.colorScheme = "light";
+    }
+    try {
+      localStorage.setItem("bgmcs-theme", theme);
+    } catch {}
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   const [activeDay, setActiveDay] = useState<SeniorDay>(() => {
     const hash = window.location.hash.replace("#", "").toLowerCase();
     if (hash === "culture" || hash === "culture-day") return "culture";
@@ -1983,6 +2015,35 @@ function App() {
         <div className="header-actions">
           <button
             type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            <span className="theme-toggle-icon" aria-hidden="true">
+              {theme === "dark" ? (
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+              ) : (
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+              )}
+            </span>
+            <span className="theme-toggle-label">{theme === "dark" ? "Light" : "Dark"}</span>
+          </button>
+
+          <button
+            type="button"
             className="admin-nav-btn"
             onClick={() => setIsAdminOpen(true)}
             aria-label="Open Admin Dashboard"
@@ -2871,7 +2932,7 @@ function App() {
                   gridColumn: "1 / -1",
                   textAlign: "center",
                   padding: "54px 24px",
-                  background: "#ffffff",
+                  background: "var(--card-bg)",
                   borderRadius: "16px",
                   border: "1px dashed var(--line)",
                   boxShadow: "0 4px 16px rgba(0,0,0,0.02)"
@@ -2898,10 +2959,10 @@ function App() {
                     <div
                       key={student.id}
                       style={{
-                        background: isNewlyAdded ? "#fffbeb" : "#fff",
+                        background: isNewlyAdded ? "var(--highlight-bg)" : "var(--card-bg)",
                         borderRadius: "16px",
                         padding: "16px",
-                        border: isNewlyAdded ? "2px solid #f59e0b" : "1px solid var(--line)",
+                        border: isNewlyAdded ? "2px solid var(--highlight-border)" : "1px solid var(--line)",
                         boxShadow: isNewlyAdded ? "0 8px 28px rgba(245, 158, 11, 0.35)" : "0 4px 16px rgba(0,0,0,0.04)",
                         display: "flex",
                         flexDirection: "column",
@@ -3300,7 +3361,7 @@ function App() {
           </section>
 
           {/* Gabi Roster Gallery */}
-          <section className="process-section" id="gabi-roster" style={{ background: "#ffffff", borderTop: "1px solid var(--line)" }}>
+          <section className="process-section" id="gabi-roster" style={{ background: "var(--paper)", borderTop: "1px solid var(--line)" }}>
             <div className="section-heading">
               <span className="section-kicker">Gabi Day Brotherhood</span>
               <h2>Registered Gabi Day Seniors</h2>
@@ -3316,13 +3377,13 @@ function App() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
-                    background: "#ffffff",
+                    background: "var(--card-bg)",
                     border: "1px solid var(--line)",
                     borderRadius: "20px",
                     padding: "6px 16px",
                     fontSize: "12px",
                     fontWeight: 600,
-                    color: "#92400e",
+                    color: "var(--gold)",
                     cursor: "pointer",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
                   }}
@@ -3352,7 +3413,7 @@ function App() {
                   gridColumn: "1 / -1",
                   textAlign: "center",
                   padding: "48px 24px",
-                  background: "#fffbeb",
+                  background: "var(--highlight-bg)",
                   borderRadius: "16px",
                   border: "1px dashed #f59e0b"
                 }}>
@@ -3371,10 +3432,10 @@ function App() {
                     <div
                       key={student.id}
                       style={{
-                        background: isNewlyAdded ? "#fffbeb" : "#ffffff",
+                        background: isNewlyAdded ? "var(--highlight-bg)" : "var(--card-bg)",
                         borderRadius: "16px",
                         padding: "16px",
-                        border: isNewlyAdded ? "2px solid #f59e0b" : "1px solid var(--line)",
+                        border: isNewlyAdded ? "2px solid var(--highlight-border)" : "1px solid var(--line)",
                         boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
                         display: "flex",
                         flexDirection: "column",
@@ -3383,7 +3444,7 @@ function App() {
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                         <div>
-                          <strong style={{ fontSize: "14px", color: "#183c2f", display: "block" }}>
+                          <strong style={{ fontSize: "14px", color: "var(--ink)", display: "block" }}>
                             {student.name}
                           </strong>
                           <small style={{ color: "var(--muted)", fontSize: "11px" }}>
@@ -3861,7 +3922,7 @@ function App() {
           </div>
 
           {/* Jacket Orders Roster */}
-          <section className="process-section" id="jacket-roster" style={{ background: "#ffffff", borderTop: "1px solid var(--line)" }}>
+          <section className="process-section" id="jacket-roster" style={{ background: "var(--paper)", borderTop: "1px solid var(--line)" }}>
             <div className="section-heading">
               <span className="section-kicker">Class of 2026 Registry</span>
               <h2>Confirmed Senior Jacket Orders</h2>
@@ -3883,7 +3944,7 @@ function App() {
                   gridColumn: "1 / -1",
                   textAlign: "center",
                   padding: "48px 24px",
-                  background: "#f8faf9",
+                  background: "var(--card-bg-subtle)",
                   borderRadius: "16px",
                   border: "1px dashed var(--line)"
                 }}>
@@ -3900,7 +3961,7 @@ function App() {
                   <div
                     key={student.id}
                     style={{
-                      background: "#ffffff",
+                      background: "var(--card-bg)",
                       borderRadius: "16px",
                       padding: "16px",
                       border: "1px solid var(--line)",
@@ -4763,7 +4824,7 @@ function SeniorPaymentPortal({
   setViewingScreenshot: (url: string | null) => void;
 }) {
   return (
-    <section className="payment-portal-section" id="payment-section" style={{ background: "#fdf8ee", borderTop: "1px solid var(--line)", padding: "48px 0" }}>
+    <section className="payment-portal-section" id="payment-section" style={{ background: "var(--cream)", borderTop: "1px solid var(--line)", padding: "48px 0" }}>
       <div className="section-heading" style={{ textAlign: "center", marginBottom: "36px" }}>
         <span className="section-kicker">Official Senior Contributions</span>
         <h2>Senior Batch Payment Portal</h2>
@@ -4797,14 +4858,14 @@ function SeniorPaymentPortal({
                 whiteSpace: "pre-line",
                 fontSize: "14px",
                 lineHeight: 1.8,
-                color: "#183c2f",
+                color: "var(--ink)",
                 fontWeight: 600
               }}>
                 {accounts}
               </div>
             ) : (
               <div style={{
-                background: "#ffffff",
+                background: "var(--card-bg)",
                 padding: "22px",
                 borderRadius: "14px",
                 border: "2px dashed #d7a52c"
