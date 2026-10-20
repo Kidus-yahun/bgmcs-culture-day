@@ -5,6 +5,7 @@ const CLOUD_ANNOUNCEMENTS_URL = "https://extendsclass.com/api/json-storage/bin/a
 const CLOUD_GABI_URL = "https://extendsclass.com/api/json-storage/bin/deebfee";
 const CLOUD_JACKET_URL = "https://extendsclass.com/api/json-storage/bin/ccfecea";
 const CLOUD_PAYMENTS_URL = "https://extendsclass.com/api/json-storage/bin/ffdaafb";
+const CLOUD_JACKET_DESIGN_URL = "https://extendsclass.com/api/json-storage/bin/defaace";
 
 const cloudUrl = (url: string) => `${url}?_t=${Date.now()}`;
 const DEFAULT_PAYMENT_ACCOUNTS = `Abissinia bank\n269405888\nname -henok luel`;
@@ -1011,7 +1012,7 @@ function App() {
   const [editJacketDesc, setEditJacketDesc] = useState(seniorJacketDesign.description);
   const [jacketSaveSuccess, setJacketSaveSuccess] = useState("");
 
-  const handleSaveJacketByAdmin = (e: FormEvent) => {
+  const handleSaveJacketByAdmin = async (e: FormEvent) => {
     e.preventDefault();
     const updated: SeniorJacketDesign = {
       ...seniorJacketDesign,
@@ -1024,7 +1025,14 @@ function App() {
     setSeniorJacketDesign(updated);
     try {
       localStorage.setItem("bgmcs-senior-jacket-design", JSON.stringify(updated));
-    } catch {}
+      await fetch(CLOUD_JACKET_DESIGN_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+      });
+    } catch (err) {
+      console.warn("Could not sync jacket design to cloud", err);
+    }
     setJacketSaveSuccess("Official Senior Jacket updated and live across the website!");
     setTimeout(() => setJacketSaveSuccess(""), 4000);
   };
@@ -1213,20 +1221,45 @@ function App() {
     }
   }, []);
 
+  const refreshCloudJacketDesign = useCallback(async () => {
+    try {
+      const res = await fetch(cloudUrl(CLOUD_JACKET_DESIGN_URL), { cache: "no-store" });
+      if (res.ok) {
+        const cloudData = await res.json();
+        if (cloudData && typeof cloudData === "object" && cloudData.edition) {
+          setSeniorJacketDesign(cloudData);
+          localStorage.setItem("bgmcs-senior-jacket-design", JSON.stringify(cloudData));
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch cloud jacket design:", err);
+    }
+  }, []);
+
   useEffect(() => {
     refreshCloudRegistrations();
     refreshCloudGabi();
     refreshCloudJacket();
     refreshCloudPayments();
     refreshCloudAnnouncements();
+    refreshCloudJacketDesign();
     const interval = setInterval(() => {
       refreshCloudRegistrations();
       refreshCloudGabi();
       refreshCloudJacket();
       refreshCloudPayments();
-    }, 25000);
+      refreshCloudAnnouncements();
+      refreshCloudJacketDesign();
+    }, 15000);
     return () => clearInterval(interval);
-  }, [refreshCloudRegistrations, refreshCloudGabi, refreshCloudJacket, refreshCloudPayments, refreshCloudAnnouncements]);
+  }, [
+    refreshCloudRegistrations,
+    refreshCloudGabi,
+    refreshCloudJacket,
+    refreshCloudPayments,
+    refreshCloudAnnouncements,
+    refreshCloudJacketDesign
+  ]);
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
