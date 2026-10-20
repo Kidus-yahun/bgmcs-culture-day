@@ -303,8 +303,8 @@ const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   },
   {
     id: 2,
-    title: "Gabi Day Gathering: This Saturday at H9XH+PV5, Bahir Dar",
-    content: "Attention all seniors! Gabi Day is THIS SATURDAY. Gather at H9XH+PV5, Bahir Dar for our traditional spiced chai assembly, popcorn circle, and cohort white Gabi panoramic photo. Tap the location on the Gabi Day page to navigate directly on Google Maps.",
+    title: "Gabi Day Gathering: This Saturday at H9WR+7P8 A3, Amhara Development Association, Bahir Dar",
+    content: "Attention all seniors! Gabi Day is THIS SATURDAY. Gather at H9WR+7P8 A3, Amhara Development Association, Bahir Dar for our traditional spiced chai assembly, popcorn circle, and cohort white Gabi panoramic photo. Tap the location on the Gabi Day page to navigate directly on Google Maps.",
     author: "Senior Committee",
     date: "This Week",
     pinned: true,
@@ -1884,7 +1884,7 @@ function App() {
                         </span>
                       </div>
                       <small style={{ color: "#fef3c7", fontSize: "12px", display: "block", marginTop: "2px" }}>
-                        📍 Location: H9XH+PV5, Bahir Dar (Tap to navigate)
+                        📍 Location: H9WR+7P8 A3, Amhara Development Association, Bahir Dar (Tap to navigate)
                       </small>
                     </div>
                     <span style={{ color: "var(--gold)", fontWeight: 800 }}>➔</span>
@@ -2003,7 +2003,7 @@ function App() {
                   </p>
 
                   <a
-                    href="https://www.google.com/maps/search/?api=1&query=H9XH%2BPV5%2C+Bahir+Dar"
+                    href="https://www.google.com/maps/search/?api=1&query=H9WR%2B7P8+A3%2C+Amhara+Development+Association%2C+Bahir+Dar"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="gabi-location-btn"
@@ -2012,13 +2012,13 @@ function App() {
                     <span>📍</span>
                     <div>
                       <small style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", display: "block" }}>Location (Tap to navigate)</small>
-                      <strong style={{ fontSize: "13px" }}>H9XH+PV5, Bahir Dar 🧭</strong>
+                      <strong style={{ fontSize: "13px" }}>H9WR+7P8 A3, Amhara Development Association, Bahir Dar 🧭</strong>
                     </div>
                   </a>
 
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "var(--ink)" }}>
                     <li>✓ <strong>This Saturday</strong>: Morning Chai gathering</li>
-                    <li>✓ Location: H9XH+PV5, Bahir Dar</li>
+                    <li>✓ Location: H9WR+7P8 A3, Amhara Development Association, Bahir Dar</li>
                     <li>✓ Pay on account & screenshot upload</li>
                   </ul>
                 </div>
@@ -2719,7 +2719,7 @@ function App() {
                 </div>
 
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=H9XH%2BPV5%2C+Bahir+Dar"
+                  href="https://www.google.com/maps/search/?api=1&query=H9WR%2B7P8+A3%2C+Amhara+Development+Association%2C+Bahir+Dar"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="gabi-location-btn"
@@ -2731,7 +2731,7 @@ function App() {
                       Assembly Location (Tap to Locate)
                     </small>
                     <strong style={{ fontSize: "14.5px", color: "#451a03", display: "block" }}>
-                      H9XH+PV5, Bahir Dar 🧭
+                      H9WR+7P8 A3, Amhara Development Association, Bahir Dar 🧭
                     </strong>
                   </div>
                 </a>
@@ -2763,7 +2763,7 @@ function App() {
                 </div>
                 <p>
                   <strong>Authentic Ethiopian Shemma Heritage</strong>
-                  Gathering <strong>This Saturday</strong> at <strong>H9XH+PV5, Bahir Dar</strong>
+                  Gathering <strong>This Saturday</strong> at <strong>H9WR+7P8 A3, Amhara Development Association, Bahir Dar</strong>
                 </p>
               </div>
             </div>
@@ -2793,20 +2793,20 @@ function App() {
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
                     <span style={{ fontSize: "18px" }}>📍</span>
                     <strong style={{ fontSize: "14px", color: "#fde047" }}>
-                      Assembly Spot: H9XH+PV5, Bahir Dar
+                      Assembly Spot: H9WR+7P8 A3, Amhara Development Association, Bahir Dar
                     </strong>
                   </div>
                   <p style={{ margin: "0 0 10px", fontSize: "12.5px", color: "#fef3c7", lineHeight: 1.5 }}>
                     Tap below to open your phone's GPS navigation directly to our meeting grounds.
                   </p>
                   <a
-                    href="https://www.google.com/maps/search/?api=1&query=H9XH%2BPV5%2C+Bahir+Dar"
+                    href="https://www.google.com/maps/search/?api=1&query=H9WR%2B7P8+A3%2C+Amhara+Development+Association%2C+Bahir+Dar"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-gold"
                     style={{ display: "inline-flex", padding: "8px 16px", fontSize: "12px", textDecoration: "none" }}
                   >
-                    Open H9XH+PV5, Bahir Dar in Maps ➔
+                    Open H9WR+7P8 A3, Amhara Development Association in Maps ➔
                   </a>
                 </div>
 
@@ -2910,7 +2910,7 @@ function App() {
               <span className="section-kicker">Gabi Day Portal • This Saturday</span>
               <h2>Pledge your Gabi for the assembly</h2>
               <p>
-                Let the senior committee know which style you’re draping <strong>This Saturday</strong> at <strong>H9XH+PV5, Bahir Dar</strong>.
+                Let the senior committee know which style you’re draping <strong>This Saturday</strong> at <strong>H9WR+7P8 A3, Amhara Development Association, Bahir Dar</strong>.
               </p>
             </div>
 
@@ -3022,7 +3022,7 @@ function App() {
               <span className="section-kicker">Gabi Day Brotherhood</span>
               <h2>Registered Gabi Day Seniors</h2>
               <p>
-                Seniors gathering <strong>This Saturday</strong> at <strong>H9XH+PV5, Bahir Dar</strong> draped in traditional Gabi.
+                Seniors gathering <strong>This Saturday</strong> at <strong>H9WR+7P8 A3, Amhara Development Association, Bahir Dar</strong> draped in traditional Gabi.
               </p>
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px", marginTop: "14px", flexWrap: "wrap" }}>
                 <button
