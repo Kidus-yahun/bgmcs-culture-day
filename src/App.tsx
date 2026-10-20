@@ -6,6 +6,9 @@ const CLOUD_GABI_URL = "https://extendsclass.com/api/json-storage/bin/deebfee";
 const CLOUD_JACKET_URL = "https://extendsclass.com/api/json-storage/bin/ccfecea";
 const CLOUD_PAYMENTS_URL = "https://extendsclass.com/api/json-storage/bin/ffdaafb";
 
+const cloudUrl = (url: string) => `${url}?_t=${Date.now()}`;
+const DEFAULT_PAYMENT_ACCOUNTS = `Abissinia bank\n269405888\nname -henok luel`;
+
 type SeniorDay = "home" | "culture" | "gabi" | "jacket" | "payment";
 
 type Registration = {
@@ -912,9 +915,11 @@ function App() {
   // ---------------- Payment Accounts & Receipts ----------------
   const [paymentAccounts, setPaymentAccounts] = useState<string>(() => {
     try {
-      return localStorage.getItem("bgmcs-payment-accounts-v1") || "";
+      const saved = localStorage.getItem("bgmcs-payment-accounts-v1");
+      if (saved && saved.trim().length > 0) return saved;
+      return DEFAULT_PAYMENT_ACCOUNTS;
     } catch {
-      return "";
+      return DEFAULT_PAYMENT_ACCOUNTS;
     }
   });
 
@@ -1073,7 +1078,7 @@ function App() {
   const refreshCloudRegistrations = useCallback(async (showIndicator = false) => {
     if (showIndicator) setIsRefreshingCloud(true);
     try {
-      const res = await fetch(CLOUD_REGISTRATIONS_URL, { cache: "no-store" });
+      const res = await fetch(cloudUrl(CLOUD_REGISTRATIONS_URL), { cache: "no-store" });
       if (res.ok) {
         const cloudData = await res.json();
         if (Array.isArray(cloudData)) {
@@ -1103,7 +1108,7 @@ function App() {
   const refreshCloudGabi = useCallback(async (showIndicator = false) => {
     if (showIndicator) setIsRefreshingGabiCloud(true);
     try {
-      const res = await fetch(CLOUD_GABI_URL, { cache: "no-store" });
+      const res = await fetch(cloudUrl(CLOUD_GABI_URL), { cache: "no-store" });
       if (res.ok) {
         const cloudData = await res.json();
         if (Array.isArray(cloudData)) {
@@ -1133,7 +1138,7 @@ function App() {
   const refreshCloudJacket = useCallback(async (showIndicator = false) => {
     if (showIndicator) setIsRefreshingJacketCloud(true);
     try {
-      const res = await fetch(CLOUD_JACKET_URL, { cache: "no-store" });
+      const res = await fetch(cloudUrl(CLOUD_JACKET_URL), { cache: "no-store" });
       if (res.ok) {
         const cloudData = await res.json();
         if (Array.isArray(cloudData)) {
@@ -1162,11 +1167,11 @@ function App() {
 
   const refreshCloudPayments = useCallback(async () => {
     try {
-      const res = await fetch(CLOUD_PAYMENTS_URL, { cache: "no-store" });
+      const res = await fetch(cloudUrl(CLOUD_PAYMENTS_URL), { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         if (data) {
-          if (typeof data.accounts === "string" && data.accounts) {
+          if (typeof data.accounts === "string" && data.accounts.trim()) {
             setPaymentAccounts(data.accounts);
             localStorage.setItem("bgmcs-payment-accounts-v1", data.accounts);
           }
@@ -1195,7 +1200,7 @@ function App() {
 
   const refreshCloudAnnouncements = useCallback(async () => {
     try {
-      const res = await fetch(CLOUD_ANNOUNCEMENTS_URL, { cache: "no-store" });
+      const res = await fetch(cloudUrl(CLOUD_ANNOUNCEMENTS_URL), { cache: "no-store" });
       if (res.ok) {
         const cloudData = await res.json();
         if (Array.isArray(cloudData) && cloudData.length > 0) {
@@ -1343,7 +1348,7 @@ function App() {
     try {
       let currentCloud: Registration[] = [];
       try {
-        const checkRes = await fetch(CLOUD_REGISTRATIONS_URL, { cache: "no-store" });
+        const checkRes = await fetch(cloudUrl(CLOUD_REGISTRATIONS_URL), { cache: "no-store" });
         if (checkRes.ok) {
           const fetched = await checkRes.json();
           if (Array.isArray(fetched)) currentCloud = fetched;
@@ -1400,7 +1405,7 @@ function App() {
     try {
       let currentCloud: GabiRegistration[] = [];
       try {
-        const checkRes = await fetch(CLOUD_GABI_URL, { cache: "no-store" });
+        const checkRes = await fetch(cloudUrl(CLOUD_GABI_URL), { cache: "no-store" });
         if (checkRes.ok) {
           const fetched = await checkRes.json();
           if (Array.isArray(fetched)) currentCloud = fetched;
@@ -1459,7 +1464,7 @@ function App() {
     try {
       let currentCloud: JacketRegistration[] = [];
       try {
-        const checkRes = await fetch(CLOUD_JACKET_URL, { cache: "no-store" });
+        const checkRes = await fetch(cloudUrl(CLOUD_JACKET_URL), { cache: "no-store" });
         if (checkRes.ok) {
           const fetched = await checkRes.json();
           if (Array.isArray(fetched)) currentCloud = fetched;
@@ -1520,7 +1525,7 @@ function App() {
       let currentReceipts: PaymentReceipt[] = [];
       let currentAccounts = paymentAccounts;
       try {
-        const checkRes = await fetch(CLOUD_PAYMENTS_URL, { cache: "no-store" });
+        const checkRes = await fetch(cloudUrl(CLOUD_PAYMENTS_URL), { cache: "no-store" });
         if (checkRes.ok) {
           const d = await checkRes.json();
           if (Array.isArray(d.receipts)) currentReceipts = d.receipts;
