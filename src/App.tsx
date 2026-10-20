@@ -2298,117 +2298,58 @@ function App() {
                     </div>
                   </div>
                 </button>
-
-                <div className="card-action-bar">
-                  <button
-                    type="button"
-                    className="action-btn choose-btn"
-                    onClick={() => handleChooseLook(selectedLook)}
-                    aria-label={`Choose ${selectedLook.label} for registration`}
-                  >
-                    <Icon name="check" />
-                    <span>Choose this look</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="action-btn spin-btn"
-                    onClick={() => {
-                      setIsSpinning360(false);
-                      setTimeout(() => setIsSpinning360(true), 20);
-                      setTimeout(() => setIsSpinning360(false), 950);
-                    }}
-                    title="Spin card 360 degrees"
-                    aria-label="Spin Card 360 Degrees"
-                  >
-                    <Icon name="rotate" />
-                    <span>360° Spin</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="interactive-hint">
-                <span className="hint-pill">
-                  🔄 Tap button or card to flip female / male look • Swipe sideways to explore
-                </span>
               </div>
 
               <div className="look-caption">
-                <div className="look-title-group">
-                  <span className="look-badge">{selectedLook.region}</span>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: "10px", flexWrap: "wrap" }}>
-                    <h3>{selectedLook.label}</h3>
-                    <span className="amharic-text" style={{ fontSize: "17px", color: "var(--gold)", fontWeight: 600 }}>
-                      {selectedLook.amharic}
-                    </span>
-                  </div>
-                </div>
+                <span className="look-counter">{String(activeLook + 1).padStart(2, "0")} / {String(culturalLooks.length).padStart(2, "0")}</span>
+              </div>
 
-                <p className="look-desc" style={{ fontSize: "13.5px", lineHeight: 1.6, color: "rgba(255,255,255,0.85)", margin: "8px 0 12px" }}>
-                  {selectedLook.description}
-                </p>
-
-                <div className="specs-grid">
-                  <div className="spec-col">
-                    <small>Textiles & Weaves</small>
-                    <div className="tag-cluster">
-                      {selectedLook.fabrics.map((f) => (
-                        <span key={f} className="fabric-tag">{f}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="spec-col">
-                    <small>Traditional Adornments</small>
-                    <div className="tag-cluster">
-                      {selectedLook.accessories.map((a) => (
-                        <span key={a} className="acc-tag">{a}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="look-nav">
-                  <div className="carousel-dots" role="tablist" aria-label="Select cultural look">
-                    {culturalLooks.map((look, index) => (
-                      <button
-                        key={look.id}
-                        type="button"
-                        className={index === activeLook ? "active" : ""}
-                        onClick={() => {
-                          setActiveLook(index);
-                          setIsSpinning360(false);
-                        }}
-                        aria-label={`View ${look.label}`}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="nav-controls">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveLook((current) => (current - 1 + culturalLooks.length) % culturalLooks.length);
-                        setIsSpinning360(false);
-                      }}
-                      aria-label="Previous cultural look"
-                    >
-                      ←
-                    </button>
-                    <span className="counter" aria-live="polite">
-                      {activeLook + 1} / {culturalLooks.length}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveLook((current) => (current + 1) % culturalLooks.length);
-                        setIsSpinning360(false);
-                      }}
-                      aria-label="Next cultural look"
-                    >
-                      →
-                    </button>
-                  </div>
-                </div>
+              <div className="look-controls">
+                <button
+                  type="button"
+                  className="ctrl-prev"
+                  onClick={() => {
+                    setActiveLook((current) => (current - 1 + culturalLooks.length) % culturalLooks.length);
+                    setIsSpinning360(false);
+                  }}
+                  aria-label="Previous cultural look"
+                  title="Previous cultural look"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  className="choose-look-btn"
+                  onClick={() => handleChooseLook(selectedLook)}
+                  title="Choose this outfit for registration"
+                >
+                  Choose this look
+                </button>
+                <button
+                  type="button"
+                  className="ctrl-spin"
+                  onClick={() => {
+                    setIsSpinning360(false);
+                    setTimeout(() => setIsSpinning360(true), 20);
+                    setTimeout(() => setIsSpinning360(false), 950);
+                  }}
+                  aria-label="Spin outfit 360 degrees"
+                  title="Spin 360°"
+                >
+                  360°
+                </button>
+                <button
+                  type="button"
+                  className="ctrl-next"
+                  onClick={() => {
+                    setActiveLook((current) => (current + 1) % culturalLooks.length);
+                    setIsSpinning360(false);
+                  }}
+                  aria-label="Next cultural look"
+                  title="Next cultural look"
+                >
+                  →
+                </button>
               </div>
             </div>
           </div>

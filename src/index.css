@@ -1811,12 +1811,80 @@ footer > a:last-child {
 /* Mobile responsive adjustments */
 @media (max-width: 860px) {
   .senior-days-nav-bar {
-    top: 72px;
+    top: 70px;
     padding: 8px 16px;
   }
   .senior-day-pill {
     padding: 6px 14px;
     font-size: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .senior-days-nav-bar {
+    top: 66px;
+    padding: 6px 12px;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .senior-day-pill {
+    padding: 6px 12px;
+    font-size: 11.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .subweb-header-banner {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .subweb-header-banner > div:first-of-type {
+    font-size: 13px;
+  }
+  .senior-portal-grid {
+    grid-template-columns: 1fr;
+    padding: 0 16px;
+    gap: 18px;
+  }
+  .senior-portal-card {
+    padding: 22px 18px;
+  }
+  .gabi-location-btn {
+    width: 100%;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .payment-portal-grid {
+    padding: 0 16px;
+    gap: 20px;
+  }
+  .payment-accounts-box {
+    padding: 20px 16px;
+  }
+  .jacket-stage {
+    padding: 20px 12px;
+  }
+  .jacket-view-toggle {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    gap: 4px;
+  }
+  .jacket-toggle-btn {
+    width: 100%;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+  .jacket-svg-container {
+    max-width: 290px;
+  }
+  .screenshot-preview-modal-overlay {
+    padding: 10px;
+  }
+  .screenshot-preview-modal-content {
+    max-height: 95vh;
   }
 }
 
