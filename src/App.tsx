@@ -291,6 +291,26 @@ const GABI_STYLES: GabiStyle[] = [
   }
 ];
 
+type SeniorJacketDesign = {
+  edition: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  imageUrl: string;
+  updatedBy: string;
+  updatedAt: string;
+};
+
+const DEFAULT_JACKET_DESIGN: SeniorJacketDesign = {
+  edition: "Edition I: Smoke & Ice (VOEUX)",
+  title: "Official BGMCS Senior Class Jacket",
+  subtitle: "There can be only one • Class of MMXXVII",
+  description: "The official BGMCS Senior Class Jacket tailored in signature 'Smoke & Ice' washed denim grey with heavy silver hardware. Features bold golden-cream chenille 'VOEUX' arch, 'There can be only one' cursive script, double sleeve stripes, graduation cap crest, and custom back nickname embroidery.",
+  imageUrl: assetUrl("images/senior_jacket_voeux.png"),
+  updatedBy: "Senior Committee Admin",
+  updatedAt: "Official Class Reveal"
+};
+
 const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   {
     id: 1,
@@ -971,6 +991,38 @@ function App() {
   const [customizerNickname, setCustomizerNickname] = useState("");
   const [customizerSize, setCustomizerSize] = useState("L");
   const [customizerFit, setCustomizerFit] = useState("Standard");
+
+  // Managed Official Senior Jacket State (with Admin Update Capability)
+  const [seniorJacketDesign, setSeniorJacketDesign] = useState<SeniorJacketDesign>(() => {
+    try {
+      const saved = localStorage.getItem("bgmcs-senior-jacket-design");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return DEFAULT_JACKET_DESIGN;
+  });
+
+  const [editJacketEdition, setEditJacketEdition] = useState(seniorJacketDesign.edition);
+  const [editJacketImg, setEditJacketImg] = useState(seniorJacketDesign.imageUrl);
+  const [editJacketDesc, setEditJacketDesc] = useState(seniorJacketDesign.description);
+  const [jacketSaveSuccess, setJacketSaveSuccess] = useState("");
+
+  const handleSaveJacketByAdmin = (e: FormEvent) => {
+    e.preventDefault();
+    const updated: SeniorJacketDesign = {
+      ...seniorJacketDesign,
+      edition: editJacketEdition.trim() || DEFAULT_JACKET_DESIGN.edition,
+      description: editJacketDesc.trim() || DEFAULT_JACKET_DESIGN.description,
+      imageUrl: editJacketImg.trim() || DEFAULT_JACKET_DESIGN.imageUrl,
+      updatedBy: "Senior Committee Admin",
+      updatedAt: new Date().toLocaleDateString()
+    };
+    setSeniorJacketDesign(updated);
+    try {
+      localStorage.setItem("bgmcs-senior-jacket-design", JSON.stringify(updated));
+    } catch {}
+    setJacketSaveSuccess("Official Senior Jacket updated and live across the website!");
+    setTimeout(() => setJacketSaveSuccess(""), 4000);
+  };
 
   // Payment Form States
   const [payName, setPayName] = useState("");
@@ -3377,15 +3429,37 @@ function App() {
 
           <div className="hero" style={{ minHeight: "auto", paddingBottom: "40px" }}>
             <div className="hero-copy">
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "#fef3c7",
+                border: "1px solid #f59e0b",
+                padding: "6px 14px",
+                borderRadius: "20px",
+                marginBottom: "14px",
+                fontSize: "12px",
+                fontWeight: 700,
+                color: "#78350f"
+              }}>
+                <span>👑 Official Class Attire</span>
+                <span style={{ color: "#b45309" }}>•</span>
+                <span>Added by Senior Committee Admin</span>
+                <span style={{ color: "#b45309" }}>•</span>
+                <span style={{ background: "#f59e0b", color: "#451a03", padding: "1px 6px", borderRadius: "6px", fontSize: "10px" }}>
+                  VERIFIED
+                </span>
+              </div>
+
               <div className="eyebrow" style={{ color: "var(--gold)" }}>
                 <span style={{ background: "var(--gold)" }} />
-                BGMCS Senior Identity • Edition I: Smoke & Ice (VOEUX)
+                {seniorJacketDesign.edition}
               </div>
               <h1>
                 Wear the <em>pride</em>. There can be only one.
               </h1>
               <p>
-                The official BGMCS Senior Class Jacket tailored in signature <strong>"Smoke & Ice"</strong> washed denim grey with heavy silver hardware. Features bold golden-cream chenille <strong>"VOEUX"</strong> arch, <em>"There can be only one"</em> cursive script, double sleeve stripes, graduation cap crest, and custom back nickname embroidery.
+                {seniorJacketDesign.description}
               </p>
 
               {/* Color & Material Breakdown Chips */}
@@ -3431,7 +3505,7 @@ function App() {
                   <span>S-3XL</span>
                 </div>
                 <p>
-                  <strong>Edition I: "Smoke & Ice" VOEUX Jacket</strong>
+                  <strong>{seniorJacketDesign.edition}</strong>
                   Washed Grey Twill • Golden Cream Chenille • Custom Embroidered Nickname
                 </p>
               </div>
@@ -3474,7 +3548,7 @@ function App() {
                       background: "#0f172a"
                     }}>
                       <img
-                        src={assetUrl("images/senior_jacket_voeux.png")}
+                        src={seniorJacketDesign.imageUrl}
                         alt="Official BGMCS Senior Jacket - Smoke & Ice VOEUX Edition"
                         style={{ width: "100%", height: "auto", display: "block" }}
                       />
@@ -4325,6 +4399,107 @@ function App() {
                         <div className="admin-stat-card">
                           <span>Total Jacket Orders</span>
                           <strong>{jacketRegistrations.length}</strong>
+                        </div>
+                      </div>
+
+                      {/* Official Senior Jacket Management Panel (Added by Admin) */}
+                      <div style={{ background: "#f8faf9", padding: "20px", borderRadius: "14px", border: "1px solid #e2e8f0", marginBottom: "24px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
+                          <div>
+                            <h4 style={{ margin: 0, color: "#0b2a20", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                              <span>🧥 Official Senior Jacket Management</span>
+                              <span style={{ fontSize: "10px", background: "#dcfce7", color: "#166534", padding: "2px 8px", borderRadius: "8px", fontWeight: 700 }}>
+                                Active on Website
+                              </span>
+                            </h4>
+                            <small style={{ color: "#64748b", fontSize: "12px" }}>
+                              Official Class Attire • Managed by Senior Committee Admin
+                            </small>
+                          </div>
+                        </div>
+
+                        {jacketSaveSuccess && (
+                          <div style={{ background: "#dcfce7", color: "#166534", padding: "10px 14px", borderRadius: "8px", marginBottom: "14px", fontWeight: 600, fontSize: "12.5px" }}>
+                            ✓ {jacketSaveSuccess}
+                          </div>
+                        )}
+
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", alignItems: "start" }}>
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{ borderRadius: "12px", overflow: "hidden", border: "2px solid #d7a52c", background: "#0f172a", height: "200px" }}>
+                              <img
+                                src={seniorJacketDesign.imageUrl}
+                                alt="Current Active Jacket"
+                                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                              />
+                            </div>
+                            <span style={{ display: "inline-block", marginTop: "8px", fontSize: "11px", fontWeight: 700, color: "var(--forest)" }}>
+                              Live Jacket Spec Sheet
+                            </span>
+                          </div>
+
+                          <form onSubmit={handleSaveJacketByAdmin} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                            <div>
+                              <label style={{ display: "block", fontSize: "11.5px", fontWeight: 700, color: "#334155", marginBottom: "3px" }}>
+                                Jacket Edition Title:
+                              </label>
+                              <input
+                                type="text"
+                                value={editJacketEdition}
+                                onChange={(e) => setEditJacketEdition(e.target.value)}
+                                style={{ width: "100%", padding: "7px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12.5px" }}
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: "block", fontSize: "11.5px", fontWeight: 700, color: "#334155", marginBottom: "3px" }}>
+                                Jacket Image URL or Asset Path:
+                              </label>
+                              <input
+                                type="text"
+                                value={editJacketImg}
+                                onChange={(e) => setEditJacketImg(e.target.value)}
+                                style={{ width: "100%", padding: "7px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px" }}
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: "block", fontSize: "11.5px", fontWeight: 700, color: "#334155", marginBottom: "3px" }}>
+                                Official Description:
+                              </label>
+                              <textarea
+                                rows={2}
+                                value={editJacketDesc}
+                                onChange={(e) => setEditJacketDesc(e.target.value)}
+                                style={{ width: "100%", padding: "7px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px", resize: "vertical" }}
+                                required
+                              />
+                            </div>
+
+                            <div style={{ display: "flex", gap: "10px", marginTop: "4px", alignItems: "center" }}>
+                              <button type="submit" className="btn-gold" style={{ padding: "8px 16px", fontSize: "12px" }}>
+                                Save & Update Website Jacket
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSeniorJacketDesign(DEFAULT_JACKET_DESIGN);
+                                  setEditJacketEdition(DEFAULT_JACKET_DESIGN.edition);
+                                  setEditJacketDesc(DEFAULT_JACKET_DESIGN.description);
+                                  setEditJacketImg(DEFAULT_JACKET_DESIGN.imageUrl);
+                                  try {
+                                    localStorage.removeItem("bgmcs-senior-jacket-design");
+                                  } catch {}
+                                  setJacketSaveSuccess("Reset to official Smoke & Ice VOEUX design.");
+                                }}
+                                style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "12px", cursor: "pointer", textDecoration: "underline" }}
+                              >
+                                Reset to Default
+                              </button>
+                            </div>
+                          </form>
                         </div>
                       </div>
 
