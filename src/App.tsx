@@ -4,8 +4,9 @@ const CLOUD_REGISTRATIONS_URL = "https://extendsclass.com/api/json-storage/bin/b
 const CLOUD_ANNOUNCEMENTS_URL = "https://extendsclass.com/api/json-storage/bin/afabdcd";
 const CLOUD_GABI_URL = "https://extendsclass.com/api/json-storage/bin/deebfee";
 const CLOUD_JACKET_URL = "https://extendsclass.com/api/json-storage/bin/ccfecea";
+const CLOUD_PAYMENTS_URL = "https://extendsclass.com/api/json-storage/bin/ffdaafb";
 
-type SeniorDay = "home" | "culture" | "gabi" | "jacket";
+type SeniorDay = "home" | "culture" | "gabi" | "jacket" | "payment";
 
 type Registration = {
   id: number;
@@ -33,6 +34,17 @@ type JacketRegistration = {
   size: string;
   fit: string;
   date?: string;
+};
+
+type PaymentReceipt = {
+  id: number;
+  name: string;
+  email: string;
+  purpose: string;
+  amount?: string;
+  screenshot: string;
+  date: string;
+  refNumber?: string;
 };
 
 type CulturalLook = {
@@ -291,21 +303,21 @@ const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   },
   {
     id: 2,
+    title: "Gabi Day Gathering: This Saturday at H9XH+PV5, Bahir Dar",
+    content: "Attention all seniors! Gabi Day is THIS SATURDAY. Gather at H9XH+PV5, Bahir Dar for our traditional spiced chai assembly, popcorn circle, and cohort white Gabi panoramic photo. Tap the location on the Gabi Day page to navigate directly on Google Maps.",
+    author: "Senior Committee",
+    date: "This Week",
+    pinned: true,
+    tag: "gabi"
+  },
+  {
+    id: 3,
     title: "Senior Welcome & Official Varsity Jacket Day Announced!",
     content: "Get ready to represent our batch in style! The official BGMCS Class of 2026 Varsity Jacket design is revealed. Customize your back nickname, confirm your size, and join us for the grand hallway unboxing ceremony.",
     author: "Senior Committee",
     date: "Fall 2025",
-    pinned: true,
-    tag: "jacket"
-  },
-  {
-    id: 3,
-    title: "Gabi Day Morning Assembly & Spiced Chai Gathering",
-    content: "Wrapped in warmth and brotherhood! Gabi Day celebration date is set. Bring your handspun Arba Gabi, Kuta, or Netela for our cohort white gabi panorama photo on the grand courtyard steps.",
-    author: "Senior Committee",
-    date: "Spring 2026",
     pinned: false,
-    tag: "gabi"
+    tag: "jacket"
   }
 ];
 
@@ -413,7 +425,6 @@ function SeniorJacketVisualizer({
         style={{ width: "100%", height: "auto" }}
       >
         <defs>
-          {/* Gradients */}
           <linearGradient id="bodyGreen" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#1e4838" />
             <stop offset="100%" stopColor="#0e2a20" />
@@ -430,38 +441,33 @@ function SeniorJacketVisualizer({
           <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
             <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.35" />
           </filter>
-          {/* Curved Text Path for Back Arched Nickname */}
           <path id="archTextPath" d="M 90 145 Q 200 85 310 145" />
         </defs>
 
-        {/* Sleeves (Left & Right) */}
+        {/* Sleeves */}
         <g filter="url(#shadow)">
-          {/* Left Sleeve */}
           <path
             d="M 125 78 L 40 180 L 75 220 L 138 135 Z"
             fill="url(#goldSleeve)"
             stroke="#916a13"
             strokeWidth="1.5"
           />
-          {/* Left Sleeve Cuff Ribbing */}
           <path d="M 40 180 L 30 192 L 65 232 L 75 220 Z" fill="#183c2f" />
           <line x1="33" y1="184" x2="68" y2="224" stroke="#ffffff" strokeWidth="2.5" />
           <line x1="37" y1="188" x2="72" y2="228" stroke="#d7a52c" strokeWidth="2" />
 
-          {/* Right Sleeve */}
           <path
             d="M 275 78 L 360 180 L 325 220 L 262 135 Z"
             fill="url(#goldSleeve)"
             stroke="#916a13"
             strokeWidth="1.5"
           />
-          {/* Right Sleeve Cuff Ribbing */}
           <path d="M 360 180 L 370 192 L 335 232 L 325 220 Z" fill="#183c2f" />
           <line x1="367" y1="184" x2="332" y2="224" stroke="#ffffff" strokeWidth="2.5" />
           <line x1="363" y1="188" x2="328" y2="228" stroke="#d7a52c" strokeWidth="2" />
         </g>
 
-        {/* Main Body Torso */}
+        {/* Main Body */}
         <g filter="url(#shadow)">
           <path
             d="M 125 75 C 150 90 250 90 275 75 L 290 330 C 290 330 200 338 110 330 Z"
@@ -471,7 +477,7 @@ function SeniorJacketVisualizer({
           />
         </g>
 
-        {/* Striped Ribbed Bottom Hem */}
+        {/* Hem Ribbing */}
         <path
           d="M 108 330 C 200 338 290 338 292 330 L 292 360 C 200 368 108 368 108 360 Z"
           fill="#183c2f"
@@ -481,7 +487,7 @@ function SeniorJacketVisualizer({
         <path d="M 108 340 C 200 348 290 348 292 340" stroke="#ffffff" strokeWidth="3" fill="none" />
         <path d="M 108 350 C 200 358 290 358 292 350" stroke="#d7a52c" strokeWidth="2.5" fill="none" />
 
-        {/* Striped Ribbed Collar */}
+        {/* Collar Ribbing */}
         <path
           d="M 130 75 C 160 52 240 52 270 75 C 248 95 152 95 130 75 Z"
           fill="#183c2f"
@@ -491,19 +497,17 @@ function SeniorJacketVisualizer({
         <path d="M 136 70 C 162 58 238 58 264 70" stroke="#ffffff" strokeWidth="2.5" fill="none" />
         <path d="M 140 76 C 165 65 235 65 260 76" stroke="#d7a52c" strokeWidth="2" fill="none" />
 
-        {/* FRONT VIEW DETAILS */}
+        {/* FRONT VIEW */}
         {side === "front" && (
           <g>
-            {/* Center Snap Placket */}
             <line x1="200" y1="90" x2="200" y2="334" stroke="#0e2a20" strokeWidth="18" strokeLinecap="round" />
             <line x1="200" y1="90" x2="200" y2="334" stroke="#d7a52c" strokeWidth="1.5" strokeDasharray="4 4" />
 
-            {/* Snap Buttons */}
             {[110, 150, 190, 230, 270, 310].map((y) => (
               <circle key={y} cx="200" cy={y} r="5.5" fill="#fde047" stroke="#92400e" strokeWidth="1.5" />
             ))}
 
-            {/* Left Chest: BGMCS Crest Shield */}
+            {/* School Crest */}
             <g transform="translate(148, 125)">
               <rect x="-18" y="-18" width="36" height="42" rx="4" fill="#0b2a20" stroke="#d7a52c" strokeWidth="2" />
               <path d="M -18 10 C -18 24 0 28 0 28 C 0 28 18 24 18 10 Z" fill="#0b2a20" stroke="#d7a52c" strokeWidth="2" />
@@ -516,7 +520,7 @@ function SeniorJacketVisualizer({
               <circle cx="0" cy="18" r="3" fill="#d7a52c" />
             </g>
 
-            {/* Right Chest: Chenille '26 Varsity Patch */}
+            {/* Chenille '26 Patch */}
             <g transform="translate(252, 130)">
               <rect x="-18" y="-16" width="36" height="34" rx="8" fill="#ffffff" stroke="#d7a52c" strokeWidth="2.5" />
               <text x="0" y="8" fill="#183c2f" fontSize="19" fontWeight="900" textAnchor="middle" fontFamily="Georgia, serif">
@@ -524,13 +528,9 @@ function SeniorJacketVisualizer({
               </text>
             </g>
 
-            {/* Front Slash Pockets */}
             <line x1="135" y1="240" x2="165" y2="280" stroke="#d7a52c" strokeWidth="7" strokeLinecap="round" />
-            <line x1="135" y1="240" x2="165" y2="280" stroke="#92400e" strokeWidth="1" />
             <line x1="265" y1="240" x2="235" y2="280" stroke="#d7a52c" strokeWidth="7" strokeLinecap="round" />
-            <line x1="265" y1="240" x2="235" y2="280" stroke="#92400e" strokeWidth="1" />
 
-            {/* Bottom Size Label */}
             <g transform="translate(130, 315)">
               <rect x="0" y="0" width="38" height="15" rx="3" fill="#ffffff" stroke="#183c2f" strokeWidth="1" />
               <text x="19" y="11" fill="#183c2f" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
@@ -540,10 +540,9 @@ function SeniorJacketVisualizer({
           </g>
         )}
 
-        {/* BACK VIEW DETAILS */}
+        {/* BACK VIEW */}
         {side === "back" && (
           <g>
-            {/* Top Collar Mini Ethiopian Flag Ribbon */}
             <g transform="translate(182, 86)">
               <rect x="0" y="0" width="12" height="6" fill="#17814f" />
               <rect x="12" y="0" width="12" height="6" fill="#efc83a" />
@@ -551,7 +550,6 @@ function SeniorJacketVisualizer({
               <rect x="0" y="0" width="36" height="6" stroke="#ffffff" strokeWidth="0.8" fill="none" />
             </g>
 
-            {/* Arched Bold Athlete Nickname */}
             <text
               fill="url(#goldTrim)"
               stroke="#ffffff"
@@ -566,9 +564,7 @@ function SeniorJacketVisualizer({
               </textPath>
             </text>
 
-            {/* Giant Collegiate Athletic Numeral '26' */}
             <g transform="translate(200, 222)">
-              {/* Drop shadow numeral */}
               <text
                 x="2"
                 y="3"
@@ -581,7 +577,6 @@ function SeniorJacketVisualizer({
               >
                 26
               </text>
-              {/* White outer stroke */}
               <text
                 x="0"
                 y="0"
@@ -596,7 +591,6 @@ function SeniorJacketVisualizer({
               >
                 26
               </text>
-              {/* Gold inner numeral */}
               <text
                 x="0"
                 y="0"
@@ -613,7 +607,6 @@ function SeniorJacketVisualizer({
               </text>
             </g>
 
-            {/* Lower Back Subtitle */}
             <text
               x="200"
               y="288"
@@ -627,7 +620,6 @@ function SeniorJacketVisualizer({
               ★ BGMCS SENIOR BATCH ★
             </text>
 
-            {/* Size & Fit Tag Tab */}
             <g transform="translate(200, 315)">
               <rect x="-35" y="0" width="70" height="15" rx="3" fill="rgba(0,0,0,0.4)" stroke="#d7a52c" strokeWidth="1" />
               <text x="0" y="11" fill="#fde047" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
@@ -645,18 +637,18 @@ function SeniorJacketVisualizer({
 // Main Application Component
 // -------------------------------------------------------------
 function App() {
-  // Navigation State
   const [activeDay, setActiveDay] = useState<SeniorDay>(() => {
     const hash = window.location.hash.replace("#", "").toLowerCase();
     if (hash === "culture" || hash === "culture-day") return "culture";
     if (hash === "gabi" || hash === "gabi-day") return "gabi";
     if (hash === "jacket" || hash === "jacket-day" || hash === "welcome") return "jacket";
+    if (hash === "payment" || hash === "payments") return "payment";
     return "home";
   });
 
   const navigateToDay = (day: SeniorDay) => {
     setActiveDay(day);
-    const hash = day === "home" ? "home" : `${day}-day`;
+    const hash = day === "home" ? "home" : (day === "payment" ? "payments" : `${day}-day`);
     window.history.pushState(null, "", `#${hash}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -667,6 +659,7 @@ function App() {
       if (hash === "culture" || hash === "culture-day") setActiveDay("culture");
       else if (hash === "gabi" || hash === "gabi-day") setActiveDay("gabi");
       else if (hash === "jacket" || hash === "jacket-day" || hash === "welcome") setActiveDay("jacket");
+      else if (hash === "payment" || hash === "payments") setActiveDay("payment");
       else if (hash === "admin") setIsAdminOpen(true);
       else if (hash === "home" || hash === "top" || hash === "") setActiveDay("home");
     };
@@ -674,7 +667,7 @@ function App() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
-  // ---------------- Culture Day Registrations ----------------
+  // ---------------- Registrations & Collections ----------------
   const [registrations, setRegistrations] = useState<Registration[]>(() => {
     try {
       const saved = localStorage.getItem("bgmcs-registrations-v5");
@@ -703,7 +696,6 @@ function App() {
     }
   });
 
-  // ---------------- Gabi Day Registrations ----------------
   const [gabiRegistrations, setGabiRegistrations] = useState<GabiRegistration[]>(() => {
     try {
       const saved = localStorage.getItem("bgmcs-gabi-registrations-v1");
@@ -717,7 +709,6 @@ function App() {
     }
   });
 
-  // ---------------- Jacket Day Registrations ----------------
   const [jacketRegistrations, setJacketRegistrations] = useState<JacketRegistration[]>(() => {
     try {
       const saved = localStorage.getItem("bgmcs-jacket-registrations-v1");
@@ -731,7 +722,28 @@ function App() {
     }
   });
 
-  // ---------------- Announcements ----------------
+  // ---------------- Payment Accounts & Receipts ----------------
+  const [paymentAccounts, setPaymentAccounts] = useState<string>(() => {
+    try {
+      return localStorage.getItem("bgmcs-payment-accounts-v1") || "";
+    } catch {
+      return "";
+    }
+  });
+
+  const [paymentReceipts, setPaymentReceipts] = useState<PaymentReceipt[]>(() => {
+    try {
+      const saved = localStorage.getItem("bgmcs-payment-receipts-v1");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  });
+
   const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
     try {
       const saved = localStorage.getItem("bgmcs-announcements-v5");
@@ -748,7 +760,7 @@ function App() {
     }
   });
 
-  // Form & Interaction States: Culture Day
+  // Culture Day Form States
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formName, setFormName] = useState("");
   const [formEmail, setFormEmail] = useState("");
@@ -766,7 +778,7 @@ function App() {
   const [selectedOutfitInForm, setSelectedOutfitInForm] = useState("");
   const touchStartX = useRef<number | null>(null);
 
-  // Form & Interaction States: Gabi Day
+  // Gabi Day Form States
   const [gabiFormName, setGabiFormName] = useState("");
   const [gabiFormEmail, setGabiFormEmail] = useState("");
   const [gabiFormType, setGabiFormType] = useState("Traditional Arba Gabi (አርባ ጋቢ)");
@@ -776,7 +788,7 @@ function App() {
   const [highlightedGabiId, setHighlightedGabiId] = useState<number | null>(null);
   const [isRefreshingGabiCloud, setIsRefreshingGabiCloud] = useState(false);
 
-  // Form & Interaction States: Welcome / Jacket Day
+  // Jacket Day Form States
   const [jacketFormName, setJacketFormName] = useState("");
   const [jacketFormEmail, setJacketFormEmail] = useState("");
   const [jacketFormNickname, setJacketFormNickname] = useState("");
@@ -787,11 +799,23 @@ function App() {
   const [highlightedJacketId, setHighlightedJacketId] = useState<number | null>(null);
   const [isRefreshingJacketCloud, setIsRefreshingJacketCloud] = useState(false);
 
-  // Live Jacket Visualizer Interactive Customizer
+  // Jacket Visualizer States
   const [customizerSide, setCustomizerSide] = useState<"front" | "back">("back");
   const [customizerNickname, setCustomizerNickname] = useState("");
   const [customizerSize, setCustomizerSize] = useState("L");
   const [customizerFit, setCustomizerFit] = useState("Standard");
+
+  // Payment Form States
+  const [payName, setPayName] = useState("");
+  const [payEmail, setPayEmail] = useState("");
+  const [payPurpose, setPayPurpose] = useState("Gabi Day Chai & Gathering");
+  const [payAmount, setPayAmount] = useState("");
+  const [payRef, setPayRef] = useState("");
+  const [payScreenshot, setPayScreenshot] = useState("");
+  const [payScreenshotFileName, setPayScreenshotFileName] = useState("");
+  const [isPaySubmitting, setIsPaySubmitting] = useState(false);
+  const [payMessage, setPayMessage] = useState("");
+  const [viewingScreenshot, setViewingScreenshot] = useState<string | null>(null);
 
   // Admin Dashboard States
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -800,9 +824,11 @@ function App() {
   });
   const [adminPasscode, setAdminPasscode] = useState("");
   const [adminError, setAdminError] = useState("");
-  const [adminTab, setAdminTab] = useState<"culture" | "gabi" | "jacket" | "announcements" | "clothes">("culture");
+  const [adminTab, setAdminTab] = useState<"culture" | "gabi" | "jacket" | "payments" | "announcements" | "clothes">("culture");
   const [adminSearch, setAdminSearch] = useState("");
   const [adminFilterOutfit, setAdminFilterOutfit] = useState("all");
+  const [editAdminAccounts, setEditAdminAccounts] = useState("");
+  const [adminAccountSavedMsg, setAdminAccountSavedMsg] = useState("");
 
   // Add Cloth Form States
   const [newClothLabel, setNewClothLabel] = useState("");
@@ -815,7 +841,7 @@ function App() {
   const [newClothAccessories, setNewClothAccessories] = useState("");
   const [clothMessage, setClothMessage] = useState("");
 
-  // New Announcement Form States
+  // Announcement Form States
   const [newAnnTitle, setNewAnnTitle] = useState("");
   const [newAnnContent, setNewAnnContent] = useState("");
   const [newAnnAuthor, setNewAnnAuthor] = useState("Senior Committee");
@@ -824,7 +850,7 @@ function App() {
   const [annMessage, setAnnMessage] = useState("");
   const [annFilterTag, setAnnFilterTag] = useState<"all" | "culture" | "gabi" | "jacket">("all");
 
-  // ---------------- Cloud Fetch & Merge Hooks ----------------
+  // ---------------- Cloud Sync Functions ----------------
   const refreshCloudRegistrations = useCallback(async (showIndicator = false) => {
     if (showIndicator) setIsRefreshingCloud(true);
     try {
@@ -835,9 +861,7 @@ function App() {
           setRegistrations((prevLocal) => {
             const map = new Map<number | string, Registration>();
             cloudData.forEach((item: Registration) => {
-              if (item && item.id && item.name) {
-                map.set(item.id, item);
-              }
+              if (item && item.id && item.name) map.set(item.id, item);
             });
             prevLocal.forEach((localItem) => {
               if (localItem && localItem.id && localItem.name && !map.has(localItem.id)) {
@@ -917,6 +941,39 @@ function App() {
     }
   }, []);
 
+  const refreshCloudPayments = useCallback(async () => {
+    try {
+      const res = await fetch(CLOUD_PAYMENTS_URL, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data) {
+          if (typeof data.accounts === "string" && data.accounts) {
+            setPaymentAccounts(data.accounts);
+            localStorage.setItem("bgmcs-payment-accounts-v1", data.accounts);
+          }
+          if (Array.isArray(data.receipts)) {
+            setPaymentReceipts((prevLocal) => {
+              const map = new Map<number, PaymentReceipt>();
+              data.receipts.forEach((r: PaymentReceipt) => {
+                if (r && r.id) map.set(r.id, r);
+              });
+              prevLocal.forEach((localItem) => {
+                if (localItem && localItem.id && !map.has(localItem.id)) {
+                  map.set(localItem.id, localItem);
+                }
+              });
+              const merged = Array.from(map.values()).sort((a, b) => (b.id || 0) - (a.id || 0));
+              localStorage.setItem("bgmcs-payment-receipts-v1", JSON.stringify(merged));
+              return merged;
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch cloud payments:", err);
+    }
+  }, []);
+
   const refreshCloudAnnouncements = useCallback(async () => {
     try {
       const res = await fetch(CLOUD_ANNOUNCEMENTS_URL, { cache: "no-store" });
@@ -936,16 +993,17 @@ function App() {
     refreshCloudRegistrations();
     refreshCloudGabi();
     refreshCloudJacket();
+    refreshCloudPayments();
     refreshCloudAnnouncements();
     const interval = setInterval(() => {
       refreshCloudRegistrations();
       refreshCloudGabi();
       refreshCloudJacket();
+      refreshCloudPayments();
     }, 25000);
     return () => clearInterval(interval);
-  }, [refreshCloudRegistrations, refreshCloudGabi, refreshCloudJacket, refreshCloudAnnouncements]);
+  }, [refreshCloudRegistrations, refreshCloudGabi, refreshCloudJacket, refreshCloudPayments, refreshCloudAnnouncements]);
 
-  // Touch handlers for mobile swipe
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
   }
@@ -974,6 +1032,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("bgmcs-jacket-registrations-v1", JSON.stringify(jacketRegistrations));
   }, [jacketRegistrations]);
+
+  useEffect(() => {
+    localStorage.setItem("bgmcs-payment-receipts-v1", JSON.stringify(paymentReceipts));
+  }, [paymentReceipts]);
 
   useEffect(() => {
     localStorage.setItem("bgmcs-cultural-looks-v4", JSON.stringify(culturalLooks));
@@ -1015,6 +1077,15 @@ function App() {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => setNewClothMaleImg(String(reader.result));
+    reader.readAsDataURL(file);
+  }
+
+  function handlePaymentScreenshot(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPayScreenshotFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = () => setPayScreenshot(String(reader.result));
     reader.readAsDataURL(file);
   }
 
@@ -1196,89 +1267,62 @@ function App() {
     }, 120);
   }
 
-  function playTickSound() {
+  // ---------------- Payment Screenshot Submit ----------------
+  async function handlePaymentSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!payName.trim() || !payEmail.trim() || !payScreenshot) {
+      alert("Please enter your name, email, and upload a screenshot of your transfer receipt.");
+      return;
+    }
+    setIsPaySubmitting(true);
+    const newReceipt: PaymentReceipt = {
+      id: Date.now(),
+      name: payName.trim(),
+      email: payEmail.trim(),
+      purpose: payPurpose,
+      amount: payAmount.trim() || undefined,
+      refNumber: payRef.trim() || undefined,
+      screenshot: payScreenshot,
+      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    };
+
+    const updated = [newReceipt, ...paymentReceipts];
+    setPaymentReceipts(updated);
+    localStorage.setItem("bgmcs-payment-receipts-v1", JSON.stringify(updated));
+    setPayMessage("✓ Payment screenshot received! The senior committee will verify your transfer.");
+    setPayName("");
+    setPayEmail("");
+    setPayAmount("");
+    setPayRef("");
+    setPayScreenshot("");
+    setPayScreenshotFileName("");
+
     try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(540, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.04);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.04);
-    } catch {}
-  }
+      let currentReceipts: PaymentReceipt[] = [];
+      let currentAccounts = paymentAccounts;
+      try {
+        const checkRes = await fetch(CLOUD_PAYMENTS_URL, { cache: "no-store" });
+        if (checkRes.ok) {
+          const d = await checkRes.json();
+          if (Array.isArray(d.receipts)) currentReceipts = d.receipts;
+          if (d.accounts) currentAccounts = d.accounts;
+        }
+      } catch {}
 
-  function runSpin() {
-    if (isSpinning) return;
-    setIsSpinning(true);
-    let count = 0;
-    const timer = window.setInterval(() => {
-      const nextIdx = count % culturalLooks.length;
-      setSpinResult(culturalLooks[nextIdx]);
-      playTickSound();
-      count += 1;
-      if (count > 18) {
-        window.clearInterval(timer);
-        const winner = culturalLooks[Math.floor(Math.random() * culturalLooks.length)];
-        setSpinResult(winner);
-        setIsSpinning(false);
-      }
-    }, 85);
-  }
-
-  function applySpinToForm(outfitLabel: string) {
-    setSelectedOutfitInForm(outfitLabel);
-    const regSection = document.getElementById("register");
-    if (regSection) {
-      regSection.scrollIntoView({ behavior: "smooth" });
+      const merged = [newReceipt, ...currentReceipts.filter(r => r.id !== newReceipt.id)];
+      await fetch(CLOUD_PAYMENTS_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accounts: currentAccounts, receipts: merged })
+      });
+    } catch (err) {
+      console.warn("Could not sync payment to cloud", err);
+    } finally {
+      setIsPaySubmitting(false);
     }
   }
 
-  function handleChooseLook(look: CulturalLook) {
-    let chosenOutfit = "";
-    if (isFlippedToMale && (look.id === "habesha-kemis" || look.id === "mens-kaba")) {
-      chosenOutfit = "Men's tunic suit & royal Kaba cloak";
-    } else {
-      const found = allOutfitOptions.find(opt => 
-        opt.toLowerCase().includes(look.label.toLowerCase().slice(0, 5)) ||
-        look.label.toLowerCase().includes(opt.toLowerCase().slice(0, 5)) ||
-        (look.id === "mens-kaba" && opt.includes("Kaba")) ||
-        (look.id === "wollo-kemis" && opt.includes("Wollo")) ||
-        (look.id === "dorze-gabi" && opt.includes("Dorze")) ||
-        (look.id === "sidama-attire" && opt.includes("Sidama")) ||
-        (look.id === "welayta-striped" && opt.includes("Welayta")) ||
-        (look.id === "afar-sanafil" && opt.includes("Afar"))
-      ) || look.label;
-      chosenOutfit = found;
-    }
-
-    setSelectedOutfitInForm(chosenOutfit);
-    const regSection = document.getElementById("register");
-    if (regSection) {
-      regSection.scrollIntoView({ behavior: "smooth" });
-    }
-  }
-
-  function handleApplyCustomJacketToForm() {
-    if (customizerNickname) {
-      setJacketFormNickname(customizerNickname);
-    }
-    setJacketFormSize(customizerSize);
-    setJacketFormFit(customizerFit);
-    const formEl = document.getElementById("jacket-order-form");
-    if (formEl) {
-      formEl.scrollIntoView({ behavior: "smooth" });
-    }
-  }
-
-  // Admin Actions
+  // ---------------- Admin Actions ----------------
   function handleAdminLogin(e: FormEvent) {
     e.preventDefault();
     const storedPass = localStorage.getItem("bgmcs-admin-passcode") || "bgmcs2026";
@@ -1288,6 +1332,7 @@ function App() {
       sessionStorage.setItem("bgmcs-admin-session", "true");
       setAdminError("");
       setAdminPasscode("");
+      setEditAdminAccounts(paymentAccounts);
     } else {
       setAdminError("Incorrect passcode. Access restricted to authorized committee members.");
     }
@@ -1296,6 +1341,51 @@ function App() {
   function handleAdminLogout() {
     setIsAdminLoggedIn(false);
     sessionStorage.removeItem("bgmcs-admin-session");
+  }
+
+  async function handleSaveAdminAccounts(e: FormEvent) {
+    e.preventDefault();
+    setPaymentAccounts(editAdminAccounts);
+    localStorage.setItem("bgmcs-payment-accounts-v1", editAdminAccounts);
+    setAdminAccountSavedMsg("Account numbers updated and live for all students!");
+    setTimeout(() => setAdminAccountSavedMsg(""), 4000);
+    try {
+      await fetch(CLOUD_PAYMENTS_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accounts: editAdminAccounts, receipts: paymentReceipts })
+      });
+    } catch (err) {
+      console.warn("Could not sync accounts to cloud", err);
+    }
+  }
+
+  async function handleDeletePaymentReceipt(id: number) {
+    if (window.confirm("Delete this payment receipt?")) {
+      const updated = paymentReceipts.filter(r => r.id !== id);
+      setPaymentReceipts(updated);
+      localStorage.setItem("bgmcs-payment-receipts-v1", JSON.stringify(updated));
+      try {
+        await fetch(CLOUD_PAYMENTS_URL, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accounts: paymentAccounts, receipts: updated })
+        });
+      } catch {}
+    }
+  }
+
+  function exportPaymentsCSV() {
+    const headers = ["Name", "Email", "Purpose", "Amount", "Reference", "Date"];
+    const rows = paymentReceipts.map(r => `"${r.name}","${r.email}","${r.purpose}","${r.amount || 'N/A'}","${r.refNumber || 'N/A'}","${r.date}"`);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `BGMCS_Senior_Payments_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   async function handleDeleteRegistration(id: number) {
@@ -1478,6 +1568,80 @@ function App() {
     }
   }
 
+  function playTickSound() {
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(540, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    } catch {}
+  }
+
+  function runSpin() {
+    if (isSpinning) return;
+    setIsSpinning(true);
+    let count = 0;
+    const timer = window.setInterval(() => {
+      const nextIdx = count % culturalLooks.length;
+      setSpinResult(culturalLooks[nextIdx]);
+      playTickSound();
+      count += 1;
+      if (count > 18) {
+        window.clearInterval(timer);
+        const winner = culturalLooks[Math.floor(Math.random() * culturalLooks.length)];
+        setSpinResult(winner);
+        setIsSpinning(false);
+      }
+    }, 85);
+  }
+
+  function applySpinToForm(outfitLabel: string) {
+    setSelectedOutfitInForm(outfitLabel);
+    const regSection = document.getElementById("register");
+    if (regSection) regSection.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function handleChooseLook(look: CulturalLook) {
+    let chosenOutfit = "";
+    if (isFlippedToMale && (look.id === "habesha-kemis" || look.id === "mens-kaba")) {
+      chosenOutfit = "Men's tunic suit & royal Kaba cloak";
+    } else {
+      const found = allOutfitOptions.find(opt => 
+        opt.toLowerCase().includes(look.label.toLowerCase().slice(0, 5)) ||
+        look.label.toLowerCase().includes(opt.toLowerCase().slice(0, 5)) ||
+        (look.id === "mens-kaba" && opt.includes("Kaba")) ||
+        (look.id === "wollo-kemis" && opt.includes("Wollo")) ||
+        (look.id === "dorze-gabi" && opt.includes("Dorze")) ||
+        (look.id === "sidama-attire" && opt.includes("Sidama")) ||
+        (look.id === "welayta-striped" && opt.includes("Welayta")) ||
+        (look.id === "afar-sanafil" && opt.includes("Afar"))
+      ) || look.label;
+      chosenOutfit = found;
+    }
+
+    setSelectedOutfitInForm(chosenOutfit);
+    const regSection = document.getElementById("register");
+    if (regSection) regSection.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function handleApplyCustomJacketToForm() {
+    if (customizerNickname) setJacketFormNickname(customizerNickname);
+    setJacketFormSize(customizerSize);
+    setJacketFormFit(customizerFit);
+    const formEl = document.getElementById("jacket-order-form");
+    if (formEl) formEl.scrollIntoView({ behavior: "smooth" });
+  }
+
   const filteredRegistrations = useMemo(() => {
     return registrations.filter(r => {
       const matchSearch = r.name.toLowerCase().includes(adminSearch.toLowerCase()) || r.email.toLowerCase().includes(adminSearch.toLowerCase());
@@ -1536,6 +1700,13 @@ function App() {
           >
             🧥 Welcome / Jacket
           </button>
+          <button
+            type="button"
+            onClick={() => navigateToDay("payment")}
+            style={{ background: "none", border: "none", cursor: "pointer", fontWeight: activeDay === "payment" ? 700 : 600, color: activeDay === "payment" ? "#d97706" : "#53655d" }}
+          >
+            💳 Pay / Receipts
+          </button>
         </nav>
 
         <div className="header-actions">
@@ -1552,9 +1723,9 @@ function App() {
             type="button"
             className="nav-cta"
             onClick={() => {
-              if (activeDay === "home") navigateToDay("culture");
-              const regTarget = activeDay === "jacket" ? "jacket-order-form" : (activeDay === "gabi" ? "gabi-register" : "register");
-              document.getElementById(regTarget)?.scrollIntoView({ behavior: "smooth" });
+              if (activeDay === "home") navigateToDay("gabi");
+              const target = activeDay === "jacket" ? "jacket-order-form" : (activeDay === "gabi" ? "gabi-register" : "register");
+              document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
             }}
           >
             <span>Register<span className="cta-now-text"> now</span></span> <Icon name="arrow" />
@@ -1570,8 +1741,7 @@ function App() {
             className={`senior-day-pill ${activeDay === "home" ? "active" : ""}`}
             onClick={() => navigateToDay("home")}
           >
-            <span>🎓 All Senior Days Hub</span>
-            <span className="pill-badge">Overview</span>
+            <span>🎓 All Senior Days</span>
           </button>
 
           <button
@@ -1580,7 +1750,7 @@ function App() {
             onClick={() => navigateToDay("culture")}
           >
             <span>🇪🇹 Culture Day</span>
-            <span className="pill-badge">{registrations.length} Joined</span>
+            <span className="pill-badge">{registrations.length}</span>
           </button>
 
           <button
@@ -1589,7 +1759,7 @@ function App() {
             onClick={() => navigateToDay("gabi")}
           >
             <span>🧣 Gabi Day</span>
-            <span className="pill-badge">{gabiRegistrations.length} Pledged</span>
+            <span className="pill-badge" style={{ background: "#fef3c7", color: "#92400e" }}>This Saturday</span>
           </button>
 
           <button
@@ -1597,15 +1767,23 @@ function App() {
             className={`senior-day-pill ${activeDay === "jacket" ? "active" : ""}`}
             onClick={() => navigateToDay("jacket")}
           >
-            <span>🧥 Welcome / Jacket Day</span>
-            <span className="pill-badge">{jacketRegistrations.length} Orders</span>
+            <span>🧥 Jacket Day</span>
+            <span className="pill-badge">{jacketRegistrations.length}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`senior-day-pill ${activeDay === "payment" ? "active" : ""}`}
+            onClick={() => navigateToDay("payment")}
+          >
+            <span>💳 Pay on Account</span>
           </button>
         </div>
 
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <span style={{ fontSize: "12px", color: "var(--muted)", display: "inline-flex", alignItems: "center", gap: "5px" }}>
             <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
-            Cloud Synced
+            Live Cloud
           </span>
         </div>
       </div>
@@ -1615,7 +1793,6 @@ function App() {
           ======================================================== */}
       {activeDay === "home" && (
         <section id="senior-home">
-          {/* Main Hero */}
           <div className="hero" style={{ minHeight: "auto", paddingBottom: "60px" }}>
             <div className="hero-copy" style={{ paddingBottom: "40px" }}>
               <div className="eyebrow">
@@ -1641,8 +1818,8 @@ function App() {
                 <div className="event-date">
                   <Icon name="calendar" />
                   <span>
-                    <small>Graduation Milestone</small>
-                    Class of 2026
+                    <small>Upcoming This Week</small>
+                    <strong style={{ fontSize: "15px", color: "var(--forest)", fontWeight: 900 }}>Gabi Day: THIS SATURDAY</strong>
                   </span>
                 </div>
               </div>
@@ -1661,7 +1838,6 @@ function App() {
               </div>
             </div>
 
-            {/* Hero Visual Collage / Gateway Preview */}
             <div style={{ padding: "clamp(24px, 5vw, 60px)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "20px" }}>
               <div style={{
                 background: "linear-gradient(135deg, #183c2f 0%, #0d261e 100%)",
@@ -1684,6 +1860,38 @@ function App() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px", marginTop: "24px" }}>
                   <button
                     type="button"
+                    onClick={() => navigateToDay("gabi")}
+                    style={{
+                      background: "rgba(255,255,255,0.08)",
+                      border: "2px solid #f59e0b",
+                      borderRadius: "14px",
+                      padding: "14px 18px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      color: "#ffffff",
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <strong style={{ fontSize: "15px", color: "#fed7aa" }}>
+                          🧣 1. Traditional Gabi Day Sub-Web
+                        </strong>
+                        <span style={{ background: "#f59e0b", color: "#451a03", fontSize: "10px", fontWeight: 900, padding: "2px 8px", borderRadius: "10px" }}>
+                          THIS SATURDAY
+                        </span>
+                      </div>
+                      <small style={{ color: "#fef3c7", fontSize: "12px", display: "block", marginTop: "2px" }}>
+                        📍 Location: H9XH+PV5, Bahir Dar (Tap to navigate)
+                      </small>
+                    </div>
+                    <span style={{ color: "var(--gold)", fontWeight: 800 }}>➔</span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => navigateToDay("culture")}
                     style={{
                       background: "rgba(255,255,255,0.08)",
@@ -1700,37 +1908,10 @@ function App() {
                   >
                     <div>
                       <strong style={{ display: "block", fontSize: "15px", color: "#fef08a" }}>
-                        🇪🇹 1. Ethiopian Culture Day Sub-Web
+                        🇪🇹 2. Ethiopian Culture Day Sub-Web
                       </strong>
                       <small style={{ color: "#9ca3af", fontSize: "12px" }}>
                         10 regional looks, 3D flip card, lucky spinner & attire roster
-                      </small>
-                    </div>
-                    <span style={{ color: "var(--gold)", fontWeight: 800 }}>➔</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => navigateToDay("gabi")}
-                    style={{
-                      background: "rgba(255,255,255,0.08)",
-                      border: "1px solid rgba(215, 165, 44, 0.4)",
-                      borderRadius: "14px",
-                      padding: "14px 18px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      color: "#ffffff",
-                      cursor: "pointer",
-                      textAlign: "left"
-                    }}
-                  >
-                    <div>
-                      <strong style={{ display: "block", fontSize: "15px", color: "#fed7aa" }}>
-                        🧣 2. Traditional Gabi Day Sub-Web
-                      </strong>
-                      <small style={{ color: "#9ca3af", fontSize: "12px" }}>
-                        Arba Gabi, Chencha weaves, chai circle & warmth pledge
                       </small>
                     </div>
                     <span style={{ color: "var(--gold)", fontWeight: 800 }}>➔</span>
@@ -1762,12 +1943,39 @@ function App() {
                     </div>
                     <span style={{ color: "var(--gold)", fontWeight: 800 }}>➔</span>
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigateToDay("payment")}
+                    style={{
+                      background: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(215, 165, 44, 0.4)",
+                      borderRadius: "14px",
+                      padding: "14px 18px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      color: "#ffffff",
+                      cursor: "pointer",
+                      textAlign: "left"
+                    }}
+                  >
+                    <div>
+                      <strong style={{ display: "block", fontSize: "15px", color: "#fef3c7" }}>
+                        💳 4. Pay on Account & Submit Screenshots
+                      </strong>
+                      <small style={{ color: "#9ca3af", fontSize: "12px" }}>
+                        Bank & Telebirr accounts • Upload your transfer receipt
+                      </small>
+                    </div>
+                    <span style={{ color: "var(--gold)", fontWeight: 800 }}>➔</span>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 3 Core Sub-Web Gateway Cards Grid */}
+          {/* Core Sub-Web Gateway Cards Grid */}
           <section className="process-section" id="senior-portal-cards" style={{ background: "var(--cream)", borderTop: "1px solid var(--line)" }}>
             <div className="section-heading">
               <span className="section-kicker">Explore Every Senior Experience</span>
@@ -1778,7 +1986,53 @@ function App() {
             </div>
 
             <div className="senior-portal-grid">
-              {/* Card 1: Culture Day */}
+              {/* Card: Gabi Day */}
+              <article className="senior-portal-card card-gabi" style={{ border: "2px solid #d97706" }}>
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                    <span style={{ fontSize: "36px" }}>🧣</span>
+                    <span className="badge-tag" style={{ background: "#f59e0b", color: "#451a03", fontWeight: 900 }}>
+                      THIS SATURDAY
+                    </span>
+                  </div>
+                  <h3 style={{ fontSize: "24px", color: "var(--forest)", fontFamily: "Playfair Display, serif", margin: "0 0 10px" }}>
+                    Traditional Gabi Day
+                  </h3>
+                  <p style={{ color: "var(--muted)", fontSize: "14px", lineHeight: 1.6, marginBottom: "14px" }}>
+                    Wrapped in warmth, woven in unity. Every senior drapes an authentic Ethiopian Gabi or Netela for our morning spiced chai ritual and panoramic portrait.
+                  </p>
+
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=H9XH%2BPV5%2C+Bahir+Dar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="gabi-location-btn"
+                    style={{ marginBottom: "20px", width: "100%", justifyContent: "center" }}
+                  >
+                    <span>📍</span>
+                    <div>
+                      <small style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase", display: "block" }}>Location (Tap to navigate)</small>
+                      <strong style={{ fontSize: "13px" }}>H9XH+PV5, Bahir Dar 🧭</strong>
+                    </div>
+                  </a>
+
+                  <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "var(--ink)" }}>
+                    <li>✓ <strong>This Saturday</strong>: Morning Chai gathering</li>
+                    <li>✓ Location: H9XH+PV5, Bahir Dar</li>
+                    <li>✓ Pay on account & screenshot upload</li>
+                  </ul>
+                </div>
+                <button
+                  type="button"
+                  className="btn-gold"
+                  onClick={() => navigateToDay("gabi")}
+                  style={{ width: "100%", justifyContent: "center", padding: "12px 20px" }}
+                >
+                  Enter Gabi Day Sub-Web ➔
+                </button>
+              </article>
+
+              {/* Card: Culture Day */}
               <article className="senior-portal-card card-culture">
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
@@ -1809,38 +2063,7 @@ function App() {
                 </button>
               </article>
 
-              {/* Card 2: Gabi Day */}
-              <article className="senior-portal-card card-gabi">
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <span style={{ fontSize: "36px" }}>🧣</span>
-                    <span className="badge-tag" style={{ background: "#ffedd5", color: "#9a3412" }}>
-                      Heritage Warmth
-                    </span>
-                  </div>
-                  <h3 style={{ fontSize: "24px", color: "var(--forest)", fontFamily: "Playfair Display, serif", margin: "0 0 10px" }}>
-                    Traditional Gabi Day
-                  </h3>
-                  <p style={{ color: "var(--muted)", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>
-                    Wrapped in warmth, woven in unity. Every senior wears an authentic handspun Ethiopian Gabi or Netela for our morning spiced chai ritual and cohort panoramic portrait.
-                  </p>
-                  <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "var(--ink)" }}>
-                    <li>✓ 5 iconic Gabi weaves & draping styles</li>
-                    <li>✓ Morning Chai & Bunna circle traditions</li>
-                    <li>✓ Gabi Style pledge & Extra-Gabi sharing network</li>
-                  </ul>
-                </div>
-                <button
-                  type="button"
-                  className="btn-gold"
-                  onClick={() => navigateToDay("gabi")}
-                  style={{ width: "100%", justifyContent: "center", padding: "12px 20px" }}
-                >
-                  Enter Gabi Day Sub-Web ➔
-                </button>
-              </article>
-
-              {/* Card 3: Welcome & Jacket Day */}
+              {/* Card: Jacket Day */}
               <article className="senior-portal-card card-jacket">
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
@@ -1873,48 +2096,6 @@ function App() {
             </div>
           </section>
 
-          {/* Senior Milestone Roadmap */}
-          <section className="process-section" style={{ background: "#ffffff", borderTop: "1px solid var(--line)" }}>
-            <div className="section-heading">
-              <span className="section-kicker">Senior Batch ’26 Timeline</span>
-              <h2>The Journey of Our Final Year</h2>
-              <p>
-                From our first day together to the final stage walk, here is how we commemorate every senior milestone.
-              </p>
-            </div>
-
-            <div className="process-grid" style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
-              <article>
-                <span className="step-num">01</span>
-                <h3>Welcome & Jacket Day</h3>
-                <p>
-                  Senior batch welcome assembly, unboxing the forest green & gold varsity jackets, and hallway walk of fame.
-                </p>
-              </article>
-              <article>
-                <span className="step-num">02</span>
-                <h3>Gabi Day & Chai Assembly</h3>
-                <p>
-                  Draped in handspun Ethiopian white cotton, sharing morning spiced tea, stories, and our cohort panorama.
-                </p>
-              </article>
-              <article>
-                <span className="step-num">03</span>
-                <h3>Ethiopian Culture Day</h3>
-                <p>
-                  The grand celebration honoring 10 regional cultures with authentic garments, music, dance, and cultural feast.
-                </p>
-              </article>
-              <article>
-                <span className="step-num">04</span>
-                <h3>Commencement & Ball</h3>
-                <p>
-                  Walking across the graduation stage, receiving diplomas, tossing caps, and stepping into the future.
-                </p>
-              </article>
-            </div>
-          </section>
-
           {/* Senior Announcements Board */}
           <section className="process-section" id="announcements" style={{ background: "var(--paper)", borderTop: "1px solid var(--line)" }}>
             <div className="section-heading">
@@ -1933,17 +2114,17 @@ function App() {
                 </button>
                 <button
                   type="button"
+                  className={`senior-day-pill ${annFilterTag === "gabi" ? "active" : ""}`}
+                  onClick={() => setAnnFilterTag("gabi")}
+                >
+                  🧣 Gabi Day (This Saturday)
+                </button>
+                <button
+                  type="button"
                   className={`senior-day-pill ${annFilterTag === "culture" ? "active" : ""}`}
                   onClick={() => setAnnFilterTag("culture")}
                 >
                   🇪🇹 Culture Day
-                </button>
-                <button
-                  type="button"
-                  className={`senior-day-pill ${annFilterTag === "gabi" ? "active" : ""}`}
-                  onClick={() => setAnnFilterTag("gabi")}
-                >
-                  🧣 Gabi Day
                 </button>
                 <button
                   type="button"
@@ -2556,15 +2737,17 @@ function App() {
               ← Back to Senior Hub
             </button>
             <div style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>🧣 BGMCS Senior Gabi Day Sub-Web (የጋቢ ቀን)</span>
-              <span className="pill-badge" style={{ background: "#f59e0b", color: "#451a03" }}>
+              <span>🧣 BGMCS Senior Gabi Day (የጋቢ ቀን) • <strong>THIS SATURDAY</strong></span>
+              <span className="pill-badge" style={{ background: "#f59e0b", color: "#451a03", fontWeight: 900 }}>
                 {gabiRegistrations.length} Pledged
               </span>
             </div>
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
               <a href="#gabi-styles" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>Weaves</a>
               <span style={{ color: "rgba(255,255,255,0.4)" }}>|</span>
-              <a href="#gabi-register" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>Pledge</a>
+              <a href="#gabi-location" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>📍 Location</a>
+              <span style={{ color: "rgba(255,255,255,0.4)" }}>|</span>
+              <a href="#payment-section" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>💳 Pay / Receipt</a>
               <span style={{ color: "rgba(255,255,255,0.4)" }}>|</span>
               <a href="#gabi-roster" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>Roster</a>
             </div>
@@ -2583,7 +2766,37 @@ function App() {
               <p>
                 Gabi Day is one of our most heartfelt senior traditions. Every senior drapes an authentic Ethiopian handspun cotton Gabi, Kuta, or Netela, symbolizing our collective brotherhood, wisdom, and roots as we conclude our school journey together.
               </p>
-              <div className="hero-actions">
+              
+              {/* Event Date: THIS SATURDAY in BOLD & Interactive Location Link */}
+              <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", alignItems: "center", marginTop: "24px" }} id="gabi-location">
+                <div className="event-date" style={{ background: "#fef3c7", padding: "10px 18px", borderRadius: "14px", border: "1px solid #fde68a" }}>
+                  <Icon name="calendar" />
+                  <span>
+                    <small style={{ color: "#92400e", fontWeight: 800 }}>Assembly Day</small>
+                    <strong style={{ fontSize: "16px", color: "#78350f", fontWeight: 900 }}>THIS SATURDAY</strong>
+                  </span>
+                </div>
+
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=H9XH%2BPV5%2C+Bahir+Dar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="gabi-location-btn"
+                  title="Click or tap to open location in Google Maps"
+                >
+                  <span style={{ fontSize: "24px" }}>📍</span>
+                  <div>
+                    <small style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#b45309", fontWeight: 800, display: "block" }}>
+                      Assembly Location (Tap to Locate)
+                    </small>
+                    <strong style={{ fontSize: "14.5px", color: "#451a03", display: "block" }}>
+                      H9XH+PV5, Bahir Dar 🧭
+                    </strong>
+                  </div>
+                </a>
+              </div>
+
+              <div className="hero-actions" style={{ marginTop: "28px" }}>
                 <a
                   className="primary-button"
                   href="#gabi-register"
@@ -2591,13 +2804,13 @@ function App() {
                 >
                   Pledge Your Gabi <Icon name="arrow" />
                 </a>
-                <div className="event-date">
-                  <Icon name="calendar" />
-                  <span>
-                    <small>Senior Gabi Assembly</small>
-                    Morning Spiced Chai Gathering
-                  </span>
-                </div>
+                <a
+                  className="btn-gold"
+                  href="#payment-section"
+                  style={{ padding: "12px 22px", borderRadius: "8px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                >
+                  💳 Pay on Account / Submit Receipt
+                </a>
               </div>
 
               <div className="trust-note">
@@ -2609,7 +2822,7 @@ function App() {
                 </div>
                 <p>
                   <strong>Authentic Ethiopian Shemma Heritage</strong>
-                  Four-layer Arba Gabi, Chencha Tibeb, Kuta drapes & morning chai
+                  Gathering <strong>This Saturday</strong> at <strong>H9XH+PV5, Bahir Dar</strong>
                 </p>
               </div>
             </div>
@@ -2624,8 +2837,8 @@ function App() {
                 boxShadow: "0 16px 40px rgba(69, 26, 3, 0.35)",
                 border: "2px solid #f59e0b"
               }}>
-                <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e", marginBottom: "12px" }}>
-                  ☕ Traditional Morning Assembly
+                <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e", marginBottom: "12px", fontWeight: 800 }}>
+                  ☕ Traditional Morning Assembly • THIS SATURDAY
                 </span>
                 <h3 style={{ fontSize: "26px", fontFamily: "Playfair Display, serif", margin: "8px 0 12px", color: "#ffffff" }}>
                   The Ritual of Gabi Day
@@ -2633,6 +2846,28 @@ function App() {
                 <p style={{ color: "#fef3c7", fontSize: "14px", lineHeight: 1.6, margin: "0 0 20px" }}>
                   On Gabi Day, the courtyard fills with white cotton, steaming cinnamon chai, and traditional popcorn. Seniors gather on the grand steps for our panoramic portrait, followed by our senior wisdom and memory exchange.
                 </p>
+
+                {/* Location Interactive Pill in Banner */}
+                <div style={{ background: "rgba(0,0,0,0.3)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.15)", marginBottom: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <span style={{ fontSize: "18px" }}>📍</span>
+                    <strong style={{ fontSize: "14px", color: "#fde047" }}>
+                      Assembly Spot: H9XH+PV5, Bahir Dar
+                    </strong>
+                  </div>
+                  <p style={{ margin: "0 0 10px", fontSize: "12.5px", color: "#fef3c7", lineHeight: 1.5 }}>
+                    Tap below to open your phone's GPS navigation directly to our meeting grounds.
+                  </p>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=H9XH%2BPV5%2C+Bahir+Dar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-gold"
+                    style={{ display: "inline-flex", padding: "8px 16px", fontSize: "12px", textDecoration: "none" }}
+                  >
+                    Open H9XH+PV5, Bahir Dar in Maps ➔
+                  </a>
+                </div>
 
                 <div style={{ background: "rgba(0,0,0,0.25)", padding: "16px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.12)" }}>
                   <strong style={{ display: "block", fontSize: "14px", color: "#fde047", marginBottom: "6px" }}>
@@ -2731,10 +2966,10 @@ function App() {
           {/* Gabi Day Registration Form */}
           <section className="registration-section" id="gabi-register">
             <div className="form-intro">
-              <span className="section-kicker">Gabi Day Portal</span>
+              <span className="section-kicker">Gabi Day Portal • This Saturday</span>
               <h2>Pledge your Gabi for the assembly</h2>
               <p>
-                Let the senior committee know which style you’re draping, and whether you have an extra Gabi to share with a classmate.
+                Let the senior committee know which style you’re draping <strong>This Saturday</strong> at <strong>H9XH+PV5, Bahir Dar</strong>.
               </p>
             </div>
 
@@ -2846,7 +3081,7 @@ function App() {
               <span className="section-kicker">Gabi Day Brotherhood</span>
               <h2>Registered Gabi Day Seniors</h2>
               <p>
-                Seniors who have confirmed their traditional white Gabi attire for our morning gathering.
+                Seniors gathering <strong>This Saturday</strong> at <strong>H9XH+PV5, Bahir Dar</strong> draped in traditional Gabi.
               </p>
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px", marginTop: "14px", flexWrap: "wrap" }}>
                 <button
@@ -2952,6 +3187,31 @@ function App() {
               )}
             </div>
           </section>
+
+          {/* Embedded Payment & Contribution Section */}
+          <div style={{ padding: "40px 0" }}>
+            <SeniorPaymentPortal
+              accounts={paymentAccounts}
+              receipts={paymentReceipts}
+              payName={payName}
+              setPayName={setPayName}
+              payEmail={payEmail}
+              setPayEmail={setPayEmail}
+              payPurpose={payPurpose}
+              setPayPurpose={setPayPurpose}
+              payAmount={payAmount}
+              setPayAmount={setPayAmount}
+              payRef={payRef}
+              setPayRef={setPayRef}
+              payScreenshot={payScreenshot}
+              payScreenshotFileName={payScreenshotFileName}
+              handlePaymentScreenshot={handlePaymentScreenshot}
+              handlePaymentSubmit={handlePaymentSubmit}
+              isPaySubmitting={isPaySubmitting}
+              payMessage={payMessage}
+              setViewingScreenshot={setViewingScreenshot}
+            />
+          </div>
         </section>
       )}
 
@@ -2965,7 +3225,7 @@ function App() {
               ← Back to Senior Hub
             </button>
             <div style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
-              <span>🧥 BGMCS Senior Welcome & Official Jacket Day Sub-Web</span>
+              <span>🧥 BGMCS Senior Welcome & Official Jacket Day</span>
               <span className="pill-badge" style={{ background: "#d7a52c", color: "#0e2a20" }}>
                 {jacketRegistrations.length} Orders Confirmed
               </span>
@@ -2975,11 +3235,12 @@ function App() {
               <span style={{ color: "rgba(255,255,255,0.4)" }}>|</span>
               <a href="#jacket-order-form" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>Order Form</a>
               <span style={{ color: "rgba(255,255,255,0.4)" }}>|</span>
-              <a href="#jacket-roster" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>Jacket Roster</a>
+              <a href="#jacket-payment" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>💳 Payment</a>
+              <span style={{ color: "rgba(255,255,255,0.4)" }}>|</span>
+              <a href="#jacket-roster" style={{ color: "#fde047", fontSize: "13px", fontWeight: 600 }}>Roster</a>
             </div>
           </div>
 
-          {/* Jacket Hero */}
           <div className="hero" style={{ minHeight: "auto", paddingBottom: "40px" }}>
             <div className="hero-copy">
               <div className="eyebrow" style={{ color: "var(--gold)" }}>
@@ -3023,7 +3284,6 @@ function App() {
               </div>
             </div>
 
-            {/* Interactive Live Jacket Customizer Stage */}
             <div style={{ padding: "clamp(24px, 5vw, 60px)" }} id="jacket-customizer">
               <div className="jacket-stage">
                 <div className="jacket-view-toggle">
@@ -3043,7 +3303,6 @@ function App() {
                   </button>
                 </div>
 
-                {/* SVG Visualizer */}
                 <SeniorJacketVisualizer
                   side={customizerSide}
                   nickname={customizerNickname}
@@ -3051,7 +3310,6 @@ function App() {
                   fit={customizerFit}
                 />
 
-                {/* Live Customizer Controls */}
                 <div style={{ width: "100%", maxWidth: "380px", marginTop: "20px", background: "rgba(0,0,0,0.3)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.12)" }}>
                   <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#fde047", marginBottom: "6px" }}>
                     Type Back Nickname (Live Preview):
@@ -3120,49 +3378,7 @@ function App() {
             </div>
           </div>
 
-          {/* Jacket Details & Specifications */}
-          <section className="process-section" style={{ background: "var(--cream)", borderTop: "1px solid var(--line)" }}>
-            <div className="section-heading">
-              <span className="section-kicker">Tailored Class Heritage</span>
-              <h2>Senior Jacket Specifications</h2>
-              <p>
-                Every detail of the official BGMCS Class of 2026 Varsity Jacket is built for lifetime memories.
-              </p>
-            </div>
-
-            <div className="process-grid" style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 24px" }}>
-              <article>
-                <span className="step-num">01</span>
-                <h3>Heavyweight Wool & Leather</h3>
-                <p>
-                  Rich forest green body crafted from insulating wool blend, paired with gold vegan leather sleeves and athletic rib knit cuffs.
-                </p>
-              </article>
-              <article>
-                <span className="step-num">02</span>
-                <h3>Embroidered BGMCS Crest</h3>
-                <p>
-                  High-definition gold embroidery of the official BGMCS school crest shield on the left chest.
-                </p>
-              </article>
-              <article>
-                <span className="step-num">03</span>
-                <h3>Chenille ’26 Patch</h3>
-                <p>
-                  Raised 3D chenille varsity numbers on the right chest celebrating our graduation year.
-                </p>
-              </article>
-              <article>
-                <span className="step-num">04</span>
-                <h3>Personalized Back Nickname</h3>
-                <p>
-                  Your unique chosen senior nickname arched across the shoulders in varsity collegiate gold lettering.
-                </p>
-              </article>
-            </div>
-          </section>
-
-          {/* Senior Jacket Order Form */}
+          {/* Jacket Order Form */}
           <section className="registration-section" id="jacket-order-form">
             <div className="form-intro">
               <span className="section-kicker">Senior Jacket Registry</span>
@@ -3286,7 +3502,32 @@ function App() {
             </div>
           </section>
 
-          {/* Senior Jacket Orders Roster */}
+          {/* Embedded Payment Section on Jacket Page */}
+          <div style={{ padding: "30px 0" }} id="jacket-payment">
+            <SeniorPaymentPortal
+              accounts={paymentAccounts}
+              receipts={paymentReceipts}
+              payName={payName}
+              setPayName={setPayName}
+              payEmail={payEmail}
+              setPayEmail={setPayEmail}
+              payPurpose={payPurpose}
+              setPayPurpose={setPayPurpose}
+              payAmount={payAmount}
+              setPayAmount={setPayAmount}
+              payRef={payRef}
+              setPayRef={setPayRef}
+              payScreenshot={payScreenshot}
+              payScreenshotFileName={payScreenshotFileName}
+              handlePaymentScreenshot={handlePaymentScreenshot}
+              handlePaymentSubmit={handlePaymentSubmit}
+              isPaySubmitting={isPaySubmitting}
+              payMessage={payMessage}
+              setViewingScreenshot={setViewingScreenshot}
+            />
+          </div>
+
+          {/* Jacket Orders Roster */}
           <section className="process-section" id="jacket-roster" style={{ background: "#ffffff", borderTop: "1px solid var(--line)" }}>
             <div className="section-heading">
               <span className="section-kicker">Class of 2026 Registry</span>
@@ -3294,36 +3535,6 @@ function App() {
               <p>
                 Seniors who have confirmed their jacket size and back nickname embroidery.
               </p>
-              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "12px", marginTop: "14px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={() => refreshCloudJacket(true)}
-                  disabled={isRefreshingJacketCloud}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    background: "#ffffff",
-                    border: "1px solid var(--line)",
-                    borderRadius: "20px",
-                    padding: "6px 16px",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    color: "var(--forest)",
-                    cursor: "pointer",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
-                  }}
-                >
-                  <span style={{ display: "inline-block", transform: isRefreshingJacketCloud ? "rotate(360deg)" : "none", transition: "transform 0.6s ease" }}>
-                    🔄
-                  </span>
-                  {isRefreshingJacketCloud ? "Refreshing..." : "Refresh Jacket Orders"}
-                </button>
-                <span style={{ fontSize: "12px", color: "var(--muted)", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
-                  {jacketRegistrations.length} Orders Confirmed
-                </span>
-              </div>
             </div>
 
             <div style={{
@@ -3352,54 +3563,127 @@ function App() {
                   </p>
                 </div>
               ) : (
-                jacketRegistrations.map((student) => {
-                  const isNewlyAdded = student.id === highlightedJacketId;
-                  return (
-                    <div
-                      key={student.id}
-                      style={{
-                        background: isNewlyAdded ? "#fffbeb" : "#ffffff",
-                        borderRadius: "16px",
-                        padding: "16px",
-                        border: isNewlyAdded ? "2px solid #f59e0b" : "1px solid var(--line)",
-                        boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "10px"
-                      }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        <div>
-                          <strong style={{ fontSize: "14px", color: "var(--ink)", display: "block" }}>
-                            {student.name}
-                          </strong>
-                          <small style={{ color: "var(--muted)", fontSize: "11px" }}>
-                            {student.email}
-                          </small>
-                        </div>
-                        <span style={{ fontSize: "11px", padding: "2px 8px", background: "var(--forest)", color: "#fff", borderRadius: "10px", fontWeight: 700 }}>
-                          Size {student.size}
-                        </span>
-                      </div>
-
-                      <div style={{ background: "var(--paper)", padding: "10px", borderRadius: "10px", border: "1px solid var(--line)" }}>
-                        <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted)", display: "block" }}>
-                          Embroidered Back Nickname
-                        </span>
-                        <strong style={{ fontSize: "14px", color: "var(--forest)", display: "block", marginTop: "2px", letterSpacing: "1px" }}>
-                          "{student.nickname}"
+                jacketRegistrations.map((student) => (
+                  <div
+                    key={student.id}
+                    style={{
+                      background: "#ffffff",
+                      borderRadius: "16px",
+                      padding: "16px",
+                      border: "1px solid var(--line)",
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.03)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "10px"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div>
+                        <strong style={{ fontSize: "14px", color: "var(--ink)", display: "block" }}>
+                          {student.name}
                         </strong>
-                        <small style={{ color: "var(--muted)", fontSize: "11px", display: "block", marginTop: "4px" }}>
-                          Fit: {student.fit}
+                        <small style={{ color: "var(--muted)", fontSize: "11px" }}>
+                          {student.email}
                         </small>
                       </div>
+                      <span style={{ fontSize: "11px", padding: "2px 8px", background: "var(--forest)", color: "#fff", borderRadius: "10px", fontWeight: 700 }}>
+                        Size {student.size}
+                      </span>
                     </div>
-                  );
-                })
+
+                    <div style={{ background: "var(--paper)", padding: "10px", borderRadius: "10px", border: "1px solid var(--line)" }}>
+                      <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--muted)", display: "block" }}>
+                        Embroidered Back Nickname
+                      </span>
+                      <strong style={{ fontSize: "14px", color: "var(--forest)", display: "block", marginTop: "2px", letterSpacing: "1px" }}>
+                        "{student.nickname}"
+                      </strong>
+                      <small style={{ color: "var(--muted)", fontSize: "11px", display: "block", marginTop: "4px" }}>
+                        Fit: {student.fit}
+                      </small>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </section>
         </section>
+      )}
+
+      {/* ========================================================
+          PAGE 5: DEDICATED PAYMENTS & RECEIPTS PAGE
+          ======================================================== */}
+      {activeDay === "payment" && (
+        <section id="payments-page" style={{ padding: "40px 0 80px" }}>
+          <div className="subweb-header-banner" style={{ background: "linear-gradient(135deg, #183c2f 0%, #0d261e 100%)", borderBottomColor: "#d7a52c", marginBottom: "40px" }}>
+            <button type="button" className="subweb-back-btn" onClick={() => navigateToDay("home")}>
+              ← Back to Senior Hub
+            </button>
+            <div style={{ fontSize: "14px", fontWeight: 700, color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
+              <span>💳 Official BGMCS Senior Payment Portal</span>
+              <span className="pill-badge" style={{ background: "var(--gold)", color: "#12362a" }}>
+                {paymentReceipts.length} Receipts Uploaded
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsAdminOpen(true)}
+              style={{ background: "none", border: "none", color: "#fde047", fontSize: "13px", fontWeight: 700, cursor: "pointer" }}
+            >
+              Admin Edit Accounts ⚙️
+            </button>
+          </div>
+
+          <SeniorPaymentPortal
+            accounts={paymentAccounts}
+            receipts={paymentReceipts}
+            payName={payName}
+            setPayName={setPayName}
+            payEmail={payEmail}
+            setPayEmail={setPayEmail}
+            payPurpose={payPurpose}
+            setPayPurpose={setPayPurpose}
+            payAmount={payAmount}
+            setPayAmount={setPayAmount}
+            payRef={payRef}
+            setPayRef={setPayRef}
+            payScreenshot={payScreenshot}
+            payScreenshotFileName={payScreenshotFileName}
+            handlePaymentScreenshot={handlePaymentScreenshot}
+            handlePaymentSubmit={handlePaymentSubmit}
+            isPaySubmitting={isPaySubmitting}
+            payMessage={payMessage}
+            setViewingScreenshot={setViewingScreenshot}
+          />
+        </section>
+      )}
+
+      {/* ---------------- Screenshot Preview Modal ---------------- */}
+      {viewingScreenshot && (
+        <div className="screenshot-preview-modal-overlay" onClick={() => setViewingScreenshot(null)}>
+          <div className="screenshot-preview-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e2e8f0" }}>
+              <strong style={{ fontSize: "15px", color: "#0b2a20" }}>Receipt Screenshot Preview</strong>
+              <button
+                type="button"
+                onClick={() => setViewingScreenshot(null)}
+                style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#64748b" }}
+              >
+                ✕
+              </button>
+            </div>
+            <img src={viewingScreenshot} alt="Payment Transfer Receipt" />
+            <div style={{ padding: "12px 18px", textAlign: "right", background: "#f8faf9" }}>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => setViewingScreenshot(null)}
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ---------------- Global Site Footer ---------------- */}
@@ -3420,6 +3704,14 @@ function App() {
           <span>•</span>
           <button
             type="button"
+            onClick={() => navigateToDay("gabi")}
+            style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+          >
+            Gabi Day (This Saturday)
+          </button>
+          <span>•</span>
+          <button
+            type="button"
             onClick={() => navigateToDay("culture")}
             style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
           >
@@ -3428,18 +3720,18 @@ function App() {
           <span>•</span>
           <button
             type="button"
-            onClick={() => navigateToDay("gabi")}
-            style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
-          >
-            Gabi Day
-          </button>
-          <span>•</span>
-          <button
-            type="button"
             onClick={() => navigateToDay("jacket")}
             style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
           >
             Welcome / Jacket Day
+          </button>
+          <span>•</span>
+          <button
+            type="button"
+            onClick={() => navigateToDay("payment")}
+            style={{ background: "none", border: "none", color: "var(--gold)", fontSize: "13px", fontWeight: 600, cursor: "pointer" }}
+          >
+            Pay on Account
           </button>
           <span>•</span>
           <button
@@ -3479,7 +3771,7 @@ function App() {
                   <div style={{ fontSize: "40px", marginBottom: "8px" }}>🔒</div>
                   <h4 style={{ margin: "0 0 6px", color: "#0b2a20", fontSize: "18px" }}>Committee Authorization Required</h4>
                   <p style={{ margin: 0, color: "#64748b", fontSize: "13px" }}>
-                    Please enter the Senior Committee passcode to access rosters, announcements, and clothes management.
+                    Please enter the Senior Committee passcode to access rosters, payment accounts, announcements, and clothes management.
                   </p>
                 </div>
 
@@ -3514,21 +3806,31 @@ function App() {
                     className={`admin-tab ${adminTab === "culture" ? "active" : ""}`}
                     onClick={() => setAdminTab("culture")}
                   >
-                    🇪🇹 Culture Day ({registrations.length})
+                    🇪🇹 Culture ({registrations.length})
                   </button>
                   <button
                     type="button"
                     className={`admin-tab ${adminTab === "gabi" ? "active" : ""}`}
                     onClick={() => setAdminTab("gabi")}
                   >
-                    🧣 Gabi Day ({gabiRegistrations.length})
+                    🧣 Gabi ({gabiRegistrations.length})
                   </button>
                   <button
                     type="button"
                     className={`admin-tab ${adminTab === "jacket" ? "active" : ""}`}
                     onClick={() => setAdminTab("jacket")}
                   >
-                    🧥 Jacket Orders ({jacketRegistrations.length})
+                    🧥 Jackets ({jacketRegistrations.length})
+                  </button>
+                  <button
+                    type="button"
+                    className={`admin-tab ${adminTab === "payments" ? "active" : ""}`}
+                    onClick={() => {
+                      setAdminTab("payments");
+                      setEditAdminAccounts(paymentAccounts);
+                    }}
+                  >
+                    💳 Payments & Accounts ({paymentReceipts.length})
                   </button>
                   <button
                     type="button"
@@ -3542,7 +3844,7 @@ function App() {
                     className={`admin-tab ${adminTab === "clothes" ? "active" : ""}`}
                     onClick={() => setAdminTab("clothes")}
                   >
-                    👗 Cultural Outfits ({culturalLooks.length})
+                    👗 Outfits ({culturalLooks.length})
                   </button>
                   <button
                     type="button"
@@ -3554,7 +3856,121 @@ function App() {
                 </div>
 
                 <div className="admin-body">
-                  {/* TAB 1: CULTURE DAY REGISTRATIONS */}
+                  {/* TAB: PAYMENTS & ACCOUNTS MANAGER */}
+                  {adminTab === "payments" && (
+                    <div>
+                      {adminAccountSavedMsg && (
+                        <div style={{ background: "#dcfce7", color: "#166534", padding: "12px 16px", borderRadius: "8px", marginBottom: "20px", fontWeight: 600, fontSize: "13px" }}>
+                          ✓ {adminAccountSavedMsg}
+                        </div>
+                      )}
+
+                      {/* Admin Accounts Editor */}
+                      <div style={{ background: "#f8faf9", padding: "20px", borderRadius: "14px", border: "1px solid #e2e8f0", marginBottom: "28px" }}>
+                        <h4 style={{ margin: "0 0 8px", color: "#0b2a20", fontSize: "16px" }}>
+                          🏦 Update "Pay on this account" Numbers (Live on Website)
+                        </h4>
+                        <p style={{ margin: "0 0 14px", color: "#64748b", fontSize: "13px" }}>
+                          Write the exact account numbers below. Whatever you write here will replace the blank spaces on the website for all students.
+                        </p>
+
+                        <form onSubmit={handleSaveAdminAccounts}>
+                          <textarea
+                            rows={4}
+                            placeholder="e.g.&#10;Commercial Bank of Ethiopia (CBE): 1000123456789 (Kidus Y.)&#10;Telebirr: 0912345678&#10;Bank of Abyssinia: 987654321&#10;Account Name: BGMCS Senior Committee"
+                            value={editAdminAccounts}
+                            onChange={(e) => setEditAdminAccounts(e.target.value)}
+                            style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px", lineHeight: 1.6, marginBottom: "12px", fontFamily: "monospace" }}
+                          />
+                          <button type="submit" className="btn-gold">
+                            Save & Publish Account Numbers to Website
+                          </button>
+                        </form>
+                      </div>
+
+                      {/* Student Payment Receipts */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                        <h4 style={{ margin: 0, color: "#0b2a20" }}>
+                          Student Payment Screenshots & Receipts ({paymentReceipts.length})
+                        </h4>
+                        <button type="button" className="btn-gold" onClick={exportPaymentsCSV}>
+                          <Icon name="download" /> Export Payments CSV
+                        </button>
+                      </div>
+
+                      <div className="admin-table-container">
+                        <table className="admin-table">
+                          <thead>
+                            <tr>
+                              <th>Receipt Screenshot</th>
+                              <th>Student Name</th>
+                              <th>Email</th>
+                              <th>Purpose</th>
+                              <th>Amount / Ref</th>
+                              <th>Date</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paymentReceipts.length === 0 ? (
+                              <tr>
+                                <td colSpan={7} style={{ textAlign: "center", padding: "32px", color: "#64748b" }}>
+                                  No payment screenshots submitted yet.
+                                </td>
+                              </tr>
+                            ) : (
+                              paymentReceipts.map((pr) => (
+                                <tr key={pr.id}>
+                                  <td>
+                                    {pr.screenshot ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => setViewingScreenshot(pr.screenshot)}
+                                        style={{ border: "none", background: "none", cursor: "pointer", padding: 0 }}
+                                        title="Click to view full screenshot"
+                                      >
+                                        <img
+                                          src={pr.screenshot}
+                                          alt="Receipt"
+                                          style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                        />
+                                      </button>
+                                    ) : (
+                                      <span style={{ color: "#94a3b8" }}>No file</span>
+                                    )}
+                                  </td>
+                                  <td><strong>{pr.name}</strong></td>
+                                  <td style={{ color: "#64748b" }}>{pr.email}</td>
+                                  <td>
+                                    <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>
+                                      {pr.purpose}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <strong>{pr.amount || "N/A"}</strong>
+                                    {pr.refNumber && <small style={{ display: "block", color: "#64748b" }}>Ref: {pr.refNumber}</small>}
+                                  </td>
+                                  <td style={{ color: "#64748b", fontSize: "12px" }}>{pr.date}</td>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      className="btn-danger"
+                                      onClick={() => handleDeletePaymentReceipt(pr.id)}
+                                      title="Delete Receipt"
+                                    >
+                                      <Icon name="trash" />
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB: CULTURE DAY */}
                   {adminTab === "culture" && (
                     <div>
                       <div className="admin-stats">
@@ -3566,49 +3982,19 @@ function App() {
                           <span>Unique Outfits Chosen</span>
                           <strong>{new Set(registrations.map(r => r.outfit)).size}</strong>
                         </div>
-                        <div className="admin-stat-card">
-                          <span>Active 3D Display Outfits</span>
-                          <strong>{culturalLooks.length}</strong>
-                        </div>
                       </div>
 
                       <div style={{ display: "flex", gap: "12px", marginBottom: "16px", flexWrap: "wrap", justifyContent: "space-between" }}>
-                        <div style={{ display: "flex", gap: "10px", flex: 1, minWidth: "260px" }}>
-                          <input
-                            type="text"
-                            placeholder="Search student name or email..."
-                            value={adminSearch}
-                            onChange={(e) => setAdminSearch(e.target.value)}
-                            style={{ flex: 1, padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                          />
-                          <select
-                            value={adminFilterOutfit}
-                            onChange={(e) => setAdminFilterOutfit(e.target.value)}
-                            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                          >
-                            <option value="all">All Outfits</option>
-                            {allOutfitOptions.map(opt => (
-                              <option key={opt} value={opt}>{opt}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div style={{ display: "flex", gap: "8px" }}>
-                          <button
-                            type="button"
-                            className="btn-gold"
-                            onClick={exportCultureCSV}
-                          >
-                            <Icon name="download" /> Export CSV
-                          </button>
-                          <button
-                            type="button"
-                            className="btn-primary"
-                            onClick={() => refreshCloudRegistrations(true)}
-                          >
-                            <Icon name="rotate" /> Sync Cloud
-                          </button>
-                        </div>
+                        <input
+                          type="text"
+                          placeholder="Search student name or email..."
+                          value={adminSearch}
+                          onChange={(e) => setAdminSearch(e.target.value)}
+                          style={{ flex: 1, minWidth: "240px", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                        />
+                        <button type="button" className="btn-gold" onClick={exportCultureCSV}>
+                          <Icon name="download" /> Export Culture CSV
+                        </button>
                       </div>
 
                       <div className="admin-table-container">
@@ -3624,48 +4010,37 @@ function App() {
                             </tr>
                           </thead>
                           <tbody>
-                            {filteredRegistrations.length === 0 ? (
-                              <tr>
-                                <td colSpan={6} style={{ textAlign: "center", padding: "32px", color: "#64748b" }}>
-                                  No registered seniors match the search query.
+                            {filteredRegistrations.map((r) => (
+                              <tr key={r.id}>
+                                <td>
+                                  <img
+                                    src={r.image || assetUrl("images/habesha_female.jpg")}
+                                    alt=""
+                                    style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover" }}
+                                  />
+                                </td>
+                                <td><strong>{r.name}</strong></td>
+                                <td style={{ color: "#64748b" }}>{r.email}</td>
+                                <td><span className="badge-tag">{r.outfit}</span></td>
+                                <td style={{ color: "#64748b", fontSize: "12px" }}>{r.date || "Recent"}</td>
+                                <td>
+                                  <button
+                                    type="button"
+                                    className="btn-danger"
+                                    onClick={() => handleDeleteRegistration(r.id)}
+                                  >
+                                    <Icon name="trash" />
+                                  </button>
                                 </td>
                               </tr>
-                            ) : (
-                              filteredRegistrations.map((r) => (
-                                <tr key={r.id}>
-                                  <td>
-                                    <img
-                                      src={r.image || assetUrl("images/habesha_female.jpg")}
-                                      alt=""
-                                      style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover" }}
-                                    />
-                                  </td>
-                                  <td><strong>{r.name}</strong></td>
-                                  <td style={{ color: "#64748b" }}>{r.email}</td>
-                                  <td>
-                                    <span className="badge-tag">{r.outfit}</span>
-                                  </td>
-                                  <td style={{ color: "#64748b", fontSize: "12px" }}>{r.date || "Recent"}</td>
-                                  <td>
-                                    <button
-                                      type="button"
-                                      className="btn-danger"
-                                      onClick={() => handleDeleteRegistration(r.id)}
-                                      title="Delete Registration"
-                                    >
-                                      <Icon name="trash" />
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))
-                            )}
+                            ))}
                           </tbody>
                         </table>
                       </div>
                     </div>
                   )}
 
-                  {/* TAB 2: GABI DAY REGISTRATIONS */}
+                  {/* TAB: GABI DAY */}
                   {adminTab === "gabi" && (
                     <div>
                       <div className="admin-stats">
@@ -3674,17 +4049,14 @@ function App() {
                           <strong>{gabiRegistrations.length}</strong>
                         </div>
                         <div className="admin-stat-card">
-                          <span>Extra Gabi Helpers</span>
-                          <strong>{gabiRegistrations.filter(g => g.extraGabi).length}</strong>
+                          <span>Assembly Date</span>
+                          <strong style={{ color: "#b45309" }}>THIS SATURDAY</strong>
                         </div>
                       </div>
 
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginBottom: "16px" }}>
                         <button type="button" className="btn-gold" onClick={exportGabiCSV}>
                           <Icon name="download" /> Export Gabi CSV
-                        </button>
-                        <button type="button" className="btn-primary" onClick={() => refreshCloudGabi(true)}>
-                          <Icon name="rotate" /> Sync Cloud
                         </button>
                       </div>
 
@@ -3701,45 +4073,31 @@ function App() {
                             </tr>
                           </thead>
                           <tbody>
-                            {gabiRegistrations.length === 0 ? (
-                              <tr>
-                                <td colSpan={6} style={{ textAlign: "center", padding: "32px", color: "#64748b" }}>
-                                  No Gabi Day registrations yet.
+                            {gabiRegistrations.map((g) => (
+                              <tr key={g.id}>
+                                <td><strong>{g.name}</strong></td>
+                                <td style={{ color: "#64748b" }}>{g.email}</td>
+                                <td><span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>{g.gabiType}</span></td>
+                                <td>{g.extraGabi ? "Yes (Lending 1)" : "No"}</td>
+                                <td style={{ color: "#64748b", fontSize: "12px" }}>{g.date || "Recent"}</td>
+                                <td>
+                                  <button
+                                    type="button"
+                                    className="btn-danger"
+                                    onClick={() => handleDeleteGabiRegistration(g.id)}
+                                  >
+                                    <Icon name="trash" />
+                                  </button>
                                 </td>
                               </tr>
-                            ) : (
-                              gabiRegistrations.map((g) => (
-                                <tr key={g.id}>
-                                  <td><strong>{g.name}</strong></td>
-                                  <td style={{ color: "#64748b" }}>{g.email}</td>
-                                  <td><span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>{g.gabiType}</span></td>
-                                  <td>
-                                    {g.extraGabi ? (
-                                      <span className="badge-tag" style={{ background: "#dcfce7", color: "#166534" }}>Yes (Lending 1)</span>
-                                    ) : (
-                                      <span style={{ color: "#94a3b8" }}>No</span>
-                                    )}
-                                  </td>
-                                  <td style={{ color: "#64748b", fontSize: "12px" }}>{g.date || "Recent"}</td>
-                                  <td>
-                                    <button
-                                      type="button"
-                                      className="btn-danger"
-                                      onClick={() => handleDeleteGabiRegistration(g.id)}
-                                    >
-                                      <Icon name="trash" />
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))
-                            )}
+                            ))}
                           </tbody>
                         </table>
                       </div>
                     </div>
                   )}
 
-                  {/* TAB 3: JACKET ORDERS */}
+                  {/* TAB: JACKET ORDERS */}
                   {adminTab === "jacket" && (
                     <div>
                       <div className="admin-stats">
@@ -3747,20 +4105,11 @@ function App() {
                           <span>Total Jacket Orders</span>
                           <strong>{jacketRegistrations.length}</strong>
                         </div>
-                        <div className="admin-stat-card">
-                          <span>Sizes Breakdown</span>
-                          <span style={{ fontSize: "12px", color: "var(--forest)", marginTop: "4px", display: "block" }}>
-                            S: {jacketRegistrations.filter(j => j.size === "S").length} | M: {jacketRegistrations.filter(j => j.size === "M").length} | L: {jacketRegistrations.filter(j => j.size === "L").length} | XL: {jacketRegistrations.filter(j => j.size === "XL").length} | 2XL: {jacketRegistrations.filter(j => j.size === "XXL").length}
-                          </span>
-                        </div>
                       </div>
 
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginBottom: "16px" }}>
                         <button type="button" className="btn-gold" onClick={exportJacketCSV}>
                           <Icon name="download" /> Export Jacket CSV
-                        </button>
-                        <button type="button" className="btn-primary" onClick={() => refreshCloudJacket(true)}>
-                          <Icon name="rotate" /> Sync Cloud
                         </button>
                       </div>
 
@@ -3773,49 +4122,35 @@ function App() {
                               <th>Back Nickname</th>
                               <th>Size</th>
                               <th>Fit</th>
-                              <th>Date</th>
                               <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {jacketRegistrations.length === 0 ? (
-                              <tr>
-                                <td colSpan={7} style={{ textAlign: "center", padding: "32px", color: "#64748b" }}>
-                                  No Senior Jacket orders submitted yet.
+                            {jacketRegistrations.map((j) => (
+                              <tr key={j.id}>
+                                <td><strong>{j.name}</strong></td>
+                                <td style={{ color: "#64748b" }}>{j.email}</td>
+                                <td><strong>"{j.nickname}"</strong></td>
+                                <td><span className="badge-tag" style={{ background: "#183c2f", color: "#ffffff" }}>{j.size}</span></td>
+                                <td>{j.fit}</td>
+                                <td>
+                                  <button
+                                    type="button"
+                                    className="btn-danger"
+                                    onClick={() => handleDeleteJacketRegistration(j.id)}
+                                  >
+                                    <Icon name="trash" />
+                                  </button>
                                 </td>
                               </tr>
-                            ) : (
-                              jacketRegistrations.map((j) => (
-                                <tr key={j.id}>
-                                  <td><strong>{j.name}</strong></td>
-                                  <td style={{ color: "#64748b" }}>{j.email}</td>
-                                  <td>
-                                    <strong style={{ color: "#0b2a20", letterSpacing: "1px" }}>"{j.nickname}"</strong>
-                                  </td>
-                                  <td>
-                                    <span className="badge-tag" style={{ background: "#183c2f", color: "#ffffff" }}>{j.size}</span>
-                                  </td>
-                                  <td>{j.fit}</td>
-                                  <td style={{ color: "#64748b", fontSize: "12px" }}>{j.date || "Recent"}</td>
-                                  <td>
-                                    <button
-                                      type="button"
-                                      className="btn-danger"
-                                      onClick={() => handleDeleteJacketRegistration(j.id)}
-                                    >
-                                      <Icon name="trash" />
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))
-                            )}
+                            ))}
                           </tbody>
                         </table>
                       </div>
                     </div>
                   )}
 
-                  {/* TAB 4: ANNOUNCEMENTS */}
+                  {/* TAB: ANNOUNCEMENTS */}
                   {adminTab === "announcements" && (
                     <div>
                       {annMessage && (
@@ -3832,7 +4167,7 @@ function App() {
                           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "12px" }}>
                             <input
                               type="text"
-                              placeholder="Announcement Title (e.g. Schedule for Gabi Day Assembly)"
+                              placeholder="Announcement Title"
                               value={newAnnTitle}
                               onChange={(e) => setNewAnnTitle(e.target.value)}
                               required
@@ -3843,15 +4178,15 @@ function App() {
                               onChange={(e) => setNewAnnTag(e.target.value as any)}
                               style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
                             >
-                              <option value="all">Category: All Senior Days</option>
-                              <option value="culture">Category: 🇪🇹 Culture Day</option>
-                              <option value="gabi">Category: 🧣 Gabi Day</option>
-                              <option value="jacket">Category: 🧥 Jacket Day</option>
+                              <option value="all">All Senior Days</option>
+                              <option value="gabi">🧣 Gabi Day</option>
+                              <option value="culture">🇪🇹 Culture Day</option>
+                              <option value="jacket">🧥 Jacket Day</option>
                             </select>
                           </div>
 
                           <textarea
-                            placeholder="Write message, who wears what, guidelines, or schedule..."
+                            placeholder="Write message, schedule, or instructions..."
                             value={newAnnContent}
                             onChange={(e) => setNewAnnContent(e.target.value)}
                             required
@@ -3859,62 +4194,36 @@ function App() {
                             style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px", resize: "vertical" }}
                           />
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-                            <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                              <input
-                                type="text"
-                                placeholder="Author / Signature"
-                                value={newAnnAuthor}
-                                onChange={(e) => setNewAnnAuthor(e.target.value)}
-                                style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px", width: "180px" }}
-                              />
-                              <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", cursor: "pointer" }}>
-                                <input
-                                  type="checkbox"
-                                  checked={newAnnPinned}
-                                  onChange={(e) => setNewAnnPinned(e.target.checked)}
-                                />
-                                📌 Pin this notice to top
-                              </label>
-                            </div>
+                            <input
+                              type="text"
+                              placeholder="Author / Signature"
+                              value={newAnnAuthor}
+                              onChange={(e) => setNewAnnAuthor(e.target.value)}
+                              style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px", width: "180px" }}
+                            />
                             <button type="submit" className="btn-gold">
-                              Publish to Board
+                              Publish Announcement
                             </button>
                           </div>
                         </form>
                       </div>
 
-                      <h4 style={{ margin: "0 0 14px", color: "#0b2a20" }}>Active Announcements ({announcements.length})</h4>
-                      <div>
-                        {announcements.map((ann) => (
-                          <div key={ann.id} style={{ background: "#ffffff", border: "1px solid #e2e8f0", padding: "16px", borderRadius: "12px", marginBottom: "12px", display: "flex", justifyContent: "space-between", gap: "16px" }}>
-                            <div style={{ flex: 1 }}>
-                              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                                <strong style={{ fontSize: "15px", color: "#0b2a20" }}>{ann.title}</strong>
-                                {ann.pinned && <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e" }}>Pinned</span>}
-                                {ann.tag && <span className="badge-tag" style={{ background: "#f1f5f9", color: "#334155" }}>{ann.tag}</span>}
-                              </div>
-                              <small style={{ color: "#64748b", display: "block", marginBottom: "8px" }}>
-                                By {ann.author} • {ann.date}
-                              </small>
-                              <p style={{ margin: 0, fontSize: "13px", color: "#334155", whiteSpace: "pre-line" }}>
-                                {ann.content}
-                              </p>
-                            </div>
-                            <button
-                              type="button"
-                              className="btn-danger"
-                              onClick={() => handleDeleteAnnouncement(ann.id)}
-                              style={{ alignSelf: "flex-start" }}
-                            >
-                              Delete
-                            </button>
+                      {announcements.map((ann) => (
+                        <div key={ann.id} style={{ background: "#ffffff", border: "1px solid #e2e8f0", padding: "16px", borderRadius: "12px", marginBottom: "12px", display: "flex", justifyContent: "space-between", gap: "16px" }}>
+                          <div style={{ flex: 1 }}>
+                            <strong style={{ fontSize: "15px", color: "#0b2a20", display: "block" }}>{ann.title}</strong>
+                            <small style={{ color: "#64748b", display: "block", marginBottom: "6px" }}>By {ann.author} • {ann.date}</small>
+                            <p style={{ margin: 0, fontSize: "13px", color: "#334155" }}>{ann.content}</p>
                           </div>
-                        ))}
-                      </div>
+                          <button type="button" className="btn-danger" onClick={() => handleDeleteAnnouncement(ann.id)}>
+                            Delete
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
 
-                  {/* TAB 5: CLOTHES IN 3D DISPLAY */}
+                  {/* TAB: CULTURAL CLOTHES */}
                   {adminTab === "clothes" && (
                     <div>
                       {clothMessage && (
@@ -3928,190 +4237,38 @@ function App() {
                           👗 Add New Cultural Cloth to 3D Showcase Display
                         </h4>
                         <form onSubmit={handleAddCustomCloth} className="admin-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-                          <div>
-                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
-                              Outfit Name / Label *
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="e.g. Gurage Cultural Kemis"
-                              value={newClothLabel}
-                              onChange={(e) => setNewClothLabel(e.target.value)}
-                              required
-                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
-                              Amharic Name
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="e.g. የጉራጌ ባህላዊ ልብስ"
-                              value={newClothAmharic}
-                              onChange={(e) => setNewClothAmharic(e.target.value)}
-                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
-                              Ethiopian Region *
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="e.g. Gurage / Southern Ethiopia"
-                              value={newClothRegion}
-                              onChange={(e) => setNewClothRegion(e.target.value)}
-                              required
-                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                            />
-                          </div>
-
-                          <div>
-                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
-                              Fabrics (comma separated)
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="e.g. Fine Cotton, Silk Border"
-                              value={newClothFabrics}
-                              onChange={(e) => setNewClothFabrics(e.target.value)}
-                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                            />
-                          </div>
-
-                          <div style={{ gridColumn: "1 / -1" }}>
-                            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, marginBottom: "4px", color: "#334155" }}>
-                              Garment Description & Heritage Story
-                            </label>
-                            <textarea
-                              placeholder="Describe the cultural attire, weaving style, and celebration history..."
-                              value={newClothDesc}
-                              onChange={(e) => setNewClothDesc(e.target.value)}
-                              rows={2}
-                              style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-                            />
-                          </div>
-
-                          <div style={{ background: "#ffffff", padding: "12px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
-                            <strong style={{ display: "block", fontSize: "13px", color: "#0b2a20", marginBottom: "6px" }}>
-                              👩 Female Look Photo
-                            </strong>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleFemaleUpload}
-                              style={{ fontSize: "12px", marginBottom: "8px" }}
-                            />
-                            <input
-                              type="url"
-                              placeholder="Or paste Female Image URL..."
-                              value={newClothFemaleImg.startsWith("data:") ? "" : newClothFemaleImg}
-                              onChange={(e) => setNewClothFemaleImg(e.target.value)}
-                              style={{ width: "100%", padding: "6px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px" }}
-                            />
-                            {newClothFemaleImg && (
-                              <img
-                                src={newClothFemaleImg}
-                                alt="Female preview"
-                                style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", marginTop: "8px", border: "1px solid #cbd5e1" }}
-                              />
-                            )}
-                          </div>
-
-                          <div style={{ background: "#ffffff", padding: "12px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
-                            <strong style={{ display: "block", fontSize: "13px", color: "#0b2a20", marginBottom: "6px" }}>
-                              👨 Male Look Photo
-                            </strong>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleMaleUpload}
-                              style={{ fontSize: "12px", marginBottom: "8px" }}
-                            />
-                            <input
-                              type="url"
-                              placeholder="Or paste Male Image URL..."
-                              value={newClothMaleImg.startsWith("data:") ? "" : newClothMaleImg}
-                              onChange={(e) => setNewClothMaleImg(e.target.value)}
-                              style={{ width: "100%", padding: "6px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "12px" }}
-                            />
-                            {newClothMaleImg && (
-                              <img
-                                src={newClothMaleImg}
-                                alt="Male preview"
-                                style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", marginTop: "8px", border: "1px solid #cbd5e1" }}
-                              />
-                            )}
-                          </div>
-
-                          <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", marginTop: "6px" }}>
-                            <button type="submit" className="btn-gold">
-                              <Icon name="plus" />
-                              Add to 3D Showcase Display
-                            </button>
-                          </div>
+                          <input
+                            type="text"
+                            placeholder="Outfit Name / Label *"
+                            value={newClothLabel}
+                            onChange={(e) => setNewClothLabel(e.target.value)}
+                            required
+                            style={{ padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Region *"
+                            value={newClothRegion}
+                            onChange={(e) => setNewClothRegion(e.target.value)}
+                            required
+                            style={{ padding: "9px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                          />
+                          <button type="submit" className="btn-gold" style={{ gridColumn: "1 / -1" }}>
+                            Add to 3D Showcase
+                          </button>
                         </form>
                       </div>
 
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                        <h4 style={{ margin: 0, color: "#0b2a20" }}>Current Outfits in 3D Showcase ({culturalLooks.length})</h4>
-                        <button
-                          type="button"
-                          onClick={handleResetClothes}
-                          style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "12px", cursor: "pointer", textDecoration: "underline" }}
-                        >
-                          Reset Outfits to Default 10
-                        </button>
-                      </div>
-
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "14px" }}>
-                        {culturalLooks.map((cloth, idx) => (
-                          <div
-                            key={cloth.id}
-                            style={{
-                              background: "#ffffff",
-                              borderRadius: "12px",
-                              border: "1px solid #e2e8f0",
-                              overflow: "hidden",
-                              boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
-                            }}
-                          >
-                            <div style={{ position: "relative", height: "140px", background: "#f1f5f9" }}>
-                              <img
-                                src={cloth.src}
-                                alt={cloth.label}
-                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                              />
-                              <span style={{ position: "absolute", top: "8px", left: "8px", background: "rgba(0,0,0,0.65)", color: "#fff", fontSize: "10px", padding: "2px 6px", borderRadius: "4px" }}>
-                                #{idx + 1}
-                              </span>
-                              {cloth.custom && (
-                                <span style={{ position: "absolute", top: "8px", right: "8px", background: "#d4a024", color: "#0b2a20", fontSize: "10px", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
-                                  Custom
-                                </span>
-                              )}
-                            </div>
-                            <div style={{ padding: "10px 12px" }}>
-                              <strong style={{ display: "block", fontSize: "13px", color: "#0b2a20", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                {cloth.label}
-                              </strong>
-                              <small style={{ color: "#64748b", display: "block", fontSize: "11px", marginBottom: "8px" }}>
-                                {cloth.region}
-                              </small>
-                              {cloth.custom && (
-                                <button
-                                  type="button"
-                                  className="btn-danger"
-                                  onClick={() => handleDeleteCloth(cloth.id)}
-                                  style={{ width: "100%", padding: "4px 8px", fontSize: "11px" }}
-                                >
-                                  Remove Outfit
-                                </button>
-                              )}
-                            </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "12px" }}>
+                        {culturalLooks.map((cloth) => (
+                          <div key={cloth.id} style={{ background: "#ffffff", borderRadius: "10px", border: "1px solid #e2e8f0", overflow: "hidden", padding: "10px" }}>
+                            <img src={cloth.src} alt="" style={{ width: "100%", height: "110px", objectFit: "cover", borderRadius: "6px" }} />
+                            <strong style={{ display: "block", fontSize: "12px", color: "#0b2a20", marginTop: "6px" }}>{cloth.label}</strong>
+                            {cloth.custom && (
+                              <button type="button" className="btn-danger" onClick={() => handleDeleteCloth(cloth.id)} style={{ marginTop: "6px", width: "100%" }}>
+                                Delete
+                              </button>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -4124,6 +4281,274 @@ function App() {
         </div>
       )}
     </main>
+  );
+}
+
+// -------------------------------------------------------------
+// Reusable Senior Payment Portal Component
+// -------------------------------------------------------------
+function SeniorPaymentPortal({
+  accounts,
+  receipts,
+  payName,
+  setPayName,
+  payEmail,
+  setPayEmail,
+  payPurpose,
+  setPayPurpose,
+  payAmount,
+  setPayAmount,
+  payRef,
+  setPayRef,
+  payScreenshot,
+  payScreenshotFileName,
+  handlePaymentScreenshot,
+  handlePaymentSubmit,
+  isPaySubmitting,
+  payMessage,
+  setViewingScreenshot
+}: {
+  accounts: string;
+  receipts: PaymentReceipt[];
+  payName: string;
+  setPayName: (val: string) => void;
+  payEmail: string;
+  setPayEmail: (val: string) => void;
+  payPurpose: string;
+  setPayPurpose: (val: string) => void;
+  payAmount: string;
+  setPayAmount: (val: string) => void;
+  payRef: string;
+  setPayRef: (val: string) => void;
+  payScreenshot: string;
+  payScreenshotFileName: string;
+  handlePaymentScreenshot: (e: ChangeEvent<HTMLInputElement>) => void;
+  handlePaymentSubmit: (e: FormEvent) => void;
+  isPaySubmitting: boolean;
+  payMessage: string;
+  setViewingScreenshot: (url: string | null) => void;
+}) {
+  return (
+    <section className="payment-portal-section" id="payment-section" style={{ background: "#fdf8ee", borderTop: "1px solid var(--line)", padding: "48px 0" }}>
+      <div className="section-heading" style={{ textAlign: "center", marginBottom: "36px" }}>
+        <span className="section-kicker">Official Senior Contributions</span>
+        <h2>Senior Batch Payment Portal</h2>
+        <p>
+          Pay on the official committee account below and upload your transfer screenshot to confirm.
+        </p>
+      </div>
+
+      <div className="payment-portal-grid">
+        {/* Left: "Pay on this account" Box */}
+        <div className="payment-accounts-box">
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <span className="badge-tag" style={{ background: "#fef3c7", color: "#92400e", fontWeight: 800 }}>
+                💳 Official Bank & Telebirr Accounts
+              </span>
+              <span style={{ fontSize: "12px", color: "var(--muted)" }}>Senior Committee</span>
+            </div>
+
+            <h3 style={{ fontSize: "24px", color: "var(--forest)", fontFamily: "Playfair Display, serif", margin: "0 0 12px" }}>
+              Pay on this account
+            </h3>
+
+            {/* If admin has entered account numbers, display them; otherwise show clear blank spaces */}
+            {accounts.trim() ? (
+              <div style={{
+                background: "var(--paper)",
+                padding: "20px",
+                borderRadius: "14px",
+                border: "2px solid #d7a52c",
+                whiteSpace: "pre-line",
+                fontSize: "14px",
+                lineHeight: 1.8,
+                color: "#183c2f",
+                fontWeight: 600
+              }}>
+                {accounts}
+              </div>
+            ) : (
+              <div style={{
+                background: "#ffffff",
+                padding: "22px",
+                borderRadius: "14px",
+                border: "2px dashed #d7a52c"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+                  <span style={{ fontSize: "20px" }}>🏦</span>
+                  <strong style={{ fontSize: "15px", color: "#78350f" }}>
+                    Pay on this account:
+                  </strong>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontSize: "13.5px" }}>
+                  <div>
+                    <span style={{ display: "block", color: "var(--forest)", fontWeight: 700, marginBottom: "4px" }}>
+                      Commercial Bank of Ethiopia (CBE):
+                    </span>
+                    <div style={{ padding: "10px 14px", background: "var(--paper)", borderRadius: "8px", border: "1px solid #cbd5e1", color: "#64748b", fontStyle: "italic", letterSpacing: "1px" }}>
+                      [ Account number will be added by Admin ]
+                    </div>
+                  </div>
+
+                  <div>
+                    <span style={{ display: "block", color: "var(--forest)", fontWeight: 700, marginBottom: "4px" }}>
+                      Telebirr / Mobile Money:
+                    </span>
+                    <div style={{ padding: "10px 14px", background: "var(--paper)", borderRadius: "8px", border: "1px solid #cbd5e1", color: "#64748b", fontStyle: "italic", letterSpacing: "1px" }}>
+                      [ Telebirr number will be added by Admin ]
+                    </div>
+                  </div>
+
+                  <div style={{ padding: "10px 14px", background: "#fef3c7", borderRadius: "8px", color: "#78350f", fontSize: "12.5px" }}>
+                    <strong>Account Name:</strong> BGMCS Senior Batch 2026 Committee
+                  </div>
+                </div>
+
+                <small style={{ display: "block", marginTop: "14px", color: "#64748b", fontStyle: "italic", lineHeight: 1.5 }}>
+                  ℹ️ The committee admin can update active bank numbers at any time via Admin Portal. Once you transfer, attach your screenshot on the right.
+                </small>
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginTop: "24px", padding: "14px", background: "rgba(24,60,47,0.04)", borderRadius: "12px", border: "1px solid var(--line)" }}>
+            <strong style={{ fontSize: "13px", color: "var(--forest)", display: "block", marginBottom: "4px" }}>
+              ✓ Verification Guarantee
+            </strong>
+            <p style={{ margin: 0, fontSize: "12px", color: "var(--muted)", lineHeight: 1.5 }}>
+              All uploaded screenshots are stored securely and verified by the BGMCS committee team.
+            </p>
+          </div>
+        </div>
+
+        {/* Right: "Put your screenshots" Upload Form */}
+        <div className="form-card" style={{ margin: 0 }}>
+          {payMessage && (
+            <div style={{
+              background: "#ecfdf5",
+              border: "1px solid #10b981",
+              borderRadius: "12px",
+              padding: "14px 16px",
+              marginBottom: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}>
+              <span style={{ color: "#059669", fontSize: "18px" }}>✓</span>
+              <span style={{ fontSize: "13px", fontWeight: 600, color: "#065f46" }}>
+                {payMessage}
+              </span>
+            </div>
+          )}
+
+          <form onSubmit={handlePaymentSubmit}>
+            <div className="form-top">
+              <div>
+                <span>BGMCS Seniors ’26</span>
+                <h2>Upload Transfer Screenshot</h2>
+              </div>
+              <span className="form-count">
+                {receipts.length} verified
+              </span>
+            </div>
+
+            <div className="field-row">
+              <label>
+                <span>Student full name *</span>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={payName}
+                  onChange={(e) => setPayName(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                <span>Student email *</span>
+                <input
+                  type="email"
+                  placeholder="student@example.com"
+                  value={payEmail}
+                  onChange={(e) => setPayEmail(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+
+            <div className="field-row">
+              <label>
+                <span>Payment Purpose *</span>
+                <select
+                  value={payPurpose}
+                  onChange={(e) => setPayPurpose(e.target.value)}
+                  required
+                >
+                  <option value="Gabi Day Chai & Gathering">🧣 Gabi Day Chai & Gathering</option>
+                  <option value="Senior Varsity Jacket Payment">🧥 Senior Varsity Jacket Payment</option>
+                  <option value="Culture Day Contribution">🇪🇹 Culture Day Contribution</option>
+                  <option value="General Senior Batch Contribution">🎓 General Senior Batch Contribution</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Amount Paid (ETB)</span>
+                <input
+                  type="text"
+                  placeholder="e.g. 500 ETB"
+                  value={payAmount}
+                  onChange={(e) => setPayAmount(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <label>
+              <span>Transaction Reference / Note (optional)</span>
+              <input
+                type="text"
+                placeholder="e.g. FT2610... or Sender Name"
+                value={payRef}
+                onChange={(e) => setPayRef(e.target.value)}
+              />
+            </label>
+
+            {/* Put your screenshots upload */}
+            <label className="file-upload">
+              <span>Attach your transfer screenshot / receipt photo *</span>
+              <input type="file" accept="image/*" onChange={handlePaymentScreenshot} required />
+              <div className="dropzone">
+                <Icon name="upload" />
+                <div>
+                  <strong>{payScreenshotFileName || "Put your screenshot here or browse"}</strong>
+                  <small>Supports PNG, JPG, Mobile Screenshots</small>
+                </div>
+              </div>
+            </label>
+
+            {payScreenshot && (
+              <div className="image-preview" style={{ marginBottom: "16px" }}>
+                <img
+                  src={payScreenshot}
+                  alt="Receipt Screenshot preview"
+                  onClick={() => setViewingScreenshot(payScreenshot)}
+                  style={{ cursor: "pointer", maxHeight: "180px", objectFit: "contain" }}
+                  title="Click to view enlarged"
+                />
+                <small style={{ display: "block", textAlign: "center", color: "var(--muted)", marginTop: "4px" }}>
+                  (Click screenshot to preview full size)
+                </small>
+              </div>
+            )}
+
+            <button className="submit-button" type="submit" disabled={isPaySubmitting}>
+              {isPaySubmitting ? "Submitting Screenshot..." : "Submit Payment Screenshot"}
+            </button>
+            <p className="privacy-note">Synced with BGMCS Committee Admin Dashboard in real-time.</p>
+          </form>
+        </div>
+      </div>
+    </section>
   );
 }
 
