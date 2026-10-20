@@ -312,11 +312,11 @@ const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   },
   {
     id: 3,
-    title: "Senior Welcome & Official Varsity Jacket Day Announced!",
-    content: "Get ready to represent our batch in style! The official BGMCS Class of 2026 Varsity Jacket design is revealed. Customize your back nickname, confirm your size, and join us for the grand hallway unboxing ceremony.",
+    title: "Official Senior Jacket Revealed: 'Smoke & Ice' (VOEUX Edition)!",
+    content: "Get ready to represent our batch in style! The official BGMCS Class of 2026/2027 Senior Jacket ('Smoke & Ice' washed grey with golden-cream chenille VOEUX arch) is officially revealed. Customize your back nickname, confirm your size, and inspect the official spec sheet.",
     author: "Senior Committee",
-    date: "Fall 2025",
-    pinned: false,
+    date: "Class Identity",
+    pinned: true,
     tag: "jacket"
   }
 ];
@@ -401,7 +401,7 @@ function Icon({
 }
 
 // -------------------------------------------------------------
-// Interactive SVG Varsity Jacket Visualizer Component
+// Interactive SVG Senior Jacket Visualizer Component ("Smoke & Ice" VOEUX Edition)
 // -------------------------------------------------------------
 function SeniorJacketVisualizer({
   side,
@@ -414,7 +414,7 @@ function SeniorJacketVisualizer({
   size: string;
   fit: string;
 }) {
-  const displayNick = (nickname.trim() || "SENIORS '26").toUpperCase().slice(0, 14);
+  const displayNick = (nickname.trim() || "SENIORS '27").toUpperCase().slice(0, 14);
 
   return (
     <div className="jacket-svg-container">
@@ -425,207 +425,374 @@ function SeniorJacketVisualizer({
         style={{ width: "100%", height: "auto" }}
       >
         <defs>
-          <linearGradient id="bodyGreen" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#1e4838" />
-            <stop offset="100%" stopColor="#0e2a20" />
+          {/* Authentic "Smoke & Ice" Washed Grey Gradient */}
+          <linearGradient id="smokeGreyBody" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#9aa3ab" />
+            <stop offset="35%" stopColor="#7e8790" />
+            <stop offset="70%" stopColor="#69727a" />
+            <stop offset="100%" stopColor="#5d656d" />
           </linearGradient>
-          <linearGradient id="goldSleeve" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#f3c64c" />
-            <stop offset="50%" stopColor="#d7a52c" />
-            <stop offset="100%" stopColor="#b3841a" />
+
+          <linearGradient id="smokeGreySleeve" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#8d969f" />
+            <stop offset="60%" stopColor="#747d86" />
+            <stop offset="100%" stopColor="#606870" />
           </linearGradient>
-          <linearGradient id="goldTrim" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#fde047" />
-            <stop offset="100%" stopColor="#ca8a04" />
+
+          {/* Golden Cream Chenille & Embroidery Gradient */}
+          <linearGradient id="goldenCream" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#fffdf8" />
+            <stop offset="45%" stopColor="#f5ecd5" />
+            <stop offset="100%" stopColor="#ebdcb8" />
           </linearGradient>
-          <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.35" />
+
+          {/* Heavy Silver Metal Center Zipper */}
+          <linearGradient id="metalSilverZip" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#94a3b8" />
+            <stop offset="50%" stopColor="#f8fafc" />
+            <stop offset="100%" stopColor="#64748b" />
+          </linearGradient>
+
+          <filter id="jacketShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="10" stdDeviation="7" floodOpacity="0.45" />
           </filter>
-          <path id="archTextPath" d="M 90 145 Q 200 85 310 145" />
+
+          <path id="archVoeuxFrontPath" d="M 124 204 Q 200 162 276 204" />
+          <path id="archBackNickPath" d="M 112 174 Q 200 118 288 174" />
+          <path id="archBackNationPath" d="M 145 110 Q 200 86 255 110" />
         </defs>
 
         {/* Sleeves */}
-        <g filter="url(#shadow)">
+        <g filter="url(#jacketShadow)">
+          {/* Right Sleeve (wearer's right, viewer's left) */}
           <path
-            d="M 125 78 L 40 180 L 75 220 L 138 135 Z"
-            fill="url(#goldSleeve)"
-            stroke="#916a13"
+            d="M 125 78 L 38 185 L 74 225 L 140 138 Z"
+            fill="url(#smokeGreySleeve)"
+            stroke="#4b5259"
             strokeWidth="1.5"
           />
-          <path d="M 40 180 L 30 192 L 65 232 L 75 220 Z" fill="#183c2f" />
-          <line x1="33" y1="184" x2="68" y2="224" stroke="#ffffff" strokeWidth="2.5" />
-          <line x1="37" y1="188" x2="72" y2="228" stroke="#d7a52c" strokeWidth="2" />
+          {/* Elasticated Cuff Left */}
+          <path d="M 38 185 L 28 198 L 64 238 L 74 225 Z" fill="#586068" stroke="#3e444a" strokeWidth="1" />
+          <line x1="31" y1="190" x2="67" y2="230" stroke="#7e8790" strokeWidth="2" />
 
+          {/* DOUBLE GOLDEN CREAM VARSITY STRIPES ON RIGHT ARM */}
+          <g>
+            <path
+              d="M 54 162 L 95 198 L 86 209 L 45 173 Z"
+              fill="url(#goldenCream)"
+              stroke="#d4c6a0"
+              strokeWidth="0.8"
+              opacity="0.95"
+            />
+            <path
+              d="M 64 148 L 105 184 L 97 194 L 56 158 Z"
+              fill="url(#goldenCream)"
+              stroke="#d4c6a0"
+              strokeWidth="0.8"
+              opacity="0.95"
+            />
+          </g>
+
+          {/* Left Sleeve (wearer's left, viewer's right) */}
           <path
-            d="M 275 78 L 360 180 L 325 220 L 262 135 Z"
-            fill="url(#goldSleeve)"
-            stroke="#916a13"
+            d="M 275 78 L 362 185 L 326 225 L 260 138 Z"
+            fill="url(#smokeGreySleeve)"
+            stroke="#4b5259"
             strokeWidth="1.5"
           />
-          <path d="M 360 180 L 370 192 L 335 232 L 325 220 Z" fill="#183c2f" />
-          <line x1="367" y1="184" x2="332" y2="224" stroke="#ffffff" strokeWidth="2.5" />
-          <line x1="363" y1="188" x2="328" y2="228" stroke="#d7a52c" strokeWidth="2" />
+          {/* Elasticated Cuff Right */}
+          <path d="M 362 185 L 372 198 L 336 238 L 326 225 Z" fill="#586068" stroke="#3e444a" strokeWidth="1" />
+          <line x1="369" y1="190" x2="333" y2="230" stroke="#7e8790" strokeWidth="2" />
+
+          {/* Embroidered "Voeux" Wrist Script Detail on Left Sleeve */}
+          <g transform="translate(325, 208) rotate(-45)">
+            <text
+              x="0"
+              y="0"
+              fill="url(#goldenCream)"
+              fontSize="10"
+              fontFamily="'Brush Script MT', cursive, Georgia, serif"
+              fontStyle="italic"
+              letterSpacing="0.5"
+            >
+              Voeux ✦
+            </text>
+          </g>
         </g>
 
-        {/* Main Body */}
-        <g filter="url(#shadow)">
+        {/* Main Body (Coach / Work Jacket Silhouette) */}
+        <g filter="url(#jacketShadow)">
           <path
-            d="M 125 75 C 150 90 250 90 275 75 L 290 330 C 290 330 200 338 110 330 Z"
-            fill="url(#bodyGreen)"
-            stroke="#0b231a"
+            d="M 125 76 C 150 88 250 88 275 76 L 292 334 C 292 334 200 342 108 334 Z"
+            fill="url(#smokeGreyBody)"
+            stroke="#4b5259"
             strokeWidth="2"
           />
         </g>
 
-        {/* Hem Ribbing */}
+        {/* Elasticated Waistband Hem */}
         <path
-          d="M 108 330 C 200 338 290 338 292 330 L 292 360 C 200 368 108 368 108 360 Z"
-          fill="#183c2f"
-          stroke="#0b231a"
+          d="M 106 334 C 200 342 294 342 294 334 L 294 362 C 200 370 106 370 106 362 Z"
+          fill="#586068"
+          stroke="#3e444a"
           strokeWidth="1.5"
         />
-        <path d="M 108 340 C 200 348 290 348 292 340" stroke="#ffffff" strokeWidth="3" fill="none" />
-        <path d="M 108 350 C 200 358 290 358 292 350" stroke="#d7a52c" strokeWidth="2.5" fill="none" />
+        <path d="M 106 342 C 200 350 294 350 294 342" stroke="#464d54" strokeWidth="2" fill="none" />
+        <path d="M 106 352 C 200 360 294 360 294 352" stroke="#69727a" strokeWidth="1.5" fill="none" />
 
-        {/* Collar Ribbing */}
-        <path
-          d="M 130 75 C 160 52 240 52 270 75 C 248 95 152 95 130 75 Z"
-          fill="#183c2f"
-          stroke="#0b231a"
-          strokeWidth="1.5"
-        />
-        <path d="M 136 70 C 162 58 238 58 264 70" stroke="#ffffff" strokeWidth="2.5" fill="none" />
-        <path d="M 140 76 C 165 65 235 65 260 76" stroke="#d7a52c" strokeWidth="2" fill="none" />
+        {/* Pointed Shirt-Style Collar */}
+        <g>
+          {/* Back Collar curve */}
+          <path d="M 148 76 C 175 66 225 66 252 76 Z" fill="#4d545b" stroke="#3b4147" strokeWidth="1.5" />
+          {/* Left Collar Flap */}
+          <polygon
+            points="148,76 130,108 198,92 188,72"
+            fill="#69727a"
+            stroke="#3b4147"
+            strokeWidth="1.5"
+          />
+          {/* Right Collar Flap */}
+          <polygon
+            points="252,76 270,108 202,92 212,72"
+            fill="#69727a"
+            stroke="#3b4147"
+            strokeWidth="1.5"
+          />
+          {/* Inner Collar Stitch */}
+          <line x1="148" y1="78" x2="134" y2="104" stroke="#8d969f" strokeWidth="1" strokeDasharray="2 2" />
+          <line x1="252" y1="78" x2="266" y2="104" stroke="#8d969f" strokeWidth="1" strokeDasharray="2 2" />
+        </g>
 
-        {/* FRONT VIEW */}
+        {/* ========================================================
+            FRONT VIEW: "VOEUX" CHENILLE + "27" CREST + SCRIPT
+            ======================================================== */}
         {side === "front" && (
           <g>
-            <line x1="200" y1="90" x2="200" y2="334" stroke="#0e2a20" strokeWidth="18" strokeLinecap="round" />
-            <line x1="200" y1="90" x2="200" y2="334" stroke="#d7a52c" strokeWidth="1.5" strokeDasharray="4 4" />
+            {/* Center Front Heavy Silver Metal Zipper */}
+            <line x1="200" y1="90" x2="200" y2="338" stroke="#3e444a" strokeWidth="10" strokeLinecap="round" />
+            <line x1="200" y1="90" x2="200" y2="338" stroke="url(#metalSilverZip)" strokeWidth="4.5" />
+            {/* Zipper Pull Slider */}
+            <rect x="196" y="94" width="8" height="14" rx="2" fill="#cbd5e1" stroke="#475569" strokeWidth="1" />
+            <circle cx="200" cy="104" r="2" fill="#475569" />
 
-            {[110, 150, 190, 230, 270, 310].map((y) => (
-              <circle key={y} cx="200" cy={y} r="5.5" fill="#fde047" stroke="#92400e" strokeWidth="1.5" />
-            ))}
+            {/* Slanted Side Pockets */}
+            <line x1="135" y1="255" x2="162" y2="295" stroke="#4b5259" strokeWidth="6" strokeLinecap="round" />
+            <line x1="135" y1="255" x2="162" y2="295" stroke="#7e8790" strokeWidth="2" strokeLinecap="round" />
 
-            {/* School Crest */}
-            <g transform="translate(148, 125)">
-              <rect x="-18" y="-18" width="36" height="42" rx="4" fill="#0b2a20" stroke="#d7a52c" strokeWidth="2" />
-              <path d="M -18 10 C -18 24 0 28 0 28 C 0 28 18 24 18 10 Z" fill="#0b2a20" stroke="#d7a52c" strokeWidth="2" />
-              <text x="0" y="-3" fill="#fde047" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                BGMCS
+            <line x1="265" y1="255" x2="238" y2="295" stroke="#4b5259" strokeWidth="6" strokeLinecap="round" />
+            <line x1="265" y1="255" x2="238" y2="295" stroke="#7e8790" strokeWidth="2" strokeLinecap="round" />
+
+            {/* Wearer's Left Chest: "27" + Graduation Cap + CLASS OF MMXXVII */}
+            <g transform="translate(244, 126)">
+              <text
+                x="0"
+                y="0"
+                fill="url(#goldenCream)"
+                fontSize="24"
+                fontWeight="900"
+                textAnchor="middle"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+                letterSpacing="1"
+              >
+                27
               </text>
-              <text x="0" y="8" fill="#ffffff" fontSize="6" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                SENIORS
+              {/* Graduation Cap */}
+              <polygon points="-10,6 0,2 10,6 0,10" fill="url(#goldenCream)" stroke="#b8a77d" strokeWidth="0.8" />
+              <line x1="0" y1="6" x2="7" y2="12" stroke="#eedfbe" strokeWidth="1" />
+              <text
+                x="0"
+                y="19"
+                fill="url(#goldenCream)"
+                fontSize="5"
+                fontWeight="900"
+                textAnchor="middle"
+                fontFamily="sans-serif"
+                letterSpacing="0.8"
+              >
+                CLASS OF MMXXVII
               </text>
-              <circle cx="0" cy="18" r="3" fill="#d7a52c" />
             </g>
 
-            {/* Chenille '26 Patch */}
-            <g transform="translate(252, 130)">
-              <rect x="-18" y="-16" width="36" height="34" rx="8" fill="#ffffff" stroke="#d7a52c" strokeWidth="2.5" />
-              <text x="0" y="8" fill="#183c2f" fontSize="19" fontWeight="900" textAnchor="middle" fontFamily="Georgia, serif">
-                ’26
+            {/* Bold Arched Chenille "VOEUX" across chest */}
+            <g>
+              {/* Distressed drop-shadow under VOEUX */}
+              <text
+                fill="#3b4249"
+                fontSize="38"
+                fontWeight="900"
+                letterSpacing="5"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+                opacity="0.75"
+              >
+                <textPath href="#archVoeuxFrontPath" startOffset="50%" textAnchor="middle">
+                  VOEUX
+                </textPath>
               </text>
+
+              {/* Main Golden Cream Chenille VOEUX */}
+              <text
+                fill="url(#goldenCream)"
+                stroke="#d6c69e"
+                strokeWidth="1.2"
+                fontSize="38"
+                fontWeight="900"
+                letterSpacing="5"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+              >
+                <textPath href="#archVoeuxFrontPath" startOffset="50%" textAnchor="middle">
+                  VOEUX
+                </textPath>
+              </text>
+
+              {/* Distressed drips beneath VOEUX letters */}
+              <path d="M 152 208 L 152 216 L 154 212 Z" fill="url(#goldenCream)" />
+              <path d="M 174 214 L 174 224 L 176 218 Z" fill="url(#goldenCream)" />
+              <path d="M 226 214 L 226 225 L 228 217 Z" fill="url(#goldenCream)" />
+              <path d="M 248 208 L 248 217 L 250 211 Z" fill="url(#goldenCream)" />
             </g>
 
-            <line x1="135" y1="240" x2="165" y2="280" stroke="#d7a52c" strokeWidth="7" strokeLinecap="round" />
-            <line x1="265" y1="240" x2="235" y2="280" stroke="#d7a52c" strokeWidth="7" strokeLinecap="round" />
+            {/* "There can be only one" Cursive Script under VOEUX */}
+            <text
+              x="200"
+              y="235"
+              fill="#fffdf8"
+              fontSize="11"
+              fontFamily="'Brush Script MT', cursive, Georgia, serif"
+              fontStyle="italic"
+              textAnchor="middle"
+              letterSpacing="1"
+            >
+              There can be only one
+            </text>
 
-            <g transform="translate(130, 315)">
-              <rect x="0" y="0" width="38" height="15" rx="3" fill="#ffffff" stroke="#183c2f" strokeWidth="1" />
-              <text x="19" y="11" fill="#183c2f" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                SIZE: {size}
+            {/* Sizing & Fit Badge */}
+            <g transform="translate(130, 318)">
+              <rect x="0" y="0" width="46" height="15" rx="3" fill="#ffffff" stroke="#64748b" strokeWidth="1" />
+              <text x="23" y="11" fill="#1e293b" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                {size} • {fit}
               </text>
             </g>
           </g>
         )}
 
-        {/* BACK VIEW */}
+        {/* ========================================================
+            BACK VIEW: "VOEUX NATION" + CUSTOM NICKNAME + '27'
+            ======================================================== */}
         {side === "back" && (
           <g>
-            <g transform="translate(182, 86)">
-              <rect x="0" y="0" width="12" height="6" fill="#17814f" />
-              <rect x="12" y="0" width="12" height="6" fill="#efc83a" />
-              <rect x="24" y="0" width="12" height="6" fill="#c64b36" />
-              <rect x="0" y="0" width="36" height="6" stroke="#ffffff" strokeWidth="0.8" fill="none" />
-            </g>
-
+            {/* Upper Collar "VOEUX NATION" Embroidery */}
             <text
-              fill="url(#goldTrim)"
-              stroke="#ffffff"
-              strokeWidth="0.8"
-              fontSize="20"
+              fill="url(#goldenCream)"
+              fontSize="9"
               fontWeight="900"
-              letterSpacing="2.5"
-              fontFamily="'Playfair Display', Georgia, serif"
+              letterSpacing="3"
+              fontFamily="sans-serif"
             >
-              <textPath href="#archTextPath" startOffset="50%" textAnchor="middle">
-                {displayNick}
+              <textPath href="#archBackNationPath" startOffset="50%" textAnchor="middle">
+                VOEUX NATION
               </textPath>
             </text>
 
-            <g transform="translate(200, 222)">
+            {/* Arch Custom Nickname */}
+            <g>
+              <text
+                fill="#3b4249"
+                fontSize="24"
+                fontWeight="900"
+                letterSpacing="3"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+                opacity="0.8"
+              >
+                <textPath href="#archBackNickPath" startOffset="50%" textAnchor="middle">
+                  {displayNick}
+                </textPath>
+              </text>
+              <text
+                fill="url(#goldenCream)"
+                stroke="#d6c69e"
+                strokeWidth="1.2"
+                fontSize="24"
+                fontWeight="900"
+                letterSpacing="3"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+              >
+                <textPath href="#archBackNickPath" startOffset="50%" textAnchor="middle">
+                  {displayNick}
+                </textPath>
+              </text>
+            </g>
+
+            {/* Large Center Back '27' Numeral in Golden Cream Chenille */}
+            <g transform="translate(200, 246)">
+              {/* Drop Shadow */}
               <text
                 x="2"
                 y="3"
-                fill="#0b231a"
-                fontSize="76"
+                fill="#373d44"
+                fontSize="84"
                 fontWeight="900"
                 textAnchor="middle"
-                fontFamily="Impact, sans-serif"
-                letterSpacing="4"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+                letterSpacing="2"
               >
-                26
+                27
               </text>
+              {/* Outer stroke */}
               <text
                 x="0"
                 y="0"
-                fill="#ffffff"
-                stroke="#ffffff"
-                strokeWidth="10"
-                fontSize="76"
+                fill="url(#goldenCream)"
+                stroke="#d6c69e"
+                strokeWidth="3"
+                fontSize="84"
                 fontWeight="900"
                 textAnchor="middle"
-                fontFamily="Impact, sans-serif"
-                letterSpacing="4"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+                letterSpacing="2"
               >
-                26
+                27
               </text>
+              {/* Inner highlight */}
               <text
                 x="0"
                 y="0"
-                fill="#fde047"
-                stroke="#ca8a04"
-                strokeWidth="1.5"
-                fontSize="76"
+                fill="url(#goldenCream)"
+                fontSize="84"
                 fontWeight="900"
                 textAnchor="middle"
-                fontFamily="Impact, sans-serif"
-                letterSpacing="4"
+                fontFamily="Impact, 'Arial Black', sans-serif"
+                letterSpacing="2"
               >
-                26
+                27
               </text>
             </g>
+
+            {/* Script below numeral */}
+            <text
+              x="200"
+              y="282"
+              fill="#fffdf8"
+              fontSize="12"
+              fontFamily="'Brush Script MT', cursive, Georgia, serif"
+              fontStyle="italic"
+              letterSpacing="1"
+              textAnchor="middle"
+            >
+              There can be only one
+            </text>
 
             <text
               x="200"
-              y="288"
-              fill="#dce5d8"
-              fontSize="10"
-              fontWeight="800"
-              letterSpacing="3"
+              y="304"
+              fill="url(#goldenCream)"
+              fontSize="8"
+              fontWeight="900"
+              letterSpacing="2"
               textAnchor="middle"
               fontFamily="sans-serif"
             >
-              ★ BGMCS SENIOR BATCH ★
+              CLASS OF MMXXVII • BGMCS SENIORS
             </text>
-
-            <g transform="translate(200, 315)">
-              <rect x="-35" y="0" width="70" height="15" rx="3" fill="rgba(0,0,0,0.4)" stroke="#d7a52c" strokeWidth="1" />
-              <text x="0" y="11" fill="#fde047" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                {size} • {fit.toUpperCase()} FIT
-              </text>
-            </g>
           </g>
         )}
       </svg>
@@ -799,8 +966,8 @@ function App() {
   const [highlightedJacketId, setHighlightedJacketId] = useState<number | null>(null);
   const [isRefreshingJacketCloud, setIsRefreshingJacketCloud] = useState(false);
 
-  // Jacket Visualizer States
-  const [customizerSide, setCustomizerSide] = useState<"front" | "back">("back");
+  // Jacket Visualizer States ("Smoke & Ice" VOEUX Edition)
+  const [customizerSide, setCustomizerSide] = useState<"sheet" | "front" | "back">("sheet");
   const [customizerNickname, setCustomizerNickname] = useState("");
   const [customizerSize, setCustomizerSize] = useState("L");
   const [customizerFit, setCustomizerFit] = useState("Standard");
@@ -2080,8 +2247,19 @@ function App() {
               {/* Card: Jacket Day */}
               <article className="senior-portal-card card-jacket">
                 <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                    <span style={{ fontSize: "36px" }}>🧥</span>
+                  <div style={{ position: "relative", borderRadius: "14px", overflow: "hidden", height: "180px", marginBottom: "16px", border: "1px solid var(--line)" }}>
+                    <img
+                      src={assetUrl("images/senior_jacket_voeux.png")}
+                      alt="Official BGMCS Senior Jacket - Smoke & Ice VOEUX"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }}
+                    />
+                    <span style={{ position: "absolute", top: "10px", right: "10px", background: "rgba(18, 54, 42, 0.85)", color: "#fef08a", fontSize: "10px", fontWeight: 800, padding: "3px 8px", borderRadius: "6px", backdropFilter: "blur(6px)" }}>
+                      I. SMOKE & ICE
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <span style={{ fontSize: "13px", fontWeight: 800, color: "var(--forest)" }}>VOEUX Edition</span>
                     <span className="badge-tag" style={{ background: "#dcfce7", color: "#166534" }}>
                       Official Class Identity
                     </span>
@@ -2090,10 +2268,11 @@ function App() {
                     Welcome & Jacket Day
                   </h3>
                   <p style={{ color: "var(--muted)", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>
-                    The milestone moment: unboxing the official BGMCS Class of 2026 Varsity Jacket! Includes live nickname customizer, sizing selector, and the hallway Walk of Fame.
+                    The milestone moment: unveiling the official BGMCS "Smoke & Ice" VOEUX Senior Jacket! Features live back nickname customizer, sizing selector, and the hallway Walk of Fame.
                   </p>
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px", color: "var(--ink)" }}>
-                    <li>✓ Interactive 3D Varsity Jacket visualizer</li>
+                    <li>✓ Official "Smoke & Ice" VOEUX design sheet</li>
+                    <li>✓ Interactive front & back customizer visualizer</li>
                     <li>✓ Custom back nickname real-time renderer</li>
                     <li>✓ Size order confirmation & live registry</li>
                   </ul>
@@ -3200,21 +3379,40 @@ function App() {
             <div className="hero-copy">
               <div className="eyebrow" style={{ color: "var(--gold)" }}>
                 <span style={{ background: "var(--gold)" }} />
-                Official Class of 2026 Identity • የጃኬት ቀን
+                BGMCS Senior Identity • Edition I: Smoke & Ice (VOEUX)
               </div>
               <h1>
-                Wear the <em>pride</em>. Own the legacy.
+                Wear the <em>pride</em>. There can be only one.
               </h1>
               <p>
-                The official BGMCS Senior Varsity Jacket marks our milestone year. Tailored in deep forest green with gold trim, custom chenille patches, and personalized back nickname embroidery, it represents our unity, brotherhood, and senior identity.
+                The official BGMCS Senior Class Jacket tailored in signature <strong>"Smoke & Ice"</strong> washed denim grey with heavy silver hardware. Features bold golden-cream chenille <strong>"VOEUX"</strong> arch, <em>"There can be only one"</em> cursive script, double sleeve stripes, graduation cap crest, and custom back nickname embroidery.
               </p>
+
+              {/* Color & Material Breakdown Chips */}
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", margin: "18px 0 24px" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#f1f5f9", padding: "4px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: 700, color: "#334155", border: "1px solid #cbd5e1" }}>
+                  <span style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#7e8891" }} />
+                  Smoke & Ice (Washed Grey Body)
+                </span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#fefce8", padding: "4px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: 700, color: "#854d0e", border: "1px solid #fef08a" }}>
+                  <span style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#f5ecd5", border: "1px solid #ca8a04" }} />
+                  Golden Cream (Chenille VOEUX Arch)
+                </span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#f8fafc", padding: "4px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: 700, color: "#0f172a", border: "1px solid #e2e8f0" }}>
+                  ✨ "There Can Be Only One" Script
+                </span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#f8fafc", padding: "4px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: 700, color: "#0f172a", border: "1px solid #e2e8f0" }}>
+                  🎓 27 Class of MMXXVII Crest
+                </span>
+              </div>
+
               <div className="hero-actions">
                 <a
                   className="primary-button"
                   href="#jacket-order-form"
-                  style={{ background: "var(--forest)" }}
+                  style={{ background: "#334155" }}
                 >
-                  Order Your Senior Jacket <Icon name="arrow" />
+                  Order Your VOEUX Jacket <Icon name="arrow" />
                 </a>
                 <div className="event-date">
                   <Icon name="calendar" />
@@ -3227,14 +3425,14 @@ function App() {
 
               <div className="trust-note">
                 <div className="avatars" aria-hidden="true">
-                  <span style={{ background: "#183c2f", color: "#fff" }}>’26</span>
-                  <span style={{ background: "#d7a52c", color: "#000" }}>🧥</span>
-                  <span style={{ background: "#17814f", color: "#fff" }}>🇪🇹</span>
-                  <span>S-2XL</span>
+                  <span style={{ background: "#64748b", color: "#fff" }}>’27</span>
+                  <span style={{ background: "#f5ecd5", color: "#451a03" }}>🧥</span>
+                  <span style={{ background: "#183c2f", color: "#fff" }}>🇪🇹</span>
+                  <span>S-3XL</span>
                 </div>
                 <p>
-                  <strong>Custom Senior Varsity Jacket</strong>
-                  Wool-blend body • Vegan leather sleeves • Embroidered nickname
+                  <strong>Edition I: "Smoke & Ice" VOEUX Jacket</strong>
+                  Washed Grey Twill • Golden Cream Chenille • Custom Embroidered Nickname
                 </p>
               </div>
             </div>
@@ -3244,91 +3442,159 @@ function App() {
                 <div className="jacket-view-toggle">
                   <button
                     type="button"
-                    className={`jacket-toggle-btn ${customizerSide === "back" ? "active" : ""}`}
-                    onClick={() => setCustomizerSide("back")}
+                    className={`jacket-toggle-btn ${customizerSide === "sheet" ? "active" : ""}`}
+                    onClick={() => setCustomizerSide("sheet")}
                   >
-                    🔄 View Back (Custom Nickname)
+                    📸 Official Spec Sheet ("Smoke & Ice" VOEUX)
                   </button>
                   <button
                     type="button"
                     className={`jacket-toggle-btn ${customizerSide === "front" ? "active" : ""}`}
                     onClick={() => setCustomizerSide("front")}
                   >
-                    🛡️ View Front (Crest & ’26 Patch)
+                    🛡️ View Front (VOEUX Arch & '27 Crest)
                   </button>
-                </div>
-
-                <SeniorJacketVisualizer
-                  side={customizerSide}
-                  nickname={customizerNickname}
-                  size={customizerSize}
-                  fit={customizerFit}
-                />
-
-                <div style={{ width: "100%", maxWidth: "380px", marginTop: "20px", background: "rgba(0,0,0,0.3)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.12)" }}>
-                  <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#fde047", marginBottom: "6px" }}>
-                    Type Back Nickname (Live Preview):
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={14}
-                    placeholder="e.g. KIDUS / CAPTAIN"
-                    value={customizerNickname}
-                    onChange={(e) => setCustomizerNickname(e.target.value.toUpperCase())}
-                    style={{
-                      width: "100%",
-                      padding: "8px 12px",
-                      borderRadius: "8px",
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      background: "rgba(0,0,0,0.4)",
-                      color: "#ffffff",
-                      fontSize: "14px",
-                      fontWeight: 700,
-                      marginBottom: "12px",
-                      letterSpacing: "1px"
-                    }}
-                  />
-
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ display: "block", fontSize: "11px", color: "#d1d5db", marginBottom: "4px" }}>
-                        Select Size:
-                      </label>
-                      <select
-                        value={customizerSize}
-                        onChange={(e) => setCustomizerSize(e.target.value)}
-                        style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", background: "#112e23", color: "#ffffff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "13px" }}
-                      >
-                        {["S", "M", "L", "XL", "XXL"].map((sz) => (
-                          <option key={sz} value={sz}>{sz}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div style={{ flex: 1 }}>
-                      <label style={{ display: "block", fontSize: "11px", color: "#d1d5db", marginBottom: "4px" }}>
-                        Fit Style:
-                      </label>
-                      <select
-                        value={customizerFit}
-                        onChange={(e) => setCustomizerFit(e.target.value)}
-                        style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", background: "#112e23", color: "#ffffff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "13px" }}
-                      >
-                        <option value="Standard">Standard</option>
-                        <option value="Oversized">Oversized</option>
-                      </select>
-                    </div>
-                  </div>
-
                   <button
                     type="button"
-                    onClick={handleApplyCustomJacketToForm}
-                    className="btn-gold"
-                    style={{ width: "100%", marginTop: "14px", justifyContent: "center" }}
+                    className={`jacket-toggle-btn ${customizerSide === "back" ? "active" : ""}`}
+                    onClick={() => setCustomizerSide("back")}
                   >
-                    Apply Design to Order Form ↓
+                    🔄 View Back (Custom Nickname)
                   </button>
                 </div>
+
+                {customizerSide === "sheet" ? (
+                  <div style={{ width: "100%", maxWidth: "480px", margin: "0 auto", textAlign: "center" }}>
+                    <div style={{
+                      position: "relative",
+                      borderRadius: "18px",
+                      overflow: "hidden",
+                      border: "2px solid #d7a52c",
+                      boxShadow: "0 16px 40px rgba(0,0,0,0.4)",
+                      background: "#0f172a"
+                    }}>
+                      <img
+                        src={assetUrl("images/senior_jacket_voeux.png")}
+                        alt="Official BGMCS Senior Jacket - Smoke & Ice VOEUX Edition"
+                        style={{ width: "100%", height: "auto", display: "block" }}
+                      />
+                      <div style={{
+                        position: "absolute",
+                        top: "12px",
+                        left: "12px",
+                        background: "rgba(15, 23, 42, 0.85)",
+                        backdropFilter: "blur(8px)",
+                        padding: "5px 12px",
+                        borderRadius: "8px",
+                        border: "1px solid rgba(255,255,255,0.2)"
+                      }}>
+                        <span style={{ fontSize: "11px", fontWeight: 800, color: "#fef08a", letterSpacing: "0.5px" }}>
+                          OFFICIAL TECH SPEC SHEET • EDITION I
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: "14px", display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        onClick={() => setCustomizerSide("back")}
+                        className="btn-gold"
+                        style={{ padding: "8px 16px", fontSize: "12px", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                      >
+                        🔄 Try Live Back Nickname Customizer ➔
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCustomizerSide("front")}
+                        style={{
+                          padding: "8px 16px",
+                          fontSize: "12px",
+                          borderRadius: "8px",
+                          background: "rgba(255,255,255,0.1)",
+                          color: "#ffffff",
+                          border: "1px solid rgba(255,255,255,0.2)",
+                          cursor: "pointer"
+                        }}
+                      >
+                        🛡️ Inspect Front View ➔
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <SeniorJacketVisualizer
+                      side={customizerSide}
+                      nickname={customizerNickname}
+                      size={customizerSize}
+                      fit={customizerFit}
+                    />
+
+                    <div style={{ width: "100%", maxWidth: "380px", marginTop: "20px", background: "rgba(0,0,0,0.35)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.14)" }}>
+                      <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#fde047", marginBottom: "6px" }}>
+                        Type Back Nickname (Live Preview):
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={14}
+                        placeholder="e.g. KIDUS / CAPTAIN"
+                        value={customizerNickname}
+                        onChange={(e) => setCustomizerNickname(e.target.value.toUpperCase())}
+                        style={{
+                          width: "100%",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          border: "1px solid rgba(255,255,255,0.2)",
+                          background: "rgba(0,0,0,0.45)",
+                          color: "#ffffff",
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          marginBottom: "12px",
+                          letterSpacing: "1px"
+                        }}
+                      />
+
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
+                        <div style={{ flex: 1 }}>
+                          <label style={{ display: "block", fontSize: "11px", color: "#d1d5db", marginBottom: "4px" }}>
+                            Select Size:
+                          </label>
+                          <select
+                            value={customizerSize}
+                            onChange={(e) => setCustomizerSize(e.target.value)}
+                            style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", background: "#1e293b", color: "#ffffff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "13px" }}
+                          >
+                            {["S", "M", "L", "XL", "XXL", "3XL"].map((sz) => (
+                              <option key={sz} value={sz}>{sz}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div style={{ flex: 1 }}>
+                          <label style={{ display: "block", fontSize: "11px", color: "#d1d5db", marginBottom: "4px" }}>
+                            Fit Style:
+                          </label>
+                          <select
+                            value={customizerFit}
+                            onChange={(e) => setCustomizerFit(e.target.value)}
+                            style={{ width: "100%", padding: "6px 8px", borderRadius: "6px", background: "#1e293b", color: "#ffffff", border: "1px solid rgba(255,255,255,0.2)", fontSize: "13px" }}
+                          >
+                            <option value="Standard">Standard</option>
+                            <option value="Oversized">Oversized</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleApplyCustomJacketToForm}
+                        className="btn-gold"
+                        style={{ width: "100%", marginTop: "14px", justifyContent: "center" }}
+                      >
+                        Apply Design to Order Form ↓
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
