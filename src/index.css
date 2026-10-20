@@ -551,13 +551,16 @@ h1 em {
   position: absolute;
   top: 7%;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
   width: 60%;
   z-index: 3;
+  border-radius: 20px;
 }
 
 .outfit-card.flipped {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 .outfit-card.spinning {
@@ -568,33 +571,86 @@ h1 em {
   animation-play-state: paused;
 }
 
+.card-face,
 .outfit-face {
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   box-shadow: 0 40px 70px rgba(3, 24, 16, 0.35);
   inset: 0;
   overflow: hidden;
   position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
+.card-face::after,
 .outfit-face::after {
-  background: linear-gradient(to top, rgba(10, 36, 26, 0.25), transparent 44%);
+  background: linear-gradient(to top, rgba(10, 36, 26, 0.45) 0%, rgba(10, 36, 26, 0.1) 40%, transparent 70%);
   content: "";
   inset: 0;
   position: absolute;
+  pointer-events: none;
+  z-index: 2;
 }
 
+.card-face img,
 .outfit-face img {
   height: 100%;
   object-fit: cover;
   width: 100%;
+  display: block;
 }
 
+.card-front,
+.outfit-front {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  z-index: 2;
+}
+
+.card-back,
 .outfit-back {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  z-index: 1;
 }
 
+.card-back img,
 .outfit-back img {
   transform: none;
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #ffffff;
+  z-index: 5;
+  pointer-events: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-badge {
+  align-self: flex-start;
+  background: rgba(16, 185, 129, 0.92);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .orbit {

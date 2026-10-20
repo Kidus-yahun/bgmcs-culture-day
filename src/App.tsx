@@ -2622,7 +2622,7 @@ function App() {
                   }}
                   aria-label={`Interactive 3D Cultural Card: currently showing ${isFlippedToMale ? "Male" : "Female"} look for ${selectedLook.label}. Tap to flip.`}
                 >
-                  <div className="card-face card-front">
+                  <div className="card-face outfit-face card-front outfit-front">
                     <img src={selectedLook.src} alt={`${selectedLook.label} Female Traditional Look`} />
                     <div className="card-overlay">
                       <span className="card-badge">✨ Authentic Female Attire</span>
@@ -2630,7 +2630,7 @@ function App() {
                     </div>
                   </div>
 
-                  <div className="card-face card-back">
+                  <div className="card-face outfit-face card-back outfit-back">
                     <img src={selectedLook.backSrc} alt={`${selectedLook.label} Male Traditional Look`} />
                     <div className="card-overlay">
                       <span className="card-badge" style={{ background: "rgba(215, 165, 44, 0.95)", color: "#183c2f" }}>
