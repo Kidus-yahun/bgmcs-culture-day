@@ -1595,3 +1595,227 @@ footer > a:last-child {
   html { scroll-behavior: auto; }
   .outfit-card { animation: none; }
 }
+
+/* ========================================================
+   BGMCS SENIOR BATCH PORTAL & SUB-WEBS EXPANSION
+   (Senior Hub, Culture Day, Gabi Day, Welcome / Jacket Day)
+   ======================================================== */
+
+.senior-days-nav-bar {
+  background: rgba(255, 253, 248, 0.95);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 82px;
+  z-index: 45;
+  backdrop-filter: blur(14px);
+  padding: 10px clamp(16px, 4vw, 60px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.senior-days-nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.senior-days-pills {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.senior-day-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--forest);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.senior-day-pill:hover {
+  background: #f4ede1;
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.senior-day-pill.active {
+  background: var(--forest);
+  color: #ffffff;
+  border-color: var(--forest);
+  box-shadow: 0 4px 14px rgba(24, 60, 47, 0.25);
+}
+
+.senior-day-pill.active .pill-badge {
+  background: var(--gold);
+  color: #12362a;
+}
+
+.pill-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 12px;
+  background: #edf2ed;
+  color: var(--forest);
+  font-weight: 800;
+}
+
+/* Sub-Web Breadcrumb Banner */
+.subweb-header-banner {
+  background: linear-gradient(135deg, #183c2f 0%, #0d261e 100%);
+  color: #ffffff;
+  padding: 14px clamp(20px, 5vw, 60px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 2px solid var(--gold);
+}
+
+.subweb-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(215, 165, 44, 0.4);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.subweb-back-btn:hover {
+  background: var(--gold);
+  color: var(--forest-deep);
+}
+
+/* Senior Hub Portal Gateway Cards */
+.senior-portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.senior-portal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.senior-portal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--gold);
+  opacity: 0.8;
+}
+
+.senior-portal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 45px rgba(24, 60, 47, 0.12);
+  border-color: var(--gold);
+}
+
+.senior-portal-card.card-culture::before {
+  background: linear-gradient(90deg, #17814f, #efc83a, #c64b36);
+}
+
+.senior-portal-card.card-gabi::before {
+  background: linear-gradient(90deg, #d7a52c, #b74832, #d7a52c);
+}
+
+.senior-portal-card.card-jacket::before {
+  background: linear-gradient(90deg, #183c2f, #d7a52c, #183c2f);
+}
+
+/* Varsity Jacket Visualizer */
+.jacket-stage {
+  background: radial-gradient(circle at center, #265543 0%, #112e23 100%);
+  border-radius: 24px;
+  padding: 32px 24px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 16px 40px rgba(18, 54, 42, 0.35);
+  border: 2px solid rgba(215, 165, 44, 0.3);
+}
+
+.jacket-view-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.jacket-toggle-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #d1d5db;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jacket-toggle-btn.active {
+  background: var(--gold);
+  color: #12362a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.jacket-svg-container {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 860px) {
+  .senior-days-nav-bar {
+    top: 72px;
+    padding: 8px 16px;
+  }
+  .senior-day-pill {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+}
